@@ -10,17 +10,55 @@ import {
   VStack,
   useToast,
 } from '@chakra-ui/react';
-import { useCallback, useRef, useState } from 'react';
+import { useCallback, useEffect, useRef, useState } from 'react';
 import { PageSection } from '../../components/PageSection';
 import { useMockRounds } from '../../hooks/useMockRounds';
 import { StatusBadge } from '../../components/StatusBadge';
 import { sendFakeTransaction } from '../../services/fakeTonService';
+import { fetchOnchainRoundState, OnchainRoundState } from '../../lib/api';
+import { TON_CONTRACT_ADDRESS } from '../../lib/constants';
 
 export default function LaboratoryPage() {
   const rounds = useMockRounds();
   const toast = useToast();
   const toastIdRef = useRef<string | number | undefined>(undefined);
   const [isSending, setIsSending] = useState(false);
+  const [onchainTelemetry, setOnchainTelemetry] = useState<OnchainRoundState | null>(null);
+  const [isTelemetryLoading, setIsTelemetryLoading] = useState(false);
+  const [telemetryError, setTelemetryError] = useState<string | null>(null);
+
+  useEffect(() => {
+    let isActive = true;
+    const lobbyId = 'laboratory-telemetry-lobby';
+    setIsTelemetryLoading(true);
+    fetchOnchainRoundState(lobbyId)
+      .then((state) => {
+        if (!isActive) {
+          return;
+        }
+        setOnchainTelemetry(state);
+        setTelemetryError(null);
+      })
+      .catch((error) => {
+        if (!isActive) {
+          return;
+        }
+        console.warn('[LaboratoryPage] telemetry fetch failed', error);
+        setTelemetryError(
+          error instanceof Error ? error.message : 'Unexpected error fetching round telemetry',
+        );
+      })
+      .finally(() => {
+        if (!isActive) {
+          return;
+        }
+        setIsTelemetryLoading(false);
+      });
+
+    return () => {
+      isActive = false;
+    };
+  }, []);
 
   const handleSendMockTransaction = useCallback(async () => {
     if (isSending) {
@@ -145,6 +183,56 @@ export default function LaboratoryPage() {
             Send mock transaction
           </Button>
         </VStack>
+      </PageSection>
+
+      <PageSection
+        title="On-chain telemetry"
+        description="Realtime view of the round-state pull that will back the fairness audits."
+      >
+        <Stack spacing={3}>
+          <Text fontSize="sm" color="gray.400">
+            Data is mocked deterministically until the F5 release swaps this widget to live
+            contract calls.
+          </Text>
+          <Stack spacing={2}>
+            <HStack justify="space-between">
+              <Text color="gray.400">Round hash</Text>
+              <Text fontFamily="mono" fontSize="sm">
+                {onchainTelemetry?.roundHash ?? '—'}
+              </Text>
+            </HStack>
+            <HStack justify="space-between">
+              <Text color="gray.400">Winner index</Text>
+              <Text fontFamily="mono">
+                {onchainTelemetry ? onchainTelemetry.winnerIndex : '—'}
+              </Text>
+            </HStack>
+            <HStack justify="space-between">
+              <Text color="gray.400">Pool amount</Text>
+              <Text fontFamily="mono">
+                {onchainTelemetry?.poolAmount != null
+                  ? `${onchainTelemetry.poolAmount.toFixed(2)} TON`
+                  : '—'}
+              </Text>
+            </HStack>
+            <HStack justify="space-between">
+              <Text color="gray.400">TON contract</Text>
+              <Text fontFamily="mono" fontSize="sm">
+                {TON_CONTRACT_ADDRESS}
+              </Text>
+            </HStack>
+          </Stack>
+          {isTelemetryLoading && (
+            <Text fontSize="sm" color="gray.500">
+              Fetching latest telemetry…
+            </Text>
+          )}
+          {telemetryError && (
+            <Text fontSize="sm" color="red.300">
+              {telemetryError}
+            </Text>
+          )}
+        </Stack>
       </PageSection>
     </Stack>
   );
