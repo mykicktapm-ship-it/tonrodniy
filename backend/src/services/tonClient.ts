@@ -4,6 +4,8 @@ import { sha256_sync } from '@ton/crypto';
 
 import { env } from '../config/env';
 
+const tonEnv = env.ton;
+
 type TonEventType = 'DepositReceived' | 'WinnerSelected' | 'PayoutSent';
 
 type TonStackEntry = [string, any];
@@ -26,8 +28,8 @@ const OPCODES = {
 } as const;
 const NANO_IN_TON = 1_000_000_000n;
 
-const httpProviderOptions = env.tonApiKey ? { apiKey: env.tonApiKey } : undefined;
-const httpProvider = new TonWeb.HttpProvider(env.tonRpcUrl, httpProviderOptions);
+const httpProviderOptions = tonEnv.apiKey ? { apiKey: tonEnv.apiKey } : undefined;
+const httpProvider = new TonWeb.HttpProvider(tonEnv.rpcUrl, httpProviderOptions);
 const tonweb = new TonWeb(httpProvider);
 const WalletClass = tonweb.wallet?.all?.v4R2 ?? TonWeb.wallet?.all?.v4R2;
 
@@ -45,7 +47,7 @@ const operatorWalletAddressPromise = operatorWallet.getAddress();
 const logger = (level: 'info' | 'warn' | 'error', message: string, meta?: Record<string, unknown>) => {
   const payload = {
     scope: 'tonClient',
-    network: env.tonNetwork,
+    network: tonEnv.network,
     ...meta
   };
   const target = console[level] ?? console.log;
@@ -110,13 +112,13 @@ const hexToBytes = (value: string): Uint8Array => {
 };
 
 function deriveKeyPair(): OperatorKeyPair {
-  const publicKey = hexToBytes(env.tonDeployerPublicKey);
+  const publicKey = hexToBytes(tonEnv.deployerPublicKey);
   if (publicKey.length !== 32) {
     throw new Error('TON_DEPLOYER_PUBLIC_KEY must represent 32 bytes');
   }
-  const secretKeyRaw = hexToBytes(env.tonDeployerSecretKey);
+  const secretKeyRaw = hexToBytes(tonEnv.deployerPrivateKey);
   if (secretKeyRaw.length !== 32 && secretKeyRaw.length !== 64) {
-    throw new Error('TON_DEPLOYER_SECRET_KEY must represent 32 or 64 bytes');
+    throw new Error('TON_DEPLOYER_PRIVATE_KEY must represent 32 or 64 bytes');
   }
   const secretKey = secretKeyRaw.length === 64 ? secretKeyRaw : concatSecret(publicKey, secretKeyRaw);
   return { publicKey, secretKey };
@@ -134,7 +136,7 @@ const normalizeAddress = (address: string): string => {
   return tonAddress.toString(true, true, true);
 };
 
-const contractAddressFriendly = normalizeAddress(env.tonContractAddress);
+const contractAddressFriendly = normalizeAddress(tonEnv.contractAddress);
 
 const tonToNano = (tonValue: number): bigint => {
   if (!Number.isFinite(tonValue) || tonValue <= 0) {

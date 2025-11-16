@@ -390,7 +390,7 @@ const recordAuditTrail = async (event: TonWebhookEvent) => {
     .digest('hex');
   return auditLogStore.insert({
     actorType: 'contract',
-    actorId: env.tonContractAddress,
+    actorId: env.ton.contractAddress,
     action: event.type,
     payload: {
       lobbyId: event.lobbyId,
