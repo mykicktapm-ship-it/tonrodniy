@@ -11,7 +11,14 @@ import {
   txLogStore,
   userStore
 } from '../db/supabase';
-import { broadcastLobbyEvent } from '../ws';
+import {
+  buildSeatTimerTickPayload,
+  emitPaymentConfirmed,
+  emitRoundFinalized,
+  emitSeatUpdate,
+  emitTimerTick,
+  type SeatTimerSnapshot
+} from '../ws';
 import { sendFinalizeRound } from '../services/tonClient';
 
 const RESERVATION_WINDOW_MS = 2 * 60 * 1000;
@@ -28,7 +35,18 @@ const getSeatExpiration = (seat: SeatRow): string | undefined => {
   return new Date(timestamp + RESERVATION_WINDOW_MS).toISOString();
 };
 
-const serializeSeat = (seat: SeatRow, seatTxMap: Map<string, string>): Record<string, unknown> => ({
+export interface SerializedSeatPayload extends SeatTimerSnapshot {
+  id: string;
+  seatIndex: number;
+  status: string;
+  userId?: string;
+  reservedAt?: string;
+  paidAt?: string;
+  expiresAt?: string;
+  txHash?: string;
+}
+
+const serializeSeat = (seat: SeatRow, seatTxMap: Map<string, string>): SerializedSeatPayload => ({
   id: seat.id,
   seatIndex: seat.seat_index,
   status: seat.status,
@@ -36,7 +54,7 @@ const serializeSeat = (seat: SeatRow, seatTxMap: Map<string, string>): Record<st
   reservedAt: seat.taken_at ?? undefined,
   paidAt: seat.paid_at ?? undefined,
   expiresAt: getSeatExpiration(seat),
-  txHash: seatTxMap.get(seat.id)
+  txHash: seatTxMap.get(seat.id) ?? undefined
 });
 
 const serializeLobby = (composite: LobbyComposite, seatTxMap: Map<string, string>) => {
@@ -209,10 +227,8 @@ lobbiesRouter.post('/:id/join', async (req, res) => {
 
     const seatTxMap = await txLogStore.latestSeatPayments([reservedSeat.id]);
     const seatPayload = serializeSeat(reservedSeat, seatTxMap);
-    broadcastLobbyEvent(lobbyId, {
-      type: 'seat_update',
-      payload: { lobbyId, seat: seatPayload }
-    });
+    emitSeatUpdate({ lobbyId, seat: seatPayload });
+    emitTimerTick(buildSeatTimerTickPayload(lobbyId, seatPayload));
     res.json({ seat: seatPayload, message: 'Seat reserved. Complete payment before expiration.' });
   } catch (error) {
     res.status(400).json({ error: (error as Error).message });
@@ -270,10 +286,9 @@ lobbiesRouter.post('/:id/pay', async (req, res) => {
 
     const seatTxMap = await txLogStore.latestSeatPayments([paidSeat.id]);
     const seatPayload = serializeSeat(paidSeat, seatTxMap);
-    broadcastLobbyEvent(req.params.id, {
-      type: 'payment_confirmed',
-      payload: { lobbyId: req.params.id, seat: seatPayload }
-    });
+    emitSeatUpdate({ lobbyId: req.params.id, seat: seatPayload });
+    emitPaymentConfirmed({ lobbyId: req.params.id, seat: seatPayload, txHash });
+    emitTimerTick(buildSeatTimerTickPayload(req.params.id, seatPayload));
     res.json({ seat: seatPayload, status: 'pending_confirmation' });
   } catch (error) {
     res.status(400).json({ error: (error as Error).message });
@@ -375,9 +390,11 @@ lobbiesRouter.post('/:id/finalize', async (req, res) => {
       lobby: { ...lobby.lobby, status: 'finalized', round_seed_reveal: seedRecord.seed },
       currentRound: latestRound ?? lobby.currentRound
     };
-    broadcastLobbyEvent(req.params.id, {
-      type: 'round_finalized',
-      payload: { lobbyId: req.params.id, round: latestRound, tonSubmission, seedReveal: seedRecord.seed }
+    emitRoundFinalized({
+      lobbyId: req.params.id,
+      round: latestRound,
+      tonSubmission,
+      seedReveal: seedRecord.seed
     });
 
     const seatTxMap = await mapSeatTxs([updatedComposite]);
