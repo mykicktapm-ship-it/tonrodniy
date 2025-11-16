@@ -9,6 +9,7 @@
     "schema:print": "cat db/migrations/001_init.sql"
   },
   "dependencies": {
+    "@supabase/supabase-js": "^2.47.1",
     "@ton/core": "^0.58.1",
     "@ton/crypto": "^3.3.0",
     "cors": "^2.8.5",
