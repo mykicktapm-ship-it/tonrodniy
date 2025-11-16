@@ -5,6 +5,7 @@ import { healthRouter } from './routes/health';
 import { lobbiesRouter } from './routes/lobbies';
 import { roundsRouter } from './routes/rounds';
 import { usersRouter } from './routes/users';
+import { tonWebhookRouter } from './routes/tonWebhookRoutes';
 
 const app = express();
 
@@ -26,5 +27,6 @@ app.use('/healthz', healthRouter);
 app.use('/lobbies', lobbiesRouter);
 app.use('/users', usersRouter);
 app.use('/rounds', roundsRouter);
+app.use('/ton', tonWebhookRouter);
 
 export { app };

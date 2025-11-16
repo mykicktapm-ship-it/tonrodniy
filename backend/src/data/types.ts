@@ -47,6 +47,20 @@ export interface Round {
   txHashes: string[];
 }
 
+export type TonWebhookEventType = 'DepositReceived' | 'WinnerSelected' | 'PayoutSent';
+
+export interface TxLog {
+  id: string;
+  lobbyId: string;
+  roundId?: string;
+  txHash?: string;
+  wallet?: string;
+  amountTon?: number;
+  eventType: TonWebhookEventType;
+  payload: Record<string, unknown>;
+  createdAt: string;
+}
+
 export interface ActivityLog {
   id: string;
   lobbyId: string;
