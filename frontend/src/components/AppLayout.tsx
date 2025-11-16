@@ -1,15 +1,8 @@
-import {
-  Box,
-  Flex,
-  HStack,
-  Icon,
-  Text,
-  Button,
-  useColorModeValue,
-} from '@chakra-ui/react';
+import { Box, Flex, HStack, Icon, Text, Button, useColorModeValue } from '@chakra-ui/react';
 import { NavLink, Outlet } from 'react-router-dom';
 import { APP_TABS } from '../lib/constants';
 import { FiZap } from 'react-icons/fi';
+import { TonConnectButton } from './wallet/TonConnectButton';
 
 export function AppLayout() {
   const borderColor = useColorModeValue('blackAlpha.200', 'whiteAlpha.200');
@@ -41,21 +34,19 @@ export function AppLayout() {
             </Text>
           </Box>
         </HStack>
-        <HStack spacing={{ base: 1, md: 3 }}>
-          {APP_TABS.map((tab) => (
-            <NavLink key={tab.path} to={tab.path} end={tab.path === '/'}>
-              {({ isActive }) => (
-                <Button
-                  variant={isActive ? 'solid' : 'ghost'}
-                  size="sm"
-                  px={4}
-                  fontSize="sm"
-                >
-                  {tab.label}
-                </Button>
-              )}
-            </NavLink>
-          ))}
+        <HStack spacing={{ base: 2, md: 4 }} flexWrap="wrap" justify="flex-end">
+          <HStack spacing={{ base: 1, md: 3 }}>
+            {APP_TABS.map((tab) => (
+              <NavLink key={tab.path} to={tab.path} end={tab.path === '/'}>
+                {({ isActive }) => (
+                  <Button variant={isActive ? 'solid' : 'ghost'} size="sm" px={4} fontSize="sm">
+                    {tab.label}
+                  </Button>
+                )}
+              </NavLink>
+            ))}
+          </HStack>
+          <TonConnectButton />
         </HStack>
       </Flex>
       <Box as="main" flex="1" px={{ base: 4, md: 10 }} py={10} maxW="1200px" mx="auto" w="full">
