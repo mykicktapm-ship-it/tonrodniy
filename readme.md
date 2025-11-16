@@ -1,136 +1,180 @@
-# TONRODY
+# TONRODY · Phase F5
 
-TONRODY is an honest-round gaming surface defined in `plans.md`. Delivery is staged across multiple phases; Phase F3 introduces the backend skeleton while the frontend continues to render deterministic mock data until the two surfaces are integrated.
+TONRODY is an honesty-first lobby platform where every lobby seat, TON stake, and payout can be audited end-to-end. Phase **F5**
+brings the smart-contract online, wires the backend to Supabase and WebSockets, and lets the frontend switch from deterministic
+mocks to the live API + TON Connect wallet layer.
 
-## Frontend workspace
+---
 
-The F1 foundation lives in [`frontend/`](./frontend/) and is a Vite + React + TypeScript project with Chakra UI for styling.
-
-### Getting started
-
-```bash
-cd frontend
-pnpm install
-pnpm dev
-```
-
-- `pnpm dev` starts the local dev server on the default Vite port (5173).
-- `pnpm build` type-checks and emits a production build to `frontend/dist`.
-- `pnpm preview` serves the build for smoke testing.
-
-### Directory map
+## Repository map
 
 ```
-frontend/
-├── src/
-│   ├── components/     # shared layout primitives (navigation bar, sections, badges)
-│   ├── hooks/          # mocked data helpers (no real API wiring yet)
-│   ├── lib/            # static constants and Tonrody copy blocks
-│   ├── pages/          # Home, Laboratory, Earn, Profile shells from plans.md section 4
-│   ├── state/          # placeholder UI state helpers for future stores
-│   ├── theme.ts        # dark TONRODY theme definition
-│   └── main.tsx        # Chakra + Router bootstrap
-├── index.html          # Vite entry
-└── vite.config.ts      # build configuration
+backend/    # Express + ws server, Supabase integration, TON webhook receiver
+contracts/  # Tact source, build artifacts, deployment config
+frontend/   # Vite + React + Chakra UI client, Ton Connect UI bootstrap
+docs/       # Architecture, fairness protocol, Supabase schema, UX specs
 ```
 
-No API, blockchain, or database calls are wired up in this phase. All data displayed on the screens are deterministic mocks that match the UX specification in `plans.md`.
+---
 
-## Backend (F3)
+## Prerequisites
 
-The Phase F3 backend lives in [`backend/`](./backend/) and mirrors the routes/channel plan captured in `docs/tonrody_full_codex.md`. It already publishes the Express + WebSocket skeleton so the frontend can swap off mocks as soon as integration lands.
+1. **Tooling** – Node.js 18+, pnpm 8+, Git, Docker (optional for local Postgres), toncli/blueprint for contract deploys.
+2. **Accounts** – Supabase project (database + service role key), Telegram bot (alerts), TON testnet wallet (for deploy + QA).
+3. **Cloning** – `git clone` the repo, then `pnpm install` once at the workspace root to hydrate shared dependencies.
 
-### Dependency installation
+---
 
-```bash
-cd backend
-pnpm install
+## Environment variables
+
+All sensitive values live outside source control. Use [`backend/.env.example`](./backend/.env.example) as the template and create
+the following files before running any process.
+
+### Backend `.env`
+
+| Variable | Purpose |
+| --- | --- |
+| `PORT` | Port for the Express + ws server (default `4000`). |
+| `SUPABASE_URL` | Supabase project URL (`https://<project>.supabase.co`). |
+| `SUPABASE_SERVICE_ROLE_KEY` | Service-role key for privileged reads/writes. |
+| `JWT_SECRET` | Symmetric secret for backend-issued tokens. |
+| `TELEGRAM_BOT_TOKEN` | Telegram bot for ops alerts. |
+| `TON_WEBHOOK_SECRET` | Shared secret for verifying `/ton/events` callbacks. |
+| `TON_NETWORK` | Label used in logs + API responses (`testnet` during F5). |
+| `TON_RPC_URL` / `TON_API_KEY` | RPC endpoint + token for toncenter/tonapi once live node wiring replaces mocks. |
+| `TON_CONTRACT_ADDRESS` | Deployed Tonrody contract address (must match `contracts/ton.config.json`). |
+| `TON_DEPLOYER_PUBLIC_KEY` / `TON_DEPLOYER_PRIVATE_KEY` | Hex-encoded keypair used when broadcasting contract transactions. |
+
+### Frontend `.env`
+
+Create `frontend/.env` (or `.env.local` ignored by Git) with:
+
+```
+VITE_API_BASE_URL=http://localhost:4000          # or your deployed backend URL
+VITE_TON_CONTRACT_ADDRESS=EQYourLiveContract…    # used for telemetry displays
 ```
 
-### Available scripts
+When `VITE_API_BASE_URL` is set, all fetches in [`frontend/src/lib/api.ts`](./frontend/src/lib/api.ts) target the live backend
+instead of deterministic mocks, so keep it aligned with the environment you run.
 
-- `pnpm dev:backend` proxies to `nodemon` with `ts-node` for instant feedback.
-- `pnpm build:backend` type-checks and outputs JS to `backend/dist`.
-- `pnpm start:backend` runs the compiled server (useful in production containers).
+---
 
-### REST and WebSocket surface
+## Supabase requirements
 
-- `GET /health` returns the current status and timestamp.
-- `GET /lobbies`, `GET /lobbies/:id`, `POST /lobbies/:id/join`, `POST /lobbies/:id/pay`, and `POST /lobbies/:id/finalize` drive the lobby lifecycle while broadcasting `seat_update`, `payment_confirmed`, and `round_finalized` events to subscribers.
-- `GET /rounds` and `GET /rounds/:id` expose recent draw outcomes.
-- `GET /users`, `GET /users/:id`, and `GET /users/:id/logs` surface player profiles and their audit trail.
-- WebSocket clients connect to `/ws` and subscribe to `lobby:<id>` channels to receive deterministic event payloads that mirror the REST mutations.
+1. **Database schema** – Apply [`backend/db/migrations/001_init.sql`](./backend/db/migrations/001_init.sql) to your Supabase
+   instance via `psql` or `supabase db push`. The migration provisions `users`, `lobbies`, `seats`, `rounds`, `tx_logs`, and
+   `audit_logs` as described in `docs/tonrody_full_codex.md`.
+2. **Secrets** – Paste your project URL + service-role key into `backend/.env`. The backend rejects requests until both values are
+   present.
+3. **Sequential migrations** – Number new SQL files `002_*.sql`, `003_*.sql`, etc., commit them with dependent features, and keep
+   Supabase in sync before promoting a branch.
 
-The Express app relies on the Zod-backed environment loader in [`backend/src/config/env.ts`](./backend/src/config/env.ts) and the mock data stores in [`backend/src/data/`](./backend/src/data/) so the responses remain stable while Supabase wiring is in flight.
+---
 
-### Environment + Supabase seeding
+## Backend service (`pnpm dev:backend`)
 
-1. Copy [`backend/.env.example`](./backend/.env.example) into `backend/.env` and supply your Supabase project URL, service-role key, JWT secret, Telegram token, and TON webhook secret before starting any backend process.
-2. Apply the baseline schema found in [`backend/db/migrations/001_init.sql`](./backend/db/migrations/001_init.sql) using either `psql` or the Supabase CLI as outlined in [`backend/db/migrations/README.md`](./backend/db/migrations/README.md).
-   - Example: `export DATABASE_URL="postgres://postgres:password@127.0.0.1:5432/postgres" && psql "$DATABASE_URL" -f backend/db/migrations/001_init.sql`.
-   - If you prefer `supabase db push`, symlink/copy the migration file(s) into `supabase/migrations` before running the command so the CLI can seed your local stack.
-3. Once the schema is seeded, run `pnpm dev:backend` (with the `.env` values in place) to serve the REST/WS mocks backed by your local Supabase instance; additional migrations should be numbered sequentially (`002_*.sql`, `003_*.sql`, etc.) and committed alongside dependent features.
+1. Install dependencies once: `cd backend && pnpm install`.
+2. Start the dev server with automatic reloads:
+   ```bash
+   cd backend
+   pnpm dev:backend
+   ```
+   This runs `nodemon` + `ts-node`, exposing REST on `http://localhost:4000` (configurable via `PORT`) and WebSockets on
+   `ws://localhost:4000/ws`.
+3. Available scripts:
+   - `pnpm build:backend` – emit JS to `backend/dist`.
+   - `pnpm start:backend` – run the compiled server in production containers.
+4. REST highlights: `/health`, `/lobbies`, `/lobbies/:id/join`, `/lobbies/:id/pay`, `/lobbies/:id/finalize`, `/rounds`, `/users`,
+   `/ton/round-state/:id`, `/ton/events`.
+5. WebSocket hub: clients connect to `/ws`, send `{ "type": "subscribe", "channel": "lobby:<lobbyId>" }`, and receive JSON events
+   mirroring REST mutations plus contract telemetry. See “WebSocket channels” below for the topic list.
 
-## TON Connect
+---
 
-The frontend already boots the Ton Connect SDK so you can validate wallet flows locally before the smart-contract logic lands.
+## Frontend (live API wiring)
 
-### Prerequisites and manifest location
+1. Install dependencies: `cd frontend && pnpm install`.
+2. Set the env vars described above so the client points to your backend + contract.
+3. Run the dev server:
+   ```bash
+   cd frontend
+   pnpm dev
+   ```
+   The app boots on `http://localhost:5173`, proxies API calls to `VITE_API_BASE_URL`, and loads the Ton Connect manifest from
+   [`frontend/public/tonconnect-manifest.json`](./frontend/public/tonconnect-manifest.json). Use `pnpm build` + `pnpm preview` to
+   smoke-test production bundles when needed.
 
-- The Ton Connect manifest lives at [`frontend/public/tonconnect-manifest.json`](./frontend/public/tonconnect-manifest.json). Vite serves everything in `public/`, so it is automatically reachable at `http://localhost:5173/tonconnect-manifest.json` while running `pnpm dev`.
-- Make sure the manifest fields reflect the environment you are testing:
-  - `url` should point to the domain where the frontend is hosted (use `http://localhost:5173` for local runs).
-  - `name` is the label wallets will show. Adjust it to match the product/branch name you are validating.
-  - `iconUrl`, `termsOfUseUrl`, and `privacyPolicyUrl` can point to staging assets until production branding is finalized.
-  These entries can be tweaked freely and redeployed without rebuilding the app because wallets always fetch the JSON at runtime.
+---
 
-### Provider configuration
+## Smart-contract build & deploy (F5)
 
-- [`src/main.tsx`](./frontend/src/main.tsx) wraps the React tree with `TonConnectUIProvider` and passes the manifest URL relative to the site root: `<TonConnectUIProvider manifestUrl="/tonconnect-manifest.json">`.
-- The provider implementation in [`src/providers/TonConnectUIProvider.tsx`](./frontend/src/providers/TonConnectUIProvider.tsx) lazily injects the `@tonconnect/ui` script, normalizes the manifest URL against `window.location.origin`, and pushes the controller plus the connected wallet object into the `walletStore`. This is the entry point you will extend when wiring real `TonConnectUI.sendTransaction` calls.
-
-### Fake transaction service (temporary wiring)
-
-- Screens that showcase transaction UX (e.g., the Laboratory page) call the mock helper in [`src/services/fakeTonService.ts`](./frontend/src/services/fakeTonService.ts). It simulates latency and returns a synthetic hash so the UI can exercise optimistic/toast flows.
-- Once the TON contract + backend pipeline is available, replace `sendFakeTransaction` with a `TonConnectUI` submission that targets the deployed contract endpoint. The manifest + provider scaffolding described above remains the same; only the stubbed service will be swapped for the real send + confirmation handlers.
-
-## F4 — Smart-contract & TON integration
-
-### Contracts workspace
-
-- [`contracts/Tonrody.tact`](./contracts/Tonrody.tact) defines the lobby lifecycle (creation, deposits, finalization, payouts) and emits `DepositReceived`, `LobbyFilled`, `WinnerSelected`, and `PayoutSent` telemetry that the backend ingests.
-- [`contracts/tests/tonrody.spec.ts`](./contracts/tests/tonrody.spec.ts) replays the lifecycle with deterministic data so the serialization, tx log, and payout math stay reproducible.
-- [`contracts/ton.config.json`](./contracts/ton.config.json) declares build output paths plus the reference testnet address that other surfaces subscribe to.
-- Read the dedicated [`contracts/README.md`](./contracts/README.md) for the full walkthrough covering state layout, event schema, deployment guidance, and troubleshooting notes.
-
-### Compiling and testing the Tact contract
-
-1. Install dependencies once per environment:
+1. **Install tooling**
    ```bash
    cd contracts
    npm install
    ```
-2. Compile the contract via Tact (artifacts land in `contracts/build/`):
+2. **Compile with Tact**
    ```bash
    npx tact compile Tonrody.tact --config ton.config.json
    ```
-3. Replay the lifecycle tests (requires npm registry access—run locally or in CI if the sandbox blocks installs):
-   ```bash
-   npm run test
-   ```
+   Artifacts are emitted to `contracts/build/` according to `ton.config.json`.
+3. **Deploy to testnet**
+   - Use `toncli`/`blueprint` to send the compiled `.boc` + init data (`toncli deploy --testnet Tonrody.tact`).
+   - Fund your deployer wallet via [https://testnet.ton.org/faucet](https://testnet.ton.org/faucet) before broadcasting.
+   - Update `contracts/ton.config.json` and `TON_CONTRACT_ADDRESS` once the explorer shows the transaction.
+4. **Smoke tests** – `npm run test` replays lobby creation, deposits, finalization, and payout flows using `ton-core`. Run it on a
+   machine/CI runner with npm registry access if the sandbox blocks installs.
 
-### Required TON environment variables
+The backend ingests emitted events via `/ton/events`, while the frontend surfaces on-chain state via `/ton/round-state/:id`, so
+contract + backend + Supabase must agree on lobby identifiers and seed commitments before going live.
 
-Populate these entries in `backend/.env` before wiring real nodes/providers:
+---
 
-- `TON_WEBHOOK_SECRET` – shared secret used by the contract listener when posting events.
-- `TON_NETWORK` – `mainnet`, `testnet`, or the label you log against.
-- `TON_RPC_URL` – RPC endpoint (toncenter/tonapi/etc.) the backend will query once `tonClient` sheds its stubs.
-- `TON_API_KEY` – authentication token for the RPC provider if required.
-- `TON_CONTRACT_ADDRESS` – the deployed contract the webhook + telemetry endpoints observe.
+## Commit → reveal workflow
 
-### Backend ↔ contract ↔ frontend telemetry
+1. **Commit** – When a lobby is opened, the backend (and contract) store `round_seed_commit = sha256(seedReveal)` alongside the
+   lobby metadata (`lobbies.round_seed_commit`). This locks the fairness seed before any seat is filled.
+2. **Join & stake** – Seats move through `free → taken → paid`. Each `PayStake` transaction is recorded in Supabase `seats` and in
+   the contract’s participant map / tx log.
+3. **Reveal** – Once all seats are paid, the backend calls `FinalizeRound` with the `seed_reveal`. The contract compares the hash
+   against the commit, emits `WinnerSelected`, and exposes `roundHash` + winner index.
+4. **Result verification** – The backend stores the same reveal + `round_hash` in Supabase (`rounds.round_hash`) and publishes it
+   via API so any client can recompute `round_hash % seatsPaid`. Laboratory tools use these values to display reproducible proofs.
+5. **Payout** – Only the computed winner can call `WithdrawPool`, producing a `PayoutSent` event and updating both Supabase and the
+   contract log. Discrepancies trigger alerts via the audit tables.
 
-- `POST /ton/events` (implemented in [`backend/src/routes/tonWebhookRoutes.ts`](./backend/src/routes/tonWebhookRoutes.ts)) expects a JSON body of contract events plus the `x-ton-webhook-secret` header. Each event is validated, persisted via `appendTxLog`, and, when a `roundId` is present, merged into the in-memory round model so Supabase mirrors the contract state.
-- `GET /ton/round-state/:id` proxies the mock `tonClient.getLobbyState` response today and will surface live on-chain balances/seats once the RPC hooks are real, allowing dashboards to sanity-check contract telemetry without leaving the backend.
-- The frontend’s [`fetchOnchainRoundState`](./frontend/src/lib/api.ts) calls `/ton/round-state/:id` (falling back to deterministic mocks if the backend is offline) to render the “On-chain telemetry” cards inside Laboratory/Home. When `/ton/events` ingests a new winner/payout, the getter immediately reflects the updated `roundHash`, pool amounts, and participant counts that the UI displays.
+---
+
+## WebSocket channels & events
+
+| Channel | Event types | Description |
+| --- | --- | --- |
+| `lobby:<lobbyId>` | `seat_update` | Seat reserved/released updates with countdown timers. |
+|  | `payment_confirmed` | TON stake confirmed (includes tx hash + payer). |
+|  | `timer_tick` | Countdown pulses so the UI can show seconds-to-lock. |
+|  | `round_finalized` | Commit→reveal finished, exposes `roundHash`, winner index, payout info. |
+|  | `lobby_closed` | Lobby archived or recycled into a new round. |
+
+Clients must explicitly subscribe/unsubscribe via JSON messages after opening the socket. The backend automatically cleans up
+subscriptions when sockets close to prevent stale listeners.
+
+---
+
+## Connecting a TON testnet wallet
+
+1. **Manifest** – Verify [`frontend/public/tonconnect-manifest.json`](./frontend/public/tonconnect-manifest.json) reflects your
+   local/staging origin (`http://localhost:5173` while running `pnpm dev`). Wallets fetch this file at runtime.
+2. **Ton Connect provider** – [`frontend/src/providers/TonConnectUIProvider.tsx`](./frontend/src/providers/TonConnectUIProvider.tsx)
+   bootstraps `TonConnectUI`, injects the manifest, and exposes the controller through app state.
+3. **Wallet pairing**
+   - Click the Ton Connect button in the header; select a wallet (Tonkeeper, MyTonWallet, OpenMask, etc.).
+   - Choose **Testnet** inside the wallet when prompted and scan/confirm the pairing request.
+   - Ensure the wallet holds testnet TON from the faucet before paying seats or deploying contracts.
+4. **Transactions** – The frontend currently simulates stakes through `src/services/fakeTonService.ts`, but once wired, calls to
+   `TonConnectUI.sendTransaction` will carry the live `round_wallet` destination, amount, and payload (lobby ID + seat index +
+   hash commitment). Keep wallets connected while testing to capture realtime state and WebSocket broadcasts.
+
+---
+
+Need help? Start by skimming `docs/tonrody_full_codex.md` for the full mechanics, then follow the steps above to bring up Supabase,
+the backend, smart contract, and the wallet-enabled frontend against the same lobby identifiers.
