@@ -5,7 +5,8 @@
   "scripts": {
     "dev": "nodemon --watch src --ext ts --exec ts-node src/server.ts",
     "build": "tsc -p tsconfig.json",
-    "start": "node dist/server.js"
+    "start": "node dist/server.js",
+    "schema:print": "cat db/migrations/001_init.sql"
   },
   "dependencies": {
     "cors": "^2.8.5",
