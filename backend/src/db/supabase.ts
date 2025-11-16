@@ -362,6 +362,20 @@ export const seatStore = {
       raise('seats.byId', error);
     }
     return data ?? null;
+  },
+
+  async findByLobbyAndIndex(lobbyId: string, seatIndex: number): Promise<SeatRow | null> {
+    const client = getClient();
+    const { data, error } = await client
+      .from('seats')
+      .select('*')
+      .eq('lobby_id', lobbyId)
+      .eq('seat_index', seatIndex)
+      .maybeSingle();
+    if (error) {
+      raise('seats.byLobbyIndex', error);
+    }
+    return data ?? null;
   }
 };
 
