@@ -8,13 +8,85 @@ import {
   Stack,
   Text,
   VStack,
+  useToast,
 } from '@chakra-ui/react';
+import { useCallback, useRef, useState } from 'react';
 import { PageSection } from '../../components/PageSection';
 import { useMockRounds } from '../../hooks/useMockRounds';
 import { StatusBadge } from '../../components/StatusBadge';
+import { sendFakeTransaction } from '../../services/fakeTonService';
 
 export default function LaboratoryPage() {
   const rounds = useMockRounds();
+  const toast = useToast();
+  const toastIdRef = useRef<string | number | undefined>(undefined);
+  const [isSending, setIsSending] = useState(false);
+
+  const handleSendMockTransaction = useCallback(async () => {
+    if (isSending) {
+      return;
+    }
+
+    setIsSending(true);
+    const payload = {
+      to: 'UQMockRoundWallet',
+      amount: 1.5,
+      comment: 'Laboratory funding simulation',
+    };
+    // TODO: swap out fake payload + service with real round contract interaction once ready
+    toastIdRef.current = toast({
+      title: 'Sending mock transaction…',
+      description: 'Simulating TON funding request',
+      status: 'info',
+      duration: null,
+      isClosable: false,
+    });
+
+    try {
+      const response = await sendFakeTransaction(payload);
+      console.debug('[LaboratoryPage] Mock transaction result', response);
+      if (toastIdRef.current) {
+        toast.update(toastIdRef.current, {
+          title: 'Mock transaction confirmed',
+          description: `Hash ${response.hash.slice(0, 10)}…`,
+          status: 'success',
+          duration: 5000,
+          isClosable: true,
+        });
+      } else {
+        toast({
+          title: 'Mock transaction confirmed',
+          description: `Hash ${response.hash.slice(0, 10)}…`,
+          status: 'success',
+          duration: 5000,
+          isClosable: true,
+        });
+      }
+    } catch (error) {
+      const description =
+        error instanceof Error ? error.message : 'Unexpected error while sending mock transaction';
+      if (toastIdRef.current) {
+        toast.update(toastIdRef.current, {
+          title: 'Mock transaction failed',
+          description,
+          status: 'error',
+          duration: 5000,
+          isClosable: true,
+        });
+      } else {
+        toast({
+          title: 'Mock transaction failed',
+          description,
+          status: 'error',
+          duration: 5000,
+          isClosable: true,
+        });
+      }
+    } finally {
+      toastIdRef.current = undefined;
+      setIsSending(false);
+    }
+  }, [isSending, toast]);
 
   return (
     <Stack spacing={8}>
@@ -69,7 +141,9 @@ export default function LaboratoryPage() {
             <Text fontFamily="mono">23.41 TON</Text>
           </HStack>
           <Divider borderColor="whiteAlpha.200" />
-          <Button>Simulate funding</Button>
+          <Button onClick={handleSendMockTransaction} isLoading={isSending} loadingText="Sending">
+            Send mock transaction
+          </Button>
         </VStack>
       </PageSection>
     </Stack>
