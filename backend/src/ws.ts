@@ -2,9 +2,47 @@ import { Server } from 'http';
 import { WebSocketServer, WebSocket } from 'ws';
 
 export type LobbyEvent = {
-  type: 'seat_update' | 'payment_confirmed' | 'round_finalized' | 'lobby_status';
+  type:
+    | 'seat_update'
+    | 'payment_confirmed'
+    | 'round_finalized'
+    | 'lobby_status'
+    | 'timer_tick'
+    | 'payout_sent';
   payload: Record<string, unknown>;
 };
+
+type SeatEventPayload = {
+  lobbyId: string;
+  seat: Record<string, unknown>;
+};
+
+export type PaymentConfirmedPayload = SeatEventPayload & { txHash?: string };
+export type RoundFinalizedPayload = Record<string, unknown> & { lobbyId: string };
+export type PayoutSentPayload = Record<string, unknown> & { lobbyId: string };
+
+export interface TimerTickPayload {
+  lobbyId: string;
+  seatId?: string;
+  seatIndex?: number;
+  status?: string;
+  userId?: string;
+  reservedAt?: string;
+  paidAt?: string;
+  expiresAt?: string;
+  remainingMs?: number;
+  timestamp: string;
+}
+
+export interface SeatTimerSnapshot {
+  id?: string;
+  seatIndex?: number;
+  status?: string;
+  userId?: string;
+  reservedAt?: string;
+  paidAt?: string;
+  expiresAt?: string;
+}
 
 class Hub {
   private wss: WebSocketServer;
@@ -84,4 +122,50 @@ const channelName = (lobbyId: string) => `lobby:${lobbyId}`;
 export const broadcastLobbyEvent = (lobbyId: string, event: LobbyEvent) => {
   if (!hubInstance) return;
   hubInstance.broadcast(channelName(lobbyId), event);
+};
+
+const dispatchSeatEvent = (eventType: LobbyEvent['type'], payload: Record<string, unknown>) => {
+  const lobbyId = payload.lobbyId as string;
+  if (!lobbyId) return;
+  broadcastLobbyEvent(lobbyId, { type: eventType, payload });
+};
+
+export const emitSeatUpdate = (payload: SeatEventPayload) => {
+  dispatchSeatEvent('seat_update', payload);
+};
+
+export const emitPaymentConfirmed = (payload: PaymentConfirmedPayload) => {
+  dispatchSeatEvent('payment_confirmed', payload);
+};
+
+export const emitRoundFinalized = (payload: RoundFinalizedPayload) => {
+  dispatchSeatEvent('round_finalized', payload);
+};
+
+export const emitPayoutSent = (payload: PayoutSentPayload) => {
+  dispatchSeatEvent('payout_sent', payload);
+};
+
+export const emitTimerTick = (payload: TimerTickPayload) => {
+  dispatchSeatEvent('timer_tick', payload);
+};
+
+export const buildSeatTimerTickPayload = (lobbyId: string, seat: SeatTimerSnapshot): TimerTickPayload => {
+  const expiresAt = seat.expiresAt;
+  const expiresTs = expiresAt ? Date.parse(expiresAt) : undefined;
+  const remainingMs =
+    expiresTs && !Number.isNaN(expiresTs) ? Math.max(0, expiresTs - Date.now()) : undefined;
+
+  return {
+    lobbyId,
+    seatId: seat.id,
+    seatIndex: seat.seatIndex,
+    status: seat.status,
+    userId: seat.userId,
+    reservedAt: seat.reservedAt,
+    paidAt: seat.paidAt,
+    expiresAt,
+    remainingMs,
+    timestamp: new Date().toISOString()
+  };
 };

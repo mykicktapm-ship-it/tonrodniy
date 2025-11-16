@@ -5,7 +5,15 @@ import { z } from 'zod';
 import { env } from '../config/env';
 import { auditLogStore, roundStore, SeatRow, seatStore, txLogStore } from '../db/supabase';
 import { getLobbyState } from '../services/tonClient';
-import { broadcastLobbyEvent } from '../ws';
+import {
+  buildSeatTimerTickPayload,
+  emitPaymentConfirmed,
+  emitPayoutSent,
+  emitRoundFinalized,
+  emitSeatUpdate,
+  emitTimerTick,
+  type SeatTimerSnapshot
+} from '../ws';
 
 /**
  * TON contract event schema expected by the backend webhook:
@@ -354,7 +362,18 @@ const getSeatExpiration = (seat: SeatRow): string | undefined => {
   return new Date(timestamp + RESERVATION_WINDOW_MS).toISOString();
 };
 
-const buildSeatPayload = (seat: SeatRow, txHash?: string) => ({
+interface SeatBroadcastPayload extends SeatTimerSnapshot {
+  id: string;
+  seatIndex: number;
+  status: string;
+  userId?: string;
+  reservedAt?: string;
+  paidAt?: string;
+  expiresAt?: string;
+  txHash?: string;
+}
+
+const buildSeatPayload = (seat: SeatRow, txHash?: string): SeatBroadcastPayload => ({
   id: seat.id,
   seatIndex: seat.seat_index,
   status: seat.status,
@@ -431,11 +450,13 @@ const handleDepositReceived = async (event: DepositReceivedEvent) => {
   });
   const audit = await recordAuditTrail(event);
   const seatPayload = buildSeatPayload(paidSeat, txLog.tx_hash ?? event.txHash);
-  broadcastLobbyEvent(event.lobbyId, { type: 'seat_update', payload: { lobbyId: event.lobbyId, seat: seatPayload } });
-  broadcastLobbyEvent(event.lobbyId, {
-    type: 'payment_confirmed',
-    payload: { lobbyId: event.lobbyId, seat: seatPayload, txHash: txLog.tx_hash ?? event.txHash }
+  emitSeatUpdate({ lobbyId: event.lobbyId, seat: seatPayload });
+  emitPaymentConfirmed({
+    lobbyId: event.lobbyId,
+    seat: seatPayload,
+    txHash: txLog.tx_hash ?? event.txHash
   });
+  emitTimerTick(buildSeatTimerTickPayload(event.lobbyId, seatPayload));
   return { auditLogId: audit.id, txLogId: txLog.id, seatId: paidSeat.id };
 };
 
@@ -466,15 +487,12 @@ const handleWinnerSelected = async (event: WinnerSelectedEvent) => {
     }
   });
   const audit = await recordAuditTrail(event);
-  broadcastLobbyEvent(event.lobbyId, {
-    type: 'round_finalized',
-    payload: {
-      lobbyId: event.lobbyId,
-      roundId: updatedRound.id,
-      winnerWallet: event.winnerAddr,
-      payoutTon: event.payoutTon,
-      roundHash: updatedRound.round_hash
-    }
+  emitRoundFinalized({
+    lobbyId: event.lobbyId,
+    roundId: updatedRound.id,
+    winnerWallet: event.winnerAddr,
+    payoutTon: event.payoutTon,
+    roundHash: updatedRound.round_hash
   });
   return { auditLogId: audit.id, txLogId: txLog.id, roundId: updatedRound.id };
 };
@@ -501,16 +519,13 @@ const handlePayoutSent = async (event: PayoutSentEvent) => {
     }
   });
   const audit = await recordAuditTrail(event);
-  broadcastLobbyEvent(event.lobbyId, {
-    type: 'payout_sent',
-    payload: {
-      lobbyId: event.lobbyId,
-      roundId: updatedRound.id,
-      winnerWallet: event.winnerAddr,
-      payoutTon: event.payoutTon,
-      txHash: event.txHash,
-      success: event.success
-    }
+  emitPayoutSent({
+    lobbyId: event.lobbyId,
+    roundId: updatedRound.id,
+    winnerWallet: event.winnerAddr,
+    payoutTon: event.payoutTon,
+    txHash: event.txHash,
+    success: event.success
   });
   return { auditLogId: audit.id, txLogId: txLog.id, roundId: updatedRound.id };
 };
