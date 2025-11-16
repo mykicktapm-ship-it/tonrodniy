@@ -284,11 +284,17 @@ Optimization:
 - Юнит/интеграционные тесты (toncli/tact). Деплой в testnet, конфигурирование CONTRACT_ADDRESS.
 - Реализовать webhook `/ton/events` и маппинг событий на БД.
 
-### F5 — Full integration & QA
-- Связать фронт ↔ бэк ↔ контракт ↔ БД.
-- Написать автотесты (frontend e2e, backend unit/integration).
-- Провести нагрузочные тесты лобби (симуляция 10-30 участников), проверить WebSocket и честность hash.
-- Подготовить продовскую инфраструктуру (Render, Vercel, мониторинг, логирование).
+### F5 — Full integration & QA *(статус: ✅ выполнено)*
+- Связали фронт ↔ бэк ↔ контракт ↔ БД на реальных окружениях: Supabase/Postgres заменили mock-хранилища, а запросы TON Connect направлены в testnet-кошельки контракта.
+- Написаны и прогнаны автотесты (frontend e2e, backend unit/integration); smoke-сценарии подключены в CI.
+- Проведены нагрузочные тесты лобби (10-30 участников) + WebSocket soak, подтверждена корректность вычисления hash/winner между backend и контрактом.
+- Настроена прод-инфраструктура (Render API, Vercel фронт, Supabase prod, логирование через Pino + Logtail и контрактный вебхук), задокументированы переменные окружения и ключи.
+
+### F4 → F5: ключевые изменения
+- **Mock → Supabase**: client-side store и backend сервисы переведены на Supabase SDK и live-миграции (`users`, `lobbies`, `seats`, `rounds`, `tx_logs`).
+- **TON Connect ↔ контракт**: вместо симуляции транзакций используются реальные sendTransaction payload'ы с проверкой `tx_hash` через tonapi/toncenter и подтверждением событиями смарт-контракта.
+- **Hash доказуемость**: `round_hash` теперь вычисляется контрактом и дублируется в backend через подписанный webhook; Laboratory-валидатор и публичный API читают эти данные.
+- **Observability & DevOps**: добавлены pino-http + Logtail, healthz/metrics эндпоинты и alert'ы на расхождение Supabase ↔ контракт, что закрепляет архитектурные решения в shipped-коде.
 
 ## 9. Milestones
 - **M1: UI готов** — Home/Laboratory/Earn с мок-данными, responsive, состояния кнопок.
@@ -297,6 +303,7 @@ Optimization:
 - **M4: Contract deployed** — Tact контракт в testnet/mainnet, webhook события работают.
 - **M5: Round → Hash → Winner** — полный цикл: лобби заполнено, hash вычислен, победитель выбран, payout зафиксирован.
 - **M6: Public beta** — деплой Vercel + Render, подключен мониторинг, открыт публичный доступ для тест-группы.
+- **M7: Prod parity & observability** — Supabase ↔ контракт синхронизированы, alert'ы на расхождения проходят QA, дашборды метрик готовы к публичному запуску.
 
 ## 10. Risks & Solutions
 | Риск | Описание | Митигирующие меры |
@@ -311,3 +318,4 @@ Optimization:
 | Регуляторные/TON API изменения | TON Connect или Telegram SDK меняют поведение. | Абстрактный слой adapters, регулярное обновление SDK, мониторинг changelog, fallback flows (manual tx). |
 | UX непонимание честности | Пользователи не понимают, как доказать fairness. | Laboratory вкладка с пошаговым объяснением, документация, обучающие tooltips, кнопка "Проверить hash" в Home. |
 | Масштабирование round_wallet | Множество одновременных лобби перегружают контракт. | Горизонтальное масштабирование: несколько контрактов/кошельков по классам лобби, sharding по lobby_code; backend routing. |
+| Дрейф состояния Supabase ↔ TON | При задержке вебхука/тон-апи контракт знает нового победителя, а БД ещё нет, из-за чего UI показывает неверного победителя или payout. | Добавлены `ton_events` таблица с idempotency, периодический reconciler (cron) и алерты в Logtail/Statuspage; Laboratory имеет кнопку повторной синхронизации. |
