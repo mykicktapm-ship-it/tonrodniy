@@ -13,9 +13,31 @@ This package contains the on-chain artifacts required by TONRODY. The main contr
 - **Events** mirror the backend/webhook expectations (`DepositReceived`, `LobbyFilled`, `WinnerSelected`, `PayoutSent`). Every event is also represented in the serialized tx log stack which the backend can inspect through the `getTxLog` getter.
 - **Getters**: `getConfig`, `getLobbyState`, `getParticipant(index)` and `getTxLog` expose everything the backend (or community auditors) need to reproduce the fairness proof.
 
-## Building & deploying
+## Live testnet deployment
 
-1. Install the tooling inside `contracts/` (any Node.js 18+ runtime is sufficient):
+Tonrody.tact is deployed on TON **testnet** with the exact config the backend/web clients expect:
+
+| Item | Value |
+| --- | --- |
+| **Contract address** | `EQBBJBB3HagsujBqVfqeDUPJ0kXjgTPLWPFFffuNXNiJL0aA` · [Tonviewer](https://testnet.tonviewer.com/EQBBJBB3HagsujBqVfqeDUPJ0kXjgTPLWPFFffuNXNiJL0aA) · [Tonscan](https://testnet.tonscan.org/address/EQBBJBB3HagsujBqVfqeDUPJ0kXjgTPLWPFFffuNXNiJL0aA) |
+| **Treasury (fee sink)** | `EQDmnxDMhId6v1Ofg_h5KR5coWlFG6e86Ro3pc7Tq4CA0-Jn` · [Tonviewer](https://testnet.tonviewer.com/EQDmnxDMhId6v1Ofg_h5KR5coWlFG6e86Ro3pc7Tq4CA0-Jn) · [Tonscan](https://testnet.tonscan.org/address/EQDmnxDMhId6v1Ofg_h5KR5coWlFG6e86Ro3pc7Tq4CA0-Jn) |
+| **Network endpoint** | `https://testnet.toncenter.com/api/v2/jsonRPC` (workchain `0`, network `-3`) |
+| **Config source** | `contracts/ton.config.json` (mirrors the values above so automation can read them) |
+
+### TonrodyConfig (testnet)
+
+| Field | Value | Notes |
+| --- | --- | --- |
+| `minDeposit` | `500000000` nanotons (0.5 TON) | Smallest stake required for `PayStake`.
+| `lobbySize` | `3` seats | Backend marks a lobby ready when three seats are funded.
+| `feeBps` | `200` (2%) | Sent to the treasury address before payouts.
+| `treasury` | `EQDmnxDMhId6v1Ofg_h5KR5coWlFG6e86Ro3pc7Tq4CA0-Jn` | Receiver of fee skim and audit wallet for payouts.
+
+The same structure is emitted by `getConfig` so backend workers can assert that Supabase values match on-chain parameters before processing a lobby.
+
+### Build & deploy recap
+
+1. Install the tooling inside `contracts/` (Node.js 18+):
    ```bash
    cd contracts
    npm install
@@ -24,12 +46,19 @@ This package contains the on-chain artifacts required by TONRODY. The main contr
    ```bash
    npx tact compile Tonrody.tact --config ton.config.json
    ```
-   > **Note**: if `npx` fails with `403 Forbidden` inside the sandboxed environment, set up Tact locally or inside CI where npm has registry access. The generated build artifacts land in `contracts/build/` as configured in `ton.config.json`.
-3. Deploy with your preferred workflow:
-   - `toncli` / `blueprint` deploy task pointing to `contracts/ton.config.json`.
-   - Manual deployment by pushing the compiled `.boc` plus init data through `toncli run --testnet` or [TON CLI](https://github.com/ton-community/toncli).
+   > **Note**: if `npx` fails with `403 Forbidden` inside the sandboxed environment, run the command on a workstation/CI runner with npm registry access. The generated build artifacts land in `contracts/build/` per `ton.config.json`.
+3. Deploy using your preferred workflow:
+   - `toncli` / `blueprint` deploy pointing to `build/Tonrody.code.boc` plus init data.
+   - Manual deployment via `toncli run --testnet` or [TON CLI](https://github.com/ton-community/toncli) by uploading the `.boc` and state-init produced above.
+4. After the broadcasted transaction settles, confirm the explorer shows the `EQBB…` account, then update `contracts/ton.config.json` (already committed in this repo) and share the address with the backend (`TON_CONTRACT_ADDRESS`) and frontend (`VITE_TON_CONTRACT_ADDRESS`).
 
-`contracts/ton.config.json` ships with a reference **testnet** address placeholder (`0QDjTonRodyLobbySeed…`). Update it with the actual address returned by your deployment transaction and commit the change so the backend/webhook layer can subscribe to the right account.
+### State & config verification
+
+- `toncli run <path-to-boc> getConfig --testnet` or an RPC call to `runGetMethod` ensures the live contract returns the config table shown above. Automations should compare `minDeposit`, `lobbySize`, `feeBps` and `treasury` with Supabase before moving a lobby to `ready`.
+- `getLobbyState` and `getTxLog` can be read through Toncenter/TonAPI to power `/ton/round-state/:id` and prove payouts. Both getters expose the lobby id, participant slots, pool total, commit/reveal pair and serialized audit trail.
+- For manual smoke tests, trigger `PayStake`, `FinalizeRound` and `WithdrawPool` against the contract address above and confirm explorers emit `DepositReceived`, `WinnerSelected` and `PayoutSent` events under the same hashes mirrored by the backend webhooks.
+
+Keeping these details in sync across this README and `ton.config.json` lets backend listeners, Supabase cron jobs and the frontend Ton Connect integration validate they are pointing at the same live testnet contract.
 
 ## Backend & webhook linkage
 

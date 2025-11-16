@@ -8,10 +8,10 @@
       "path": "./Tonrody.tact",
       "params": {
         "config": {
-          "minDeposit": "100000000",
-          "lobbySize": 4,
+          "minDeposit": "500000000",
+          "lobbySize": 3,
           "feeBps": 200,
-          "treasury": "0QDjTonRodyTestLobby000000000000000000000000000000000000000000000000"
+          "treasury": "EQDmnxDMhId6v1Ofg_h5KR5coWlFG6e86Ro3pc7Tq4CA0-Jn"
         }
       }
     }
@@ -20,7 +20,7 @@
     "testnet": {
       "toncenter": "https://testnet.toncenter.com/api/v2/jsonRPC",
       "workchain": 0,
-      "address": "0QDjTonRodyLobbySeed000000000000000000000000000000000000000000000000"
+      "address": "EQBBJBB3HagsujBqVfqeDUPJ0kXjgTPLWPFFffuNXNiJL0aA"
     }
   }
 }
