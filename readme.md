@@ -1,6 +1,6 @@
 # TONRODY
 
-TONRODY is an honest-round gaming surface defined in `plans.md`. The production execution is staged across multiple phases.
+TONRODY is an honest-round gaming surface defined in `plans.md`. Delivery is staged across multiple phases; Phase F3 introduces the backend skeleton while the frontend continues to render deterministic mock data until the two surfaces are integrated.
 
 ## Frontend workspace
 
@@ -36,33 +36,40 @@ frontend/
 
 No API, blockchain, or database calls are wired up in this phase. All data displayed on the screens are deterministic mocks that match the UX specification in `plans.md`.
 
-## Backend workspace
+## Backend (F3)
 
-The mocked API + WebSocket server lives in [`backend/`](./backend/) and mirrors the routes/channel plan captured in `docs/tonrody_full_codex.md`.
+The Phase F3 backend lives in [`backend/`](./backend/) and mirrors the routes/channel plan captured in `docs/tonrody_full_codex.md`. It already publishes the Express + WebSocket skeleton so the frontend can swap off mocks as soon as integration lands.
 
-### Getting started
+### Dependency installation
 
 ```bash
-pnpm dev:backend
+cd backend
+pnpm install
 ```
+
+### Available scripts
 
 - `pnpm dev:backend` proxies to `nodemon` with `ts-node` for instant feedback.
 - `pnpm build:backend` type-checks and outputs JS to `backend/dist`.
 - `pnpm start:backend` runs the compiled server (useful in production containers).
 
-### Features
+### REST and WebSocket surface
 
-- Express app with health, lobby, user, and round routes returning schema-aligned mock data.
-- Zod-backed environment loader (`backend/src/config/env.ts`) with optional multi-origin CORS configuration.
-- WebSocket hub at `/ws` exposing `lobby:<id>` channels for `seat_update`, `payment_confirmed`, and `round_finalized` events.
-- In-memory mock stores in `backend/src/data/` so the API surface behaves consistently until Supabase wiring lands.
+- `GET /health` returns the current status and timestamp.
+- `GET /lobbies`, `GET /lobbies/:id`, `POST /lobbies/:id/join`, `POST /lobbies/:id/pay`, and `POST /lobbies/:id/finalize` drive the lobby lifecycle while broadcasting `seat_update`, `payment_confirmed`, and `round_finalized` events to subscribers.
+- `GET /rounds` and `GET /rounds/:id` expose recent draw outcomes.
+- `GET /users`, `GET /users/:id`, and `GET /users/:id/logs` surface player profiles and their audit trail.
+- WebSocket clients connect to `/ws` and subscribe to `lobby:<id>` channels to receive deterministic event payloads that mirror the REST mutations.
 
-### Environment configuration
+The Express app relies on the Zod-backed environment loader in [`backend/src/config/env.ts`](./backend/src/config/env.ts) and the mock data stores in [`backend/src/data/`](./backend/src/data/) so the responses remain stable while Supabase wiring is in flight.
 
-- Copy [`backend/.env.example`](./backend/.env.example) to `backend/.env` and provide the Supabase, JWT, Telegram, and TON webhook
-  secrets that power the local server.
-- The backend boots only after `src/config/env.ts` validates those values, so keep the file aligned with the example when adding
-  new infrastructure knobs.
+### Environment + Supabase seeding
+
+1. Copy [`backend/.env.example`](./backend/.env.example) into `backend/.env` and supply your Supabase project URL, service-role key, JWT secret, Telegram token, and TON webhook secret before starting any backend process.
+2. Apply the baseline schema found in [`backend/db/migrations/001_init.sql`](./backend/db/migrations/001_init.sql) using either `psql` or the Supabase CLI as outlined in [`backend/db/migrations/README.md`](./backend/db/migrations/README.md).
+   - Example: `export DATABASE_URL="postgres://postgres:password@127.0.0.1:5432/postgres" && psql "$DATABASE_URL" -f backend/db/migrations/001_init.sql`.
+   - If you prefer `supabase db push`, symlink/copy the migration file(s) into `supabase/migrations` before running the command so the CLI can seed your local stack.
+3. Once the schema is seeded, run `pnpm dev:backend` (with the `.env` values in place) to serve the REST/WS mocks backed by your local Supabase instance; additional migrations should be numbered sequentially (`002_*.sql`, `003_*.sql`, etc.) and committed alongside dependent features.
 
 ## TON Connect
 
