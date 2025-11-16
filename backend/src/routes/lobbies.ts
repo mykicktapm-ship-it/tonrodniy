@@ -8,6 +8,7 @@ import {
   findUser
 } from '../data';
 import { broadcastLobbyEvent } from '../ws';
+import { sendFinalizeRound } from '../services/tonClient';
 
 export const lobbiesRouter = Router();
 
@@ -63,14 +64,22 @@ lobbiesRouter.post('/:id/pay', (req, res) => {
   }
 });
 
-lobbiesRouter.post('/:id/finalize', (req, res) => {
+lobbiesRouter.post('/:id/finalize', async (req, res) => {
   try {
     const round = finalizeRound(req.params.id);
+    const tonSubmission = await sendFinalizeRound({
+      lobbyId: req.params.id,
+      roundId: round.id,
+      winnerWallet: round.winnerWallet,
+      payoutTon: round.payoutAmount
+    });
+
+    // F5 TODO: replace mocked tonClient response with actual RPC submission and signed payloads.
     broadcastLobbyEvent(req.params.id, {
       type: 'round_finalized',
-      payload: { lobbyId: req.params.id, round }
+      payload: { lobbyId: req.params.id, round, tonSubmission }
     });
-    res.json({ round });
+    res.json({ round, tonSubmission });
   } catch (error) {
     res.status(400).json({ error: (error as Error).message });
   }
