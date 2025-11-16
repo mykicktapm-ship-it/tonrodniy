@@ -1,0 +1,26 @@
+{
+  "build": {
+    "output": "./build"
+  },
+  "contracts": [
+    {
+      "name": "Tonrody",
+      "path": "./Tonrody.tact",
+      "params": {
+        "config": {
+          "minDeposit": "100000000",
+          "lobbySize": 4,
+          "feeBps": 200,
+          "treasury": "0QDjTonRodyTestLobby000000000000000000000000000000000000000000000000"
+        }
+      }
+    }
+  ],
+  "networks": {
+    "testnet": {
+      "toncenter": "https://testnet.toncenter.com/api/v2/jsonRPC",
+      "workchain": 0,
+      "address": "0QDjTonRodyLobbySeed000000000000000000000000000000000000000000000000"
+    }
+  }
+}
