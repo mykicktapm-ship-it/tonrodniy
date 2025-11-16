@@ -12,6 +12,10 @@ const envSchema = z
     JWT_SECRET: z.string().min(1, 'JWT_SECRET is required'),
     TELEGRAM_BOT_TOKEN: z.string().min(1, 'TELEGRAM_BOT_TOKEN is required'),
     TON_WEBHOOK_SECRET: z.string().min(1, 'TON_WEBHOOK_SECRET is required'),
+    TON_NETWORK: z.string().min(1, 'TON_NETWORK is required'),
+    TON_RPC_URL: z.string().url('TON_RPC_URL must be a valid URL'),
+    TON_API_KEY: z.string().min(1, 'TON_API_KEY is required'),
+    TON_CONTRACT_ADDRESS: z.string().min(1, 'TON_CONTRACT_ADDRESS is required'),
     CORS_ORIGINS: z.string().optional()
   })
   .transform((values) => {
@@ -44,5 +48,10 @@ export const env = {
   supabaseServiceRoleKey: parsed.data.SUPABASE_SERVICE_ROLE_KEY,
   jwtSecret: parsed.data.JWT_SECRET,
   telegramBotToken: parsed.data.TELEGRAM_BOT_TOKEN,
-  tonWebhookSecret: parsed.data.TON_WEBHOOK_SECRET
+  tonWebhookSecret: parsed.data.TON_WEBHOOK_SECRET,
+  // TON RPC wiring lands in F5, but these values are already used for configuration/logging in F4.
+  tonNetwork: parsed.data.TON_NETWORK,
+  tonRpcUrl: parsed.data.TON_RPC_URL,
+  tonApiKey: parsed.data.TON_API_KEY,
+  tonContractAddress: parsed.data.TON_CONTRACT_ADDRESS
 };
