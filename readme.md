@@ -57,6 +57,13 @@ pnpm dev:backend
 - WebSocket hub at `/ws` exposing `lobby:<id>` channels for `seat_update`, `payment_confirmed`, and `round_finalized` events.
 - In-memory mock stores in `backend/src/data/` so the API surface behaves consistently until Supabase wiring lands.
 
+### Environment configuration
+
+- Copy [`backend/.env.example`](./backend/.env.example) to `backend/.env` and provide the Supabase, JWT, Telegram, and TON webhook
+  secrets that power the local server.
+- The backend boots only after `src/config/env.ts` validates those values, so keep the file aligned with the example when adding
+  new infrastructure knobs.
+
 ## TON Connect
 
 The frontend already boots the Ton Connect SDK so you can validate wallet flows locally before the smart-contract logic lands.
