@@ -16,6 +16,18 @@ const envSchema = z
     TON_RPC_URL: z.string().url('TON_RPC_URL must be a valid URL'),
     TON_API_KEY: z.string().min(1, 'TON_API_KEY is required'),
     TON_CONTRACT_ADDRESS: z.string().min(1, 'TON_CONTRACT_ADDRESS is required'),
+    TON_DEPLOYER_PUBLIC_KEY: z
+      .string()
+      .regex(
+        /^(0x)?[0-9a-fA-F]{64}$/u,
+        'TON_DEPLOYER_PUBLIC_KEY must be a 32-byte hex string'
+      ),
+    TON_DEPLOYER_SECRET_KEY: z
+      .string()
+      .regex(
+        /^(0x)?([0-9a-fA-F]{64}|[0-9a-fA-F]{128})$/u,
+        'TON_DEPLOYER_SECRET_KEY must be a 32 or 64-byte hex string'
+      ),
     CORS_ORIGINS: z.string().optional()
   })
   .transform((values) => {
@@ -53,5 +65,7 @@ export const env = {
   tonNetwork: parsed.data.TON_NETWORK,
   tonRpcUrl: parsed.data.TON_RPC_URL,
   tonApiKey: parsed.data.TON_API_KEY,
-  tonContractAddress: parsed.data.TON_CONTRACT_ADDRESS
+  tonContractAddress: parsed.data.TON_CONTRACT_ADDRESS,
+  tonDeployerPublicKey: parsed.data.TON_DEPLOYER_PUBLIC_KEY,
+  tonDeployerSecretKey: parsed.data.TON_DEPLOYER_SECRET_KEY
 };
