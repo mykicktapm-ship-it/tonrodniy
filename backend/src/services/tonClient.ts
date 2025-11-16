@@ -3,6 +3,7 @@ import { beginCell, Cell } from '@ton/core';
 import { sha256_sync } from '@ton/crypto';
 
 import { env } from '../config/env';
+import { getLogger } from '../utils/logger';
 
 const tonEnv = env.ton;
 
@@ -44,15 +45,7 @@ const operatorWallet = new WalletClass(httpProvider, {
 });
 const operatorWalletAddressPromise = operatorWallet.getAddress();
 
-const logger = (level: 'info' | 'warn' | 'error', message: string, meta?: Record<string, unknown>) => {
-  const payload = {
-    scope: 'tonClient',
-    network: tonEnv.network,
-    ...meta
-  };
-  const target = console[level] ?? console.log;
-  target(`[tonClient] ${message}`, payload);
-};
+const logger = getLogger({ scope: 'tonClient', network: tonEnv.network });
 
 export interface LobbyState {
   lobbyId: string;
@@ -227,7 +220,7 @@ const ensureWalletBudget = async (requiredTon: number, context: string) => {
       );
     }
   } catch (error) {
-    logger('error', 'wallet balance validation failed', { context, requiredTon, error });
+    logger.error({ context, requiredTon, err: error }, 'wallet balance validation failed');
     throw error instanceof Error ? error : new Error(String(error));
   }
 };
@@ -258,7 +251,7 @@ const sendContractMessage = async (
     if (typeof transfer.getQuery !== 'function') {
       await transfer.send();
       const fallbackHash = Buffer.from(sha256_sync(payload.toBoc({ idx: false }))).toString('hex');
-      logger('info', `${description} dispatched via transfer.send()`, { txHash: fallbackHash, meta, fallback: true });
+      logger.info({ txHash: fallbackHash, meta, fallback: true }, `${description} dispatched via transfer.send()`);
       return fallbackHash;
     }
 
@@ -273,20 +266,20 @@ const sendContractMessage = async (
     if (typeof tonweb.provider.sendBocReturnHash === 'function') {
       const response = await tonweb.provider.sendBocReturnHash(bocBuffer);
       if (response?.transaction?.hash) {
-        logger('info', `${description} dispatched via sendBocReturnHash`, { txHash: response.transaction.hash, meta });
+        logger.info({ txHash: response.transaction.hash, meta }, `${description} dispatched via sendBocReturnHash`);
         return response.transaction.hash;
       }
       if (response?.hash) {
-        logger('info', `${description} dispatched via sendBocReturnHash`, { txHash: response.hash, meta });
+        logger.info({ txHash: response.hash, meta }, `${description} dispatched via sendBocReturnHash`);
         return response.hash;
       }
     }
 
     await tonweb.provider.sendBoc(bocBuffer);
-    logger('info', `${description} dispatched`, { txHash, meta });
+    logger.info({ txHash, meta }, `${description} dispatched`);
     return txHash;
   } catch (error) {
-    logger('error', `${description} failed`, { amountTon, meta, error });
+    logger.error({ amountTon, meta, err: error }, `${description} failed`);
     throw error instanceof Error ? error : new Error(String(error));
   }
 };
@@ -302,12 +295,12 @@ const runLobbyGetter = async (method: string, lobbyId: string): Promise<TonStack
     const exitCodeRaw = response?.exit_code ?? 0;
     const exitCode = typeof exitCodeRaw === 'string' ? Number(BigInt(exitCodeRaw)) : Number(exitCodeRaw);
     if (exitCode !== 0) {
-      logger('warn', `${method} getter returned non-zero exit code`, { exitCode });
+      logger.warn({ method, exitCode }, 'getter returned non-zero exit code');
       return undefined;
     }
     return response?.stack as TonStackEntry[] | undefined;
   } catch (error) {
-    logger('warn', `${method} getter call failed`, { lobbyId, error });
+    logger.warn({ method, lobbyId, err: error }, 'getter call failed');
     return undefined;
   }
 };
@@ -378,10 +371,10 @@ export const getLobbyState = async (lobbyId: string): Promise<LobbyState> => {
       updatedAt: new Date().toISOString()
     };
 
-    logger('info', 'fetched lobby state', state);
+    logger.info(state, 'fetched lobby state');
     return state;
   } catch (error) {
-    logger('error', 'failed to fetch lobby state', { lobbyId, error });
+    logger.error({ lobbyId, err: error }, 'failed to fetch lobby state');
     throw error instanceof Error ? error : new Error(String(error));
   }
 };
