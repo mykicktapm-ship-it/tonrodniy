@@ -36,6 +36,27 @@ frontend/
 
 No API, blockchain, or database calls are wired up in this phase. All data displayed on the screens are deterministic mocks that match the UX specification in `plans.md`.
 
+## Backend workspace
+
+The mocked API + WebSocket server lives in [`backend/`](./backend/) and mirrors the routes/channel plan captured in `docs/tonrody_full_codex.md`.
+
+### Getting started
+
+```bash
+pnpm dev:backend
+```
+
+- `pnpm dev:backend` proxies to `nodemon` with `ts-node` for instant feedback.
+- `pnpm build:backend` type-checks and outputs JS to `backend/dist`.
+- `pnpm start:backend` runs the compiled server (useful in production containers).
+
+### Features
+
+- Express app with health, lobby, user, and round routes returning schema-aligned mock data.
+- Zod-backed environment loader (`backend/src/config/env.ts`) with optional multi-origin CORS configuration.
+- WebSocket hub at `/ws` exposing `lobby:<id>` channels for `seat_update`, `payment_confirmed`, and `round_finalized` events.
+- In-memory mock stores in `backend/src/data/` so the API surface behaves consistently until Supabase wiring lands.
+
 ## TON Connect
 
 The frontend already boots the Ton Connect SDK so you can validate wallet flows locally before the smart-contract logic lands.
