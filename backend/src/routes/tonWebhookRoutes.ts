@@ -4,7 +4,7 @@ import { z } from 'zod';
 
 import { env } from '../config/env';
 import { auditLogStore, roundStore, SeatRow, seatStore, txLogStore } from '../db/supabase';
-import { getLobbyState } from '../services/tonClient';
+import { getLobbyState, sendPayStake } from '../services/tonClient';
 import {
   buildSeatTimerTickPayload,
   emitPaymentConfirmed,
@@ -594,6 +594,36 @@ tonWebhookRouter.get('/round-state/:id', async (req, res) => {
     res.json({ lobbyState });
   } catch (error) {
     res.status(500).json({ error: (error as Error).message });
+  }
+});
+
+tonWebhookRouter.post('/pay-stake', async (req, res) => {
+  const { lobbyId, seatId, participantWallet, amountTon } = req.body as {
+    lobbyId?: string;
+    seatId?: string;
+    participantWallet?: string;
+    amountTon?: number;
+  };
+
+  if (!lobbyId || !seatId || !participantWallet) {
+    return res.status(400).json({ error: 'lobbyId, seatId, and participantWallet are required' });
+  }
+
+  const stake = Number(amountTon);
+  if (!Number.isFinite(stake) || stake <= 0) {
+    return res.status(400).json({ error: 'amountTon must be a positive number' });
+  }
+
+  try {
+    const submission = await sendPayStake({
+      lobbyId,
+      seatId,
+      participantWallet,
+      amountTon: stake
+    });
+    res.json({ submission });
+  } catch (error) {
+    res.status(400).json({ error: (error as Error).message });
   }
 });
 
