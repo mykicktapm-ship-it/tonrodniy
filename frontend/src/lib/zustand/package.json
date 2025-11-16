@@ -1,0 +1,9 @@
+{
+  "name": "zustand",
+  "version": "0.0.0-local",
+  "type": "module",
+  "main": "./index.ts",
+  "module": "./index.ts",
+  "types": "./index.ts",
+  "sideEffects": false
+}
