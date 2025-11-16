@@ -93,3 +93,44 @@ The frontend already boots the Ton Connect SDK so you can validate wallet flows 
 
 - Screens that showcase transaction UX (e.g., the Laboratory page) call the mock helper in [`src/services/fakeTonService.ts`](./frontend/src/services/fakeTonService.ts). It simulates latency and returns a synthetic hash so the UI can exercise optimistic/toast flows.
 - Once the TON contract + backend pipeline is available, replace `sendFakeTransaction` with a `TonConnectUI` submission that targets the deployed contract endpoint. The manifest + provider scaffolding described above remains the same; only the stubbed service will be swapped for the real send + confirmation handlers.
+
+## F4 — Smart-contract & TON integration
+
+### Contracts workspace
+
+- [`contracts/Tonrody.tact`](./contracts/Tonrody.tact) defines the lobby lifecycle (creation, deposits, finalization, payouts) and emits `DepositReceived`, `LobbyFilled`, `WinnerSelected`, and `PayoutSent` telemetry that the backend ingests.
+- [`contracts/tests/tonrody.spec.ts`](./contracts/tests/tonrody.spec.ts) replays the lifecycle with deterministic data so the serialization, tx log, and payout math stay reproducible.
+- [`contracts/ton.config.json`](./contracts/ton.config.json) declares build output paths plus the reference testnet address that other surfaces subscribe to.
+- Read the dedicated [`contracts/README.md`](./contracts/README.md) for the full walkthrough covering state layout, event schema, deployment guidance, and troubleshooting notes.
+
+### Compiling and testing the Tact contract
+
+1. Install dependencies once per environment:
+   ```bash
+   cd contracts
+   npm install
+   ```
+2. Compile the contract via Tact (artifacts land in `contracts/build/`):
+   ```bash
+   npx tact compile Tonrody.tact --config ton.config.json
+   ```
+3. Replay the lifecycle tests (requires npm registry access—run locally or in CI if the sandbox blocks installs):
+   ```bash
+   npm run test
+   ```
+
+### Required TON environment variables
+
+Populate these entries in `backend/.env` before wiring real nodes/providers:
+
+- `TON_WEBHOOK_SECRET` – shared secret used by the contract listener when posting events.
+- `TON_NETWORK` – `mainnet`, `testnet`, or the label you log against.
+- `TON_RPC_URL` – RPC endpoint (toncenter/tonapi/etc.) the backend will query once `tonClient` sheds its stubs.
+- `TON_API_KEY` – authentication token for the RPC provider if required.
+- `TON_CONTRACT_ADDRESS` – the deployed contract the webhook + telemetry endpoints observe.
+
+### Backend ↔ contract ↔ frontend telemetry
+
+- `POST /ton/events` (implemented in [`backend/src/routes/tonWebhookRoutes.ts`](./backend/src/routes/tonWebhookRoutes.ts)) expects a JSON body of contract events plus the `x-ton-webhook-secret` header. Each event is validated, persisted via `appendTxLog`, and, when a `roundId` is present, merged into the in-memory round model so Supabase mirrors the contract state.
+- `GET /ton/round-state/:id` proxies the mock `tonClient.getLobbyState` response today and will surface live on-chain balances/seats once the RPC hooks are real, allowing dashboards to sanity-check contract telemetry without leaving the backend.
+- The frontend’s [`fetchOnchainRoundState`](./frontend/src/lib/api.ts) calls `/ton/round-state/:id` (falling back to deterministic mocks if the backend is offline) to render the “On-chain telemetry” cards inside Laboratory/Home. When `/ton/events` ingests a new winner/payout, the getter immediately reflects the updated `roundHash`, pool amounts, and participant counts that the UI displays.
