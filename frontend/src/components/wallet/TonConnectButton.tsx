@@ -1,6 +1,6 @@
 import { Button, HStack, Icon, Text, Tooltip } from '@chakra-ui/react';
 import { FiLink2 } from 'react-icons/fi';
-import { useTonConnectContext } from '../../providers/TonConnectUIProvider';
+import { useWalletStore } from '../../stores/walletStore';
 
 function shortAddress(address: string) {
   if (address.length <= 10) {
@@ -10,33 +10,33 @@ function shortAddress(address: string) {
 }
 
 export function TonConnectButton() {
-  const { wallet, status, isRestoring, isBusy, error, openModal, disconnect, retry } = useTonConnectContext();
-  const isLoading = status === 'loading' || isRestoring || isBusy;
-  const isConnected = Boolean(wallet);
-  const colorScheme = error ? 'red' : isConnected ? 'green' : 'blue';
-  const variant = isConnected ? 'solid' : 'outline';
-  const handleClick = async () => {
-    if (error) {
-      retry();
-      return;
-    }
+  const { address, status, wallet, connect, disconnect } = useWalletStore((state) => ({
+    address: state.address,
+    status: state.status,
+    wallet: state.wallet,
+    connect: state.connect,
+    disconnect: state.disconnect,
+  }));
 
+  const isConnected = Boolean(address) && status === 'connected';
+  const isLoading = status === 'connecting';
+  const handleClick = async () => {
     if (isConnected) {
       await disconnect();
       return;
     }
 
-    await openModal();
+    await connect();
   };
 
-  const tooltipLabel = error || (wallet?.device?.appName && `Connected via ${wallet.device.appName}`) || undefined;
+  const tooltipLabel = wallet?.device?.appName ? `Connected via ${wallet.device.appName}` : undefined;
 
   return (
     <Tooltip label={tooltipLabel} isDisabled={!tooltipLabel} hasArrow>
       <Button
         size="sm"
-        colorScheme={colorScheme}
-        variant={variant}
+        colorScheme={isConnected ? 'green' : 'blue'}
+        variant={isConnected ? 'solid' : 'outline'}
         onClick={handleClick}
         isLoading={isLoading}
         loadingText={isConnected ? 'Disconnecting' : 'Connecting'}
@@ -44,9 +44,9 @@ export function TonConnectButton() {
       >
         <HStack spacing={2}>
           <Text color="currentColor" fontWeight="semibold">
-            {error ? 'Retry connection' : isConnected ? shortAddress(wallet!.account.address) : 'Connect wallet'}
+            {isConnected && address ? shortAddress(address) : 'Connect wallet'}
           </Text>
-          {!error && isConnected && wallet?.device?.appName && (
+          {isConnected && wallet?.device?.appName && (
             <Text fontSize="xs" opacity={0.8} color="currentColor">
               {wallet.device.appName}
             </Text>
