@@ -22,11 +22,11 @@ const envSchema = z
         /^(0x)?[0-9a-fA-F]{64}$/u,
         'TON_DEPLOYER_PUBLIC_KEY must be a 32-byte hex string'
       ),
-    TON_DEPLOYER_SECRET_KEY: z
+    TON_DEPLOYER_PRIVATE_KEY: z
       .string()
       .regex(
         /^(0x)?([0-9a-fA-F]{64}|[0-9a-fA-F]{128})$/u,
-        'TON_DEPLOYER_SECRET_KEY must be a 32 or 64-byte hex string'
+        'TON_DEPLOYER_PRIVATE_KEY must be a 32 or 64-byte hex string'
       ),
     CORS_ORIGINS: z.string().optional()
   })
@@ -62,10 +62,12 @@ export const env = {
   telegramBotToken: parsed.data.TELEGRAM_BOT_TOKEN,
   tonWebhookSecret: parsed.data.TON_WEBHOOK_SECRET,
   // TON RPC wiring lands in F5, but these values are already used for configuration/logging in F4.
-  tonNetwork: parsed.data.TON_NETWORK,
-  tonRpcUrl: parsed.data.TON_RPC_URL,
-  tonApiKey: parsed.data.TON_API_KEY,
-  tonContractAddress: parsed.data.TON_CONTRACT_ADDRESS,
-  tonDeployerPublicKey: parsed.data.TON_DEPLOYER_PUBLIC_KEY,
-  tonDeployerSecretKey: parsed.data.TON_DEPLOYER_SECRET_KEY
+  ton: {
+    network: parsed.data.TON_NETWORK,
+    rpcUrl: parsed.data.TON_RPC_URL,
+    apiKey: parsed.data.TON_API_KEY,
+    contractAddress: parsed.data.TON_CONTRACT_ADDRESS,
+    deployerPublicKey: parsed.data.TON_DEPLOYER_PUBLIC_KEY,
+    deployerPrivateKey: parsed.data.TON_DEPLOYER_PRIVATE_KEY
+  }
 };
