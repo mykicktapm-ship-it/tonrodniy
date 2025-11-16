@@ -593,6 +593,19 @@ export const userStore = {
       raise('users.byId', error);
     }
     return data ?? null;
+  },
+
+  async getByWallet(wallet: string): Promise<UserRow | null> {
+    const client = getClient();
+    const normalized = wallet.trim();
+    if (!normalized) {
+      return null;
+    }
+    const { data, error } = await client.from('users').select('*').ilike('wallet', normalized).maybeSingle();
+    if (error) {
+      raise('users.byWallet', error);
+    }
+    return data ?? null;
   }
 };
 

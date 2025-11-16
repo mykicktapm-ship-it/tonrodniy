@@ -4,6 +4,7 @@ import HomePage from './pages/Home';
 import LaboratoryPage from './pages/Laboratory';
 import EarnPage from './pages/Earn';
 import ProfilePage from './pages/Profile';
+import RoundDetailPage from './pages/RoundDetail';
 
 export default function App() {
   return (
@@ -11,6 +12,7 @@ export default function App() {
       <Route path="/" element={<AppLayout />}>
         <Route index element={<HomePage />} />
         <Route path="laboratory" element={<LaboratoryPage />} />
+        <Route path="rounds/:roundId" element={<RoundDetailPage />} />
         <Route path="earn" element={<EarnPage />} />
         <Route path="profile" element={<ProfilePage />} />
       </Route>
