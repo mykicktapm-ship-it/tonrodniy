@@ -1,61 +1,6 @@
-import {
-  createContext,
-  useCallback,
-  useContext,
-  useEffect,
-  useMemo,
-  useState,
-  type ReactNode,
-} from 'react';
-
-interface TonConnectAccount {
-  address: string;
-  chain?: string;
-}
-
-interface TonConnectDevice {
-  appName?: string;
-  platform?: string;
-}
-
-export interface TonConnectConnectedWallet {
-  account: TonConnectAccount;
-  device?: TonConnectDevice;
-}
-
-interface TonConnectUIOptions {
-  manifestUrl: string;
-}
-
-interface TonConnectUIInstance {
-  wallet?: TonConnectConnectedWallet | null;
-  connectionRestored?: Promise<boolean>;
-  onStatusChange?: (callback: (wallet: TonConnectConnectedWallet | null) => void) => () => void;
-  openModal?: () => Promise<void> | void;
-  disconnect?: () => Promise<void> | void;
-}
-
-type TonConnectStatus = 'idle' | 'loading' | 'ready' | 'error';
-
-interface TonConnectContextValue {
-  wallet: TonConnectConnectedWallet | null;
-  tonConnectUI: TonConnectUIInstance | null;
-  status: TonConnectStatus;
-  error?: string;
-  isRestoring: boolean;
-  isBusy: boolean;
-  openModal: () => Promise<void>;
-  disconnect: () => Promise<void>;
-  retry: () => void;
-}
-
-const TonConnectContext = createContext<TonConnectContextValue | undefined>(undefined);
-
-declare global {
-  interface Window {
-    TonConnectUI?: new (options: TonConnectUIOptions) => TonConnectUIInstance;
-  }
-}
+import { useEffect, type ReactNode } from 'react';
+import { useWalletStore } from '../stores/walletStore';
+import type { TonConnectUIInstance } from '../types/tonconnect';
 
 const TON_CONNECT_SCRIPT_URL = 'https://unpkg.com/@tonconnect/ui@latest/dist/tonconnect-ui.min.js';
 let loaderPromise: Promise<void> | null = null;
@@ -94,52 +39,34 @@ interface TonConnectProviderProps {
 }
 
 export function TonConnectUIProvider({ manifestUrl, children }: TonConnectProviderProps) {
-  const [wallet, setWallet] = useState<TonConnectConnectedWallet | null>(null);
-  const [tonConnectUI, setTonConnectUI] = useState<TonConnectUIInstance | null>(null);
-  const [status, setStatus] = useState<TonConnectStatus>('idle');
-  const [error, setError] = useState<string | undefined>();
-  const [isRestoring, setIsRestoring] = useState(true);
-  const [isBusy, setIsBusy] = useState(false);
-  const [reloadKey, setReloadKey] = useState(0);
+  const setController = useWalletStore((state) => state.setController);
+  const setWallet = useWalletStore((state) => state.setWallet);
+  const setAddress = useWalletStore((state) => state.setAddress);
 
   useEffect(() => {
+    if (typeof window === 'undefined') {
+      return;
+    }
+
     let isMounted = true;
     let unsubscribe: (() => void) | undefined;
     let instance: TonConnectUIInstance | null = null;
 
     async function initTonConnect() {
-      if (typeof window === 'undefined') {
-        return;
-      }
-
-      setStatus('loading');
-      setError(undefined);
-      setIsRestoring(true);
-
       try {
         await ensureTonConnectScript();
         if (!isMounted) return;
 
         const TonConnectCtor = window.TonConnectUI;
         if (!TonConnectCtor) {
-          throw new Error('TonConnect UI is unavailable in this environment');
+          console.warn('TonConnect UI is unavailable in this environment');
+          return;
         }
 
         const absoluteManifestUrl = new URL(manifestUrl, window.location.origin).toString();
         instance = new TonConnectCtor({ manifestUrl: absoluteManifestUrl });
-        setTonConnectUI(instance);
-        setStatus('ready');
+        setController(instance);
         setWallet(instance.wallet ?? null);
-
-        if (instance.connectionRestored) {
-          instance.connectionRestored.finally(() => {
-            if (isMounted) {
-              setIsRestoring(false);
-            }
-          });
-        } else {
-          setIsRestoring(false);
-        }
 
         if (instance.onStatusChange) {
           unsubscribe = instance.onStatusChange((nextWallet) => {
@@ -147,13 +74,11 @@ export function TonConnectUIProvider({ manifestUrl, children }: TonConnectProvid
             setWallet(nextWallet);
           });
         }
-      } catch (err) {
-        if (!isMounted) return;
-        setStatus('error');
+      } catch (error) {
+        console.error('Failed to initialize TonConnect UI', error);
+        setController(null);
         setWallet(null);
-        setTonConnectUI(null);
-        setIsRestoring(false);
-        setError(err instanceof Error ? err.message : 'Failed to initialize TonConnect UI');
+        setAddress(null);
       }
     }
 
@@ -162,77 +87,9 @@ export function TonConnectUIProvider({ manifestUrl, children }: TonConnectProvid
     return () => {
       isMounted = false;
       unsubscribe?.();
+      setController(null);
     };
-  }, [manifestUrl, reloadKey]);
+  }, [manifestUrl, setController, setWallet, setAddress]);
 
-  const retry = useCallback(() => {
-    setReloadKey((key) => key + 1);
-  }, []);
-
-  const openModal = useCallback(async () => {
-    if (!tonConnectUI?.openModal) {
-      setError('Wallet provider is not ready yet.');
-      return;
-    }
-
-    setIsBusy(true);
-    setError(undefined);
-    try {
-      await Promise.resolve(tonConnectUI.openModal());
-    } catch (err) {
-      setError(err instanceof Error ? err.message : 'Unable to open wallet modal');
-    } finally {
-      setIsBusy(false);
-    }
-  }, [tonConnectUI]);
-
-  const disconnect = useCallback(async () => {
-    if (!tonConnectUI?.disconnect) {
-      return;
-    }
-
-    setIsBusy(true);
-    try {
-      await Promise.resolve(tonConnectUI.disconnect());
-      setWallet(null);
-    } catch (err) {
-      setError(err instanceof Error ? err.message : 'Failed to disconnect wallet');
-    } finally {
-      setIsBusy(false);
-    }
-  }, [tonConnectUI]);
-
-  const value = useMemo<TonConnectContextValue>(
-    () => ({
-      wallet,
-      tonConnectUI,
-      status,
-      error,
-      isRestoring,
-      isBusy,
-      openModal,
-      disconnect,
-      retry,
-    }),
-    [wallet, tonConnectUI, status, error, isRestoring, isBusy, openModal, disconnect, retry],
-  );
-
-  return <TonConnectContext.Provider value={value}>{children}</TonConnectContext.Provider>;
-}
-
-export function useTonConnectContext() {
-  const context = useContext(TonConnectContext);
-  if (!context) {
-    throw new Error('useTonConnectContext must be used within TonConnectUIProvider');
-  }
-  return context;
-}
-
-export function useTonWallet() {
-  return useTonConnectContext().wallet;
-}
-
-export function useTonConnectUI() {
-  const { tonConnectUI } = useTonConnectContext();
-  return [tonConnectUI, () => undefined] as const;
+  return <>{children}</>;
 }
