@@ -35,3 +35,26 @@ frontend/
 ```
 
 No API, blockchain, or database calls are wired up in this phase. All data displayed on the screens are deterministic mocks that match the UX specification in `plans.md`.
+
+## TON Connect
+
+The frontend already boots the Ton Connect SDK so you can validate wallet flows locally before the smart-contract logic lands.
+
+### Prerequisites and manifest location
+
+- The Ton Connect manifest lives at [`frontend/public/tonconnect-manifest.json`](./frontend/public/tonconnect-manifest.json). Vite serves everything in `public/`, so it is automatically reachable at `http://localhost:5173/tonconnect-manifest.json` while running `pnpm dev`.
+- Make sure the manifest fields reflect the environment you are testing:
+  - `url` should point to the domain where the frontend is hosted (use `http://localhost:5173` for local runs).
+  - `name` is the label wallets will show. Adjust it to match the product/branch name you are validating.
+  - `iconUrl`, `termsOfUseUrl`, and `privacyPolicyUrl` can point to staging assets until production branding is finalized.
+  These entries can be tweaked freely and redeployed without rebuilding the app because wallets always fetch the JSON at runtime.
+
+### Provider configuration
+
+- [`src/main.tsx`](./frontend/src/main.tsx) wraps the React tree with `TonConnectUIProvider` and passes the manifest URL relative to the site root: `<TonConnectUIProvider manifestUrl="/tonconnect-manifest.json">`.
+- The provider implementation in [`src/providers/TonConnectUIProvider.tsx`](./frontend/src/providers/TonConnectUIProvider.tsx) lazily injects the `@tonconnect/ui` script, normalizes the manifest URL against `window.location.origin`, and pushes the controller plus the connected wallet object into the `walletStore`. This is the entry point you will extend when wiring real `TonConnectUI.sendTransaction` calls.
+
+### Fake transaction service (temporary wiring)
+
+- Screens that showcase transaction UX (e.g., the Laboratory page) call the mock helper in [`src/services/fakeTonService.ts`](./frontend/src/services/fakeTonService.ts). It simulates latency and returns a synthetic hash so the UI can exercise optimistic/toast flows.
+- Once the TON contract + backend pipeline is available, replace `sendFakeTransaction` with a `TonConnectUI` submission that targets the deployed contract endpoint. The manifest + provider scaffolding described above remains the same; only the stubbed service will be swapped for the real send + confirmation handlers.
