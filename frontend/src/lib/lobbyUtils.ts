@@ -1,4 +1,4 @@
-import type { LobbySeat, LobbySummary } from '../services/apiClient';
+import type { LobbySeat, LobbySummary } from './api';
 import type { QueryClient } from './queryClient';
 
 export const applySeatUpdate = (lobby: LobbySummary, nextSeat: LobbySeat): LobbySummary => {

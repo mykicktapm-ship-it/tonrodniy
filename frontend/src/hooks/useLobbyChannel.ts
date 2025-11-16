@@ -1,6 +1,6 @@
 import { useEffect } from 'react';
 import { QueryClient, useQueryClient } from '../lib/queryClient';
-import type { LobbySeat } from '../services/apiClient';
+import type { LobbySeat } from '../lib/api';
 import { API_BASE_URL } from '../lib/constants';
 import { patchLobbyMeta, syncSeatAcrossCaches } from '../lib/lobbyUtils';
 
