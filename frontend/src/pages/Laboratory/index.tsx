@@ -15,10 +15,20 @@ import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { PageSection } from '../../components/PageSection';
 import { StatusBadge } from '../../components/StatusBadge';
-import { fetchOnchainRoundState, OnchainRoundState } from '../../lib/api';
+import { fetchOnchainRoundState, OnchainRoundState, sendStakeTransaction } from '../../lib/api';
 import { TON_CONTRACT_ADDRESS } from '../../lib/constants';
 import { useLobbiesQuery, useRoundsQuery } from '../../hooks/useLobbyData';
-import { sendStakeTransaction } from '../../services/apiClient';
+
+const formatTelemetryTimestamp = (value?: string) => {
+  if (!value) {
+    return '—';
+  }
+  const date = new Date(value);
+  if (Number.isNaN(date.getTime())) {
+    return value;
+  }
+  return date.toLocaleString();
+};
 
 export default function LaboratoryPage() {
   const toast = useToast();
@@ -195,31 +205,63 @@ export default function LaboratoryPage() {
         title="On-chain telemetry"
         description="Realtime view of the tonClient round-state getter used for audits."
       >
-        <Stack spacing={3}>
-          <Stack spacing={2}>
+        <Stack spacing={4}>
+          <Stack spacing={3}>
             <HStack justify="space-between">
-              <Text color="gray.400">Round hash</Text>
+              <Text color="gray.400">Round ID</Text>
               <Text fontFamily="mono" fontSize="sm">
-                {onchainTelemetry?.roundHash ?? '—'}
+                {onchainTelemetry?.roundId ?? '—'}
+              </Text>
+            </HStack>
+            <HStack justify="space-between" align="flex-start">
+              <Text color="gray.400">Last round hash</Text>
+              <Text fontFamily="mono" fontSize="xs" maxW="60%" textAlign="right" noOfLines={2}>
+                {onchainTelemetry?.lastRoundHash ?? '—'}
               </Text>
             </HStack>
             <HStack justify="space-between">
-              <Text color="gray.400">Winner index</Text>
-              <Text fontFamily="mono">{onchainTelemetry ? onchainTelemetry.winnerIndex : '—'}</Text>
-            </HStack>
-            <HStack justify="space-between">
-              <Text color="gray.400">Pool amount</Text>
+              <Text color="gray.400">On-chain balance</Text>
               <Text fontFamily="mono">
-                {onchainTelemetry?.poolAmount != null ? `${onchainTelemetry.poolAmount.toFixed(2)} TON` : '—'}
+                {onchainTelemetry
+                  ? `${onchainTelemetry.onChainBalanceTon.toFixed(2)} TON`
+                  : '—'}
               </Text>
             </HStack>
             <HStack justify="space-between">
-              <Text color="gray.400">TON contract</Text>
+              <Text color="gray.400">Locked stake</Text>
+              <Text fontFamily="mono">
+                {onchainTelemetry
+                  ? `${onchainTelemetry.lockedStakeTon.toFixed(2)} TON`
+                  : '—'}
+              </Text>
+            </HStack>
+            <HStack justify="space-between">
+              <Text color="gray.400">Seats paid</Text>
+              <Text fontFamily="mono">
+                {onchainTelemetry
+                  ? `${onchainTelemetry.seatsPaid} / ${onchainTelemetry.seatsTotal}`
+                  : '—'}
+              </Text>
+            </HStack>
+            <HStack justify="space-between">
+              <Text color="gray.400">Last event</Text>
               <Text fontFamily="mono" fontSize="sm">
-                {TON_CONTRACT_ADDRESS}
+                {onchainTelemetry?.lastEventType ?? '—'}
+              </Text>
+            </HStack>
+            <HStack justify="space-between">
+              <Text color="gray.400">Updated at</Text>
+              <Text fontFamily="mono" fontSize="sm">
+                {formatTelemetryTimestamp(onchainTelemetry?.updatedAt)}
               </Text>
             </HStack>
           </Stack>
+          <HStack justify="space-between">
+            <Text color="gray.400">TON contract</Text>
+            <Text fontFamily="mono" fontSize="sm">
+              {TON_CONTRACT_ADDRESS}
+            </Text>
+          </HStack>
           {isTelemetryLoading && (
             <Text fontSize="sm" color="gray.500">
               Fetching latest telemetry…

@@ -20,7 +20,7 @@ import { useLobbiesQuery } from '../../hooks/useLobbyData';
 import { useConnectedUser } from '../../hooks/useConnectedUser';
 import { useWalletStore } from '../../stores/walletStore';
 import { useMutation, useQueryClient } from '../../lib/queryClient';
-import { joinLobby, paySeat, sendStakeTransaction, type LobbySeat } from '../../services/apiClient';
+import { joinLobby, payForSeat, sendStakeTransaction, type LobbySeat } from '../../lib/api';
 import { useLobbyChannel } from '../../hooks/useLobbyChannel';
 import { syncSeatAcrossCaches } from '../../lib/lobbyUtils';
 import { TON_CONTRACT_ADDRESS } from '../../lib/constants';
@@ -95,7 +95,7 @@ export default function HomePage() {
 
   const payMutation = useMutation({
     mutationFn: async ({ lobbyId, seatId, txHash }: { lobbyId: string; seatId: string; txHash: string }) =>
-      paySeat(lobbyId, seatId, txHash),
+      payForSeat(lobbyId, seatId, txHash),
     onSuccess: (result, variables) => {
       syncSeatAcrossCaches(queryClient, variables.lobbyId, result.seat);
     }

@@ -1,6 +1,6 @@
 import { useMemo } from 'react';
 import { useQuery } from '../lib/queryClient';
-import { fetchUserByWallet, type UserProfile } from '../services/apiClient';
+import { fetchUserByWallet, type UserProfile } from '../lib/api';
 import { useWalletStore } from '../stores/walletStore';
 
 export function useConnectedUser() {
