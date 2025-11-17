@@ -28,7 +28,7 @@ async function request<T>(path: string, options?: RequestInit): Promise<T> {
   return (await response.json()) as T;
 }
 
-export type SeatStatus = 'free' | 'taken' | 'paid';
+export type SeatStatus = 'free' | 'taken' | 'pending_payment' | 'paid' | 'failed';
 
 export interface LobbySeat {
   id: string;
@@ -70,6 +70,7 @@ export interface RoundSummary {
   payoutAmount?: number;
   finalizedAt?: string;
   txHashes: string[];
+  contractVersion?: string;
 }
 
 export interface UserProfile {
@@ -104,6 +105,12 @@ export interface JoinLobbyResponse {
 export interface PaySeatResponse {
   seat: LobbySeat;
   status: string;
+  verification?: {
+    status: string;
+    reason?: string;
+    amountTon?: number;
+    sender?: string;
+  };
 }
 
 export interface TonSubmission {
@@ -121,16 +128,6 @@ export interface FinalizeLobbyResponse {
   seedReveal?: string;
 }
 
-export interface StakeSubmission {
-  txHash: string;
-  status?: string;
-  simulated?: boolean;
-}
-
-interface StakeSubmissionResponse {
-  submission: StakeSubmission;
-}
-
 export interface OnchainRoundState {
   lobbyId: string;
   roundId: string;
@@ -141,27 +138,10 @@ export interface OnchainRoundState {
   seatsTotal: number;
   lastEventType?: string;
   updatedAt: string;
+  isOnchain: boolean;
+  isFallback: boolean;
+  fallbackReason?: string;
 }
-
-const mockRoundState = (lobbyId: string): OnchainRoundState => {
-  const seed = lobbyId.split('').reduce((acc, char) => acc + char.charCodeAt(0), 0);
-  const paid = (seed % 6) + 1;
-  const total = Math.max(paid + 2, 6);
-  const lastRoundHash = `0x${seed.toString(16).padStart(8, '0').repeat(8).slice(0, 64)}`;
-  const balance = Number((paid * 3.2).toFixed(2));
-  const locked = Number((paid * 2.4).toFixed(2));
-  return {
-    lobbyId,
-    roundId: `round-${lobbyId}`,
-    onChainBalanceTon: balance,
-    lockedStakeTon: locked,
-    lastRoundHash,
-    seatsPaid: paid,
-    seatsTotal: total,
-    lastEventType: 'DepositReceived',
-    updatedAt: new Date().toISOString()
-  };
-};
 
 export async function fetchLobbies(): Promise<LobbySummary[]> {
   const payload = await request<{ lobbies: LobbySummary[] }>('/lobbies');
@@ -193,11 +173,12 @@ export async function joinLobby(lobbyId: string, userId: string): Promise<JoinLo
 export async function payForSeat(
   lobbyId: string,
   seatId: string,
-  txHash: string
+  txHash: string,
+  userId: string
 ): Promise<PaySeatResponse> {
   return request<PaySeatResponse>(`/lobbies/${encodeURIComponent(lobbyId)}/pay`, {
     method: 'POST',
-    body: JSON.stringify({ seatId, txHash })
+    body: JSON.stringify({ seatId, txHash, userId })
   });
 }
 
@@ -219,44 +200,54 @@ export async function fetchUserLogs(userId: string): Promise<UserLogEntry[]> {
   return payload.logs;
 }
 
-export async function sendStakeTransaction(params: {
-  lobbyId: string;
-  seatId: string;
-  participantWallet: string;
-  amountTon: number;
-}): Promise<StakeSubmission> {
-  const payload = await request<StakeSubmissionResponse>('/ton/pay-stake', {
-    method: 'POST',
-    body: JSON.stringify(params)
-  });
-  return payload.submission;
-}
-
 export async function fetchOnchainRoundState(lobbyId: string): Promise<OnchainRoundState> {
-  const fallback = mockRoundState(lobbyId);
   try {
-    const payload = await request<{ lobbyState?: Partial<OnchainRoundState> }>(
+    const payload = await request<{ lobbyState?: Partial<OnchainRoundState>; isOnchain?: boolean; isFallback?: boolean; error?: string }>(
       `/ton/round-state/${encodeURIComponent(lobbyId)}`
     );
-    const state = payload.lobbyState;
-    if (!state) {
-      throw new Error('round-state payload missing lobbyState');
+    if (payload.lobbyState && payload.isOnchain) {
+      return {
+        lobbyId: payload.lobbyState.lobbyId ?? lobbyId,
+        roundId: payload.lobbyState.roundId ?? `round-${lobbyId}`,
+        onChainBalanceTon: payload.lobbyState.onChainBalanceTon ?? 0,
+        lockedStakeTon: payload.lobbyState.lockedStakeTon ?? 0,
+        lastRoundHash: payload.lobbyState.lastRoundHash ?? '',
+        seatsPaid: payload.lobbyState.seatsPaid ?? 0,
+        seatsTotal: payload.lobbyState.seatsTotal ?? 0,
+        lastEventType: payload.lobbyState.lastEventType,
+        updatedAt: payload.lobbyState.updatedAt ?? new Date().toISOString(),
+        isOnchain: true,
+        isFallback: false
+      };
     }
     return {
-      ...fallback,
-      ...state,
-      lobbyId: state.lobbyId ?? fallback.lobbyId,
-      roundId: state.roundId ?? fallback.roundId,
-      lastRoundHash: state.lastRoundHash ?? fallback.lastRoundHash,
-      onChainBalanceTon: state.onChainBalanceTon ?? fallback.onChainBalanceTon,
-      lockedStakeTon: state.lockedStakeTon ?? fallback.lockedStakeTon,
-      seatsPaid: state.seatsPaid ?? fallback.seatsPaid,
-      seatsTotal: state.seatsTotal ?? fallback.seatsTotal,
-      lastEventType: state.lastEventType ?? fallback.lastEventType,
-      updatedAt: state.updatedAt ?? new Date().toISOString()
+      lobbyId,
+      roundId: `round-${lobbyId}`,
+      onChainBalanceTon: 0,
+      lockedStakeTon: 0,
+      lastRoundHash: '',
+      seatsPaid: 0,
+      seatsTotal: 0,
+      lastEventType: undefined,
+      updatedAt: new Date().toISOString(),
+      isOnchain: false,
+      isFallback: true,
+      fallbackReason: payload.error ?? 'TON telemetry unavailable'
     };
   } catch (error) {
-    console.warn('[api] Failed to fetch round-state, returning mock telemetry', error);
-    return fallback;
+    return {
+      lobbyId,
+      roundId: `round-${lobbyId}`,
+      onChainBalanceTon: 0,
+      lockedStakeTon: 0,
+      lastRoundHash: '',
+      seatsPaid: 0,
+      seatsTotal: 0,
+      lastEventType: undefined,
+      updatedAt: new Date().toISOString(),
+      isOnchain: false,
+      isFallback: true,
+      fallbackReason: error instanceof Error ? error.message : 'TON telemetry unavailable'
+    };
   }
 }

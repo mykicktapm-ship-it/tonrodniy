@@ -1,21 +1,23 @@
 import { useEffect } from 'react';
 import { QueryClient, useQueryClient } from '../lib/queryClient';
 import type { LobbySeat } from '../lib/api';
-import { API_BASE_URL } from '../lib/constants';
+import { API_BASE_URL, WS_BASE_URL } from '../lib/constants';
 import { patchLobbyMeta, syncSeatAcrossCaches } from '../lib/lobbyUtils';
 
 const buildWsUrl = () => {
+  if (WS_BASE_URL) {
+    return WS_BASE_URL;
+  }
   const base = API_BASE_URL || (typeof window !== 'undefined' ? window.location.origin : null);
   if (!base) {
     return null;
   }
-  const origin = API_BASE_URL && typeof window !== 'undefined' ? new URL(API_BASE_URL, window.location.origin).toString() : base;
-  const url = new URL(origin);
-  url.pathname = '/ws';
-  url.search = '';
-  url.hash = '';
-  url.protocol = url.protocol === 'https:' ? 'wss:' : 'ws:';
-  return url.toString();
+  const origin = API_BASE_URL && typeof window !== 'undefined' ? new URL(API_BASE_URL, window.location.origin) : new URL(base);
+  origin.pathname = '/ws';
+  origin.search = '';
+  origin.hash = '';
+  origin.protocol = origin.protocol === 'https:' ? 'wss:' : 'ws:';
+  return origin.toString();
 };
 
 const handleRoundFinalized = (client: QueryClient, payload: Record<string, unknown>) => {

@@ -1,4 +1,6 @@
 import {
+  Alert,
+  AlertIcon,
   Box,
   Button,
   Divider,
@@ -8,14 +10,13 @@ import {
   Skeleton,
   Stack,
   Text,
-  VStack,
-  useToast
+  VStack
 } from '@chakra-ui/react';
-import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { PageSection } from '../../components/PageSection';
 import { StatusBadge } from '../../components/StatusBadge';
-import { fetchOnchainRoundState, OnchainRoundState, sendStakeTransaction } from '../../lib/api';
+import { fetchOnchainRoundState, OnchainRoundState } from '../../lib/api';
 import { TON_CONTRACT_ADDRESS } from '../../lib/constants';
 import { useLobbiesQuery, useRoundsQuery } from '../../hooks/useLobbyData';
 
@@ -31,15 +32,11 @@ const formatTelemetryTimestamp = (value?: string) => {
 };
 
 export default function LaboratoryPage() {
-  const toast = useToast();
   const navigate = useNavigate();
   const { data: lobbies, isLoading: isLobbiesLoading } = useLobbiesQuery();
   const { data: rounds, isLoading: isRoundsLoading } = useRoundsQuery();
-  const [isSending, setIsSending] = useState(false);
   const [onchainTelemetry, setOnchainTelemetry] = useState<OnchainRoundState | null>(null);
   const [isTelemetryLoading, setIsTelemetryLoading] = useState(false);
-  const [telemetryError, setTelemetryError] = useState<string | null>(null);
-  const toastIdRef = useRef<string | number | undefined>(undefined);
 
   const telemetryLobbyId = useMemo(() => lobbies?.[0]?.id ?? 'laboratory-telemetry-lobby', [lobbies]);
 
@@ -57,14 +54,6 @@ export default function LaboratoryPage() {
           return;
         }
         setOnchainTelemetry(state);
-        setTelemetryError(null);
-      })
-      .catch((error) => {
-        if (!isActive) {
-          return;
-        }
-        console.warn('[LaboratoryPage] telemetry fetch failed', error);
-        setTelemetryError(error instanceof Error ? error.message : 'Unexpected error fetching round telemetry');
       })
       .finally(() => {
         if (!isActive) {
@@ -77,47 +66,6 @@ export default function LaboratoryPage() {
       isActive = false;
     };
   }, [telemetryLobbyId]);
-
-  const handleSendTonSubmission = useCallback(async () => {
-    if (isSending || !lobbies?.length) {
-      return;
-    }
-    const lobby = lobbies[0];
-    setIsSending(true);
-    toastIdRef.current = toast({
-      title: 'Dispatching tonClient transaction…',
-      description: `Funding ${lobby.lobbyCode}`,
-      status: 'info',
-      duration: null,
-      isClosable: false
-    });
-    try {
-      const submission = await sendStakeTransaction({
-        lobbyId: lobby.id,
-        seatId: lobby.seats[0]?.id ?? `${lobby.id}-lab-seat`,
-        participantWallet: lobby.roundWallet,
-        amountTon: lobby.stake
-      });
-      toast.update(toastIdRef.current!, {
-        title: 'tonClient submission sent',
-        description: `tx ${submission.txHash.slice(0, 10)}…`,
-        status: 'success',
-        duration: 4000,
-        isClosable: true
-      });
-    } catch (error) {
-      toast.update(toastIdRef.current!, {
-        title: 'Submission failed',
-        description: error instanceof Error ? error.message : 'Unexpected error',
-        status: 'error',
-        duration: 5000,
-        isClosable: true
-      });
-    } finally {
-      toastIdRef.current = undefined;
-      setIsSending(false);
-    }
-  }, [isSending, lobbies, toast]);
 
   return (
     <Stack spacing={8}>
@@ -153,9 +101,6 @@ export default function LaboratoryPage() {
                       isDisabled={!lobby.currentRoundId}
                     >
                       Inspect proof
-                    </Button>
-                    <Button size="sm" variant="ghost" onClick={handleSendTonSubmission} isLoading={isSending}>
-                      Trigger tonClient
                     </Button>
                   </HStack>
                 </Box>
@@ -195,9 +140,10 @@ export default function LaboratoryPage() {
             </Text>
           </HStack>
           <Divider borderColor="whiteAlpha.200" />
-          <Button onClick={handleSendTonSubmission} isLoading={isSending} loadingText="Sending">
-            Send tonClient transaction
-          </Button>
+          <Text fontSize="sm" color="gray.400">
+            Stakes are dispatched via Ton Connect directly from each participant’s wallet. The backend never proxies funds
+            through an operator account.
+          </Text>
         </VStack>
       </PageSection>
 
@@ -206,6 +152,14 @@ export default function LaboratoryPage() {
         description="Realtime view of the tonClient round-state getter used for audits."
       >
         <Stack spacing={4}>
+          {onchainTelemetry && (
+            <Alert status={onchainTelemetry.isFallback ? 'warning' : 'success'} variant="left-accent">
+              <AlertIcon />
+              {onchainTelemetry.isFallback
+                ? onchainTelemetry.fallbackReason ?? 'TON RPC unavailable — showing fallback data.'
+                : 'On-chain data confirmed.'}
+            </Alert>
+          )}
           <Stack spacing={3}>
             <HStack justify="space-between">
               <Text color="gray.400">Round ID</Text>
@@ -265,11 +219,6 @@ export default function LaboratoryPage() {
           {isTelemetryLoading && (
             <Text fontSize="sm" color="gray.500">
               Fetching latest telemetry…
-            </Text>
-          )}
-          {telemetryError && (
-            <Text fontSize="sm" color="red.300">
-              {telemetryError}
             </Text>
           )}
         </Stack>

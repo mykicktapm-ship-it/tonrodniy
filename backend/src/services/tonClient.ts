@@ -59,19 +59,6 @@ export interface LobbyState {
   updatedAt: string;
 }
 
-export interface PayStakeRequest {
-  lobbyId: string;
-  seatId: string;
-  participantWallet: string;
-  amountTon: number;
-}
-
-export interface PayStakeResponse {
-  txHash: string;
-  status: 'accepted' | 'rejected';
-  simulated: boolean;
-}
-
 export interface FinalizeRoundRequest {
   lobbyId: string;
   roundId: string;
@@ -305,14 +292,6 @@ const runLobbyGetter = async (method: string, lobbyId: string): Promise<TonStack
   }
 };
 
-const buildPayStakePayload = (params: PayStakeRequest): Cell =>
-  encodeJsonPayload(OPCODES.payStake, {
-    lobbyId: params.lobbyId,
-    seatId: params.seatId,
-    participant: params.participantWallet,
-    stakeTon: params.amountTon
-  });
-
 const buildFinalizePayload = (params: FinalizeRoundRequest, roundHash: string): Cell =>
   encodeJsonPayload(OPCODES.finalizeRound, {
     lobbyId: params.lobbyId,
@@ -379,17 +358,6 @@ export const getLobbyState = async (lobbyId: string): Promise<LobbyState> => {
   }
 };
 
-export const sendPayStake = async (params: PayStakeRequest): Promise<PayStakeResponse> => {
-  const budgetTon = params.amountTon + GAS_BUFFER_TON.stake;
-  await ensureWalletBudget(budgetTon, 'pay_stake');
-  const txHash = await sendContractMessage('pay_stake', params.amountTon, buildPayStakePayload(params), params);
-  return {
-    txHash,
-    status: 'accepted',
-    simulated: false
-  };
-};
-
 export const sendFinalizeRound = async (
   params: FinalizeRoundRequest
 ): Promise<FinalizeRoundResponse> => {
@@ -427,4 +395,174 @@ export const sendWithdrawPool = async (
     txHash,
     withdrawnTon: withdrawableTon
   };
+};
+
+const normalizeTxHash = (hash?: string | null): string | null => {
+  if (!hash) {
+    return null;
+  }
+  const normalized = hash.replace(/^0x/i, '').toLowerCase();
+  return `0x${normalized}`;
+};
+
+type TonTransaction = {
+  hash?: string;
+  in_msg?: {
+    hash?: string;
+    source?: string;
+    value?: string | number | bigint;
+    msg_data?: {
+      ['@type']?: string;
+      text?: string;
+      body?: string;
+    };
+  };
+};
+
+interface VerifyStakeParams {
+  txHash: string;
+  lobbyId: string;
+  seatId: string;
+  expectedAmountTon: number;
+  expectedSender?: string | null;
+  expectedSeatIndex?: number;
+  expectedContractAddress?: string;
+}
+
+export interface StakeVerificationResult {
+  txHash: string;
+  status: 'pending' | 'confirmed' | 'failed';
+  amountTon?: number;
+  sender?: string;
+  reason?: string;
+  payload?: Record<string, unknown>;
+}
+
+const decodeJsonPayload = (bodyBase64?: string): Record<string, unknown> | undefined => {
+  if (!bodyBase64) {
+    return undefined;
+  }
+  try {
+    const cell = Cell.fromBoc(Buffer.from(bodyBase64, 'base64'))[0];
+    const slice = cell.beginParse();
+    if (slice.remainingBits >= 32) {
+      slice.loadUint(32);
+    }
+    const bytesToRead = Math.floor(slice.remainingBits / 8);
+    if (bytesToRead <= 0) {
+      return undefined;
+    }
+    const buffer = slice.loadBuffer(bytesToRead);
+    const json = buffer.toString('utf8');
+    return JSON.parse(json) as Record<string, unknown>;
+  } catch (error) {
+    logger.warn({ err: error }, 'failed to decode json payload');
+    return undefined;
+  }
+};
+
+const formatTonAmount = (value?: string | number | bigint): number => {
+  if (value === undefined || value === null) {
+    return 0;
+  }
+  if (typeof value === 'bigint') {
+    return nanoToTon(value);
+  }
+  if (typeof value === 'number') {
+    return nanoToTon(BigInt(Math.trunc(value)));
+  }
+  return nanoToTon(BigInt(value));
+};
+
+export const verifyStakeTx = async (params: VerifyStakeParams): Promise<StakeVerificationResult> => {
+  const normalizedHash = normalizeTxHash(params.txHash);
+  if (!normalizedHash) {
+    return {
+      txHash: params.txHash,
+      status: 'failed',
+      reason: 'invalid_hash'
+    };
+  }
+
+  try {
+    const address = normalizeAddress(params.expectedContractAddress ?? tonEnv.contractAddress);
+    const transactions = (await tonweb.provider.getTransactions(address, 32)) as TonTransaction[];
+    const candidate = transactions.find((tx) => normalizeTxHash(tx.in_msg?.hash ?? tx.hash) === normalizedHash);
+    if (!candidate) {
+      return {
+        txHash: normalizedHash,
+        status: 'pending',
+        reason: 'not_found'
+      };
+    }
+
+    const sender = candidate.in_msg?.source ? normalizeAddress(candidate.in_msg.source) : undefined;
+    const amountTon = formatTonAmount(candidate.in_msg?.value);
+    const payload = decodeJsonPayload(candidate.in_msg?.msg_data?.body);
+    const lobbyMatch = payload?.lobbyId?.toString() === params.lobbyId;
+    const seatMatch =
+      payload?.seatId === params.seatId ||
+      (params.expectedSeatIndex !== undefined && payload?.seatIndex === params.expectedSeatIndex);
+    const senderMatch =
+      !params.expectedSender || !sender || normalizeAddress(params.expectedSender) === normalizeAddress(sender);
+    const amountMatch = amountTon >= params.expectedAmountTon;
+
+    if (!lobbyMatch || !seatMatch) {
+      return {
+        txHash: normalizedHash,
+        status: 'failed',
+        amountTon,
+        sender,
+        payload,
+        reason: 'payload_mismatch'
+      };
+    }
+
+    if (!senderMatch) {
+      return {
+        txHash: normalizedHash,
+        status: 'failed',
+        amountTon,
+        sender,
+        payload,
+        reason: 'sender_mismatch'
+      };
+    }
+
+    if (!amountMatch) {
+      return {
+        txHash: normalizedHash,
+        status: 'failed',
+        amountTon,
+        sender,
+        payload,
+        reason: 'insufficient_amount'
+      };
+    }
+
+    return {
+      txHash: normalizedHash,
+      status: 'confirmed',
+      amountTon,
+      sender,
+      payload
+    };
+  } catch (error) {
+    logger.warn({ err: error }, 'verifyStakeTx failed');
+    return {
+      txHash: normalizedHash,
+      status: 'pending',
+      reason: 'rpc_error'
+    };
+  }
+};
+
+export const checkTonRpcHealth = async (): Promise<boolean> => {
+  try {
+    await tonweb.provider.getAddressInfo(contractAddressFriendly);
+    return true;
+  } catch (error) {
+    logger.warn({ err: error }, 'ton rpc health failed');
+    return false;
+  }
 };

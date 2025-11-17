@@ -36,6 +36,9 @@ export default function RoundDetailPage() {
                   Payout: {round.payoutAmount ? `${round.payoutAmount} TON` : 'TBD'}
                 </Text>
                 <Text color="gray.400" fontSize="sm">
+                  Contract version: {round.contractVersion ?? '—'}
+                </Text>
+                <Text color="gray.400" fontSize="sm">
                   Finalized at: {round.finalizedAt ?? 'Pending'}
                 </Text>
               </VStack>

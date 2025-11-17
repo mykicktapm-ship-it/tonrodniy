@@ -117,6 +117,8 @@ export const initWebSocketHub = (server: Server) => {
   return hubInstance;
 };
 
+export const isWebSocketHealthy = (): boolean => hubInstance !== null;
+
 const channelName = (lobbyId: string) => `lobby:${lobbyId}`;
 
 export const broadcastLobbyEvent = (lobbyId: string, event: LobbyEvent) => {

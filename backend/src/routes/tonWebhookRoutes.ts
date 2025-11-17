@@ -4,7 +4,7 @@ import { z } from 'zod';
 
 import { env } from '../config/env';
 import { auditLogStore, roundStore, SeatRow, seatStore, txLogStore } from '../db/supabase';
-import { getLobbyState, sendPayStake } from '../services/tonClient';
+import { getLobbyState } from '../services/tonClient';
 import {
   buildSeatTimerTickPayload,
   emitPaymentConfirmed,
@@ -384,6 +384,15 @@ const buildSeatPayload = (seat: SeatRow, txHash?: string): SeatBroadcastPayload 
   txHash: txHash ?? undefined
 });
 
+const canonicalizeTxHash = (hash?: string | null): string | undefined => {
+  if (!hash) {
+    return undefined;
+  }
+  const normalized = hash.trim().toLowerCase();
+  const withoutPrefix = normalized.replace(/^0x/i, '');
+  return `0x${withoutPrefix}`;
+};
+
 const recordAuditTrail = async (event: TonWebhookEvent) => {
   const digest = createHash('sha256')
     .update([event.type, event.lobbyId, event.eventId, event.occurredAtIso ?? ''].join(':'))
@@ -427,35 +436,41 @@ const getLatestRoundForLobby = async (lobbyId: string) => {
 
 const handleDepositReceived = async (event: DepositReceivedEvent) => {
   const seat = await findSeatForDeposit(event);
+  const normalizedHash = canonicalizeTxHash(event.txHash);
+  const existingLog = normalizedHash ? await txLogStore.findPayLogByHash(normalizedHash) : null;
+  if (existingLog?.status === 'confirmed') {
+    return { seatId: seat.id, txLogId: existingLog.id };
+  }
+
   const shouldUpdateSeat = seat.status !== 'paid';
   const paidSeat = shouldUpdateSeat
     ? await seatStore.markPaid(seat.id, event.amountTon, event.occurredAtIso ?? new Date().toISOString())
     : seat;
-  const txLog = await txLogStore.insert({
-    userId: paidSeat.user_id ?? undefined,
-    lobbyId: event.lobbyId,
-    seatId: paidSeat.id,
-    action: 'pay',
-    txHash: event.txHash,
-    amountTon: event.amountTon,
-    status: 'confirmed',
-    metadata: {
-      source: 'ton_webhook',
-      eventType: event.type,
-      seatIndex: paidSeat.seat_index,
-      sender: event.sender,
-      occurredAt: event.occurredAtIso,
-      memo: event.memo
-    }
-  });
+
+  const txLog = existingLog
+    ? await txLogStore.updateStatus(existingLog.id, 'confirmed')
+    : await txLogStore.insert({
+        userId: paidSeat.user_id ?? undefined,
+        lobbyId: event.lobbyId,
+        seatId: paidSeat.id,
+        action: 'pay',
+        txHash: normalizedHash ?? event.txHash,
+        amountTon: event.amountTon,
+        status: 'confirmed',
+        metadata: {
+          source: 'ton_webhook',
+          eventType: event.type,
+          seatIndex: paidSeat.seat_index,
+          sender: event.sender,
+          occurredAt: event.occurredAtIso,
+          memo: event.memo
+        }
+      });
+
   const audit = await recordAuditTrail(event);
-  const seatPayload = buildSeatPayload(paidSeat, txLog.tx_hash ?? event.txHash);
+  const seatPayload = buildSeatPayload(paidSeat, txLog.tx_hash ?? normalizedHash);
   emitSeatUpdate({ lobbyId: event.lobbyId, seat: seatPayload });
-  emitPaymentConfirmed({
-    lobbyId: event.lobbyId,
-    seat: seatPayload,
-    txHash: txLog.tx_hash ?? event.txHash
-  });
+  emitPaymentConfirmed({ lobbyId: event.lobbyId, seat: seatPayload, txHash: txLog.tx_hash ?? normalizedHash });
   emitTimerTick(buildSeatTimerTickPayload(event.lobbyId, seatPayload));
   return { auditLogId: audit.id, txLogId: txLog.id, seatId: paidSeat.id };
 };
@@ -591,39 +606,14 @@ tonWebhookRouter.post('/events', async (req, res) => {
 tonWebhookRouter.get('/round-state/:id', async (req, res) => {
   try {
     const lobbyState = await getLobbyState(req.params.id);
-    res.json({ lobbyState });
+    res.json({ lobbyState, isOnchain: true, isFallback: false });
   } catch (error) {
-    res.status(500).json({ error: (error as Error).message });
-  }
-});
-
-tonWebhookRouter.post('/pay-stake', async (req, res) => {
-  const { lobbyId, seatId, participantWallet, amountTon } = req.body as {
-    lobbyId?: string;
-    seatId?: string;
-    participantWallet?: string;
-    amountTon?: number;
-  };
-
-  if (!lobbyId || !seatId || !participantWallet) {
-    return res.status(400).json({ error: 'lobbyId, seatId, and participantWallet are required' });
-  }
-
-  const stake = Number(amountTon);
-  if (!Number.isFinite(stake) || stake <= 0) {
-    return res.status(400).json({ error: 'amountTon must be a positive number' });
-  }
-
-  try {
-    const submission = await sendPayStake({
-      lobbyId,
-      seatId,
-      participantWallet,
-      amountTon: stake
+    res.json({
+      lobbyState: null,
+      isOnchain: false,
+      isFallback: true,
+      error: (error as Error).message
     });
-    res.json({ submission });
-  } catch (error) {
-    res.status(400).json({ error: (error as Error).message });
   }
 });
 

@@ -1,10 +1,11 @@
 import { createClient, PostgrestError, SupabaseClient } from '@supabase/supabase-js';
+import { getActiveContractVersion } from '../config/contracts';
 import { env } from '../config/env';
 
 type Json = string | number | boolean | null | { [key: string]: Json } | Json[];
 
 type LobbyStatus = 'open' | 'filling' | 'locked' | 'finalized' | 'archived';
-type SeatStatus = 'free' | 'taken' | 'paid';
+type SeatStatus = 'free' | 'taken' | 'pending_payment' | 'paid' | 'failed';
 type TxAction = 'join' | 'pay' | 'leave' | 'result' | 'payout' | 'ref_bonus';
 type TxStatus = 'pending' | 'confirmed' | 'failed';
 type AuditActor = 'user' | 'backend' | 'contract';
@@ -48,6 +49,7 @@ export interface RoundRow {
   payout_amount: string | number | null;
   finalized_at: string | null;
   tx_hash: string | null;
+  contract_version: string | null;
   created_at: string;
 }
 
@@ -116,6 +118,18 @@ const toNumber = (value: string | number | null | undefined): number | undefined
 
 const raise = (context: string, error: PostgrestError): never => {
   throw new Error(`[supabase:${context}] ${error.message}`);
+};
+
+const canonicalTxHashVariants = (hash: string): string[] => {
+  const trimmed = hash.trim();
+  if (!trimmed) {
+    return [];
+  }
+  const lower = trimmed.toLowerCase();
+  const withoutPrefix = lower.replace(/^0x/i, '');
+  const prefixed = `0x${withoutPrefix}`;
+  const variants = new Set([trimmed, lower, withoutPrefix, prefixed]);
+  return Array.from(variants);
 };
 
 const extractRequired = <T>(context: string, data: T | null, error: PostgrestError | null): T => {
@@ -312,6 +326,17 @@ export const seatStore = {
     return extractRequired('seats.reserve', data, error);
   },
 
+  async markPendingPayment(seatId: string): Promise<SeatRow> {
+    const client = getClient();
+    const { data, error } = await client
+      .from('seats')
+      .update({ status: 'pending_payment', paid_at: null, released_at: null, ton_amount: null })
+      .eq('id', seatId)
+      .select('*')
+      .single();
+    return extractRequired('seats.markPendingPayment', data, error);
+  },
+
   async markPaid(seatId: string, tonAmount: number, paidAtIso: string): Promise<SeatRow> {
     const client = getClient();
     const { data, error } = await client
@@ -321,6 +346,22 @@ export const seatStore = {
       .select('*')
       .single();
     return extractRequired('seats.markPaid', data, error);
+  },
+
+  async markFailed(seatId: string, failedAtIso: string): Promise<SeatRow> {
+    const client = getClient();
+    const { data, error } = await client
+      .from('seats')
+      .update({
+        status: 'failed',
+        paid_at: null,
+        released_at: failedAtIso,
+        ton_amount: null
+      })
+      .eq('id', seatId)
+      .select('*')
+      .single();
+    return extractRequired('seats.markFailed', data, error);
   },
 
   async releaseSeat(seatId: string, releasedAtIso: string): Promise<SeatRow> {
@@ -347,7 +388,7 @@ export const seatStore = {
       .from('seats')
       .update({ status: 'free', user_id: null, taken_at: null, paid_at: null, released_at: new Date().toISOString(), ton_amount: null })
       .eq('lobby_id', lobbyId)
-      .eq('status', 'taken')
+      .in('status', ['taken', 'pending_payment'])
       .lt('taken_at', cutoffIso)
       .is('paid_at', null);
     if (error) {
@@ -418,7 +459,12 @@ export const roundStore = {
     const client = getClient();
     const { data, error } = await client
       .from('rounds')
-      .insert({ lobby_id: lobbyId, round_number: roundNumber, round_hash: roundHash ?? null })
+      .insert({
+        lobby_id: lobbyId,
+        round_number: roundNumber,
+        round_hash: roundHash ?? null,
+        contract_version: getActiveContractVersion()
+      })
       .select('*')
       .single();
     return extractRequired('rounds.create', data, error);
@@ -507,6 +553,55 @@ export const txLogStore = {
       }
     }
     return map;
+  },
+
+  async updateStatus(id: string, status: TxStatus, metadataPatch?: Json): Promise<TxLogRow> {
+    const client = getClient();
+    const updatePayload: Record<string, unknown> = { status };
+    if (metadataPatch !== undefined) {
+      updatePayload.metadata = metadataPatch;
+    }
+    const { data, error } = await client
+      .from('tx_logs')
+      .update(updatePayload)
+      .eq('id', id)
+      .select('*')
+      .single();
+    return extractRequired('txLogs.updateStatus', data, error);
+  },
+
+  async findPayLogByHash(txHash: string): Promise<TxLogRow | null> {
+    const client = getClient();
+    const variants = canonicalTxHashVariants(txHash);
+    if (!variants.length) {
+      return null;
+    }
+    const { data, error } = await client
+      .from('tx_logs')
+      .select('*')
+      .in('tx_hash', variants)
+      .eq('action', 'pay')
+      .order('created_at', { ascending: false })
+      .limit(1)
+      .maybeSingle();
+    if (error) {
+      raise('txLogs.findByHash', error);
+    }
+    return data ?? null;
+  }
+};
+
+export const databaseHealth = async (): Promise<boolean> => {
+  try {
+    const client = getClient();
+    const { error } = await client.from('lobbies').select('id').limit(1);
+    if (error) {
+      return false;
+    }
+    return true;
+  } catch (error) {
+    console.warn('[db] health check failed', error);
+    return false;
   }
 };
 
