@@ -319,3 +319,11 @@ Optimization:
 | UX непонимание честности | Пользователи не понимают, как доказать fairness. | Laboratory вкладка с пошаговым объяснением, документация, обучающие tooltips, кнопка "Проверить hash" в Home. |
 | Масштабирование round_wallet | Множество одновременных лобби перегружают контракт. | Горизонтальное масштабирование: несколько контрактов/кошельков по классам лобби, sharding по lobby_code; backend routing. |
 | Дрейф состояния Supabase ↔ TON | При задержке вебхука/тон-апи контракт знает нового победителя, а БД ещё нет, из-за чего UI показывает неверного победителя или payout. | Добавлены `ton_events` таблица с idempotency, периодический reconciler (cron) и алерты в Logtail/Statuspage; Laboratory имеет кнопку повторной синхронизации. |
+
+## 11. F6-beta priorities
+- **Ton Connect-only stakes**: frontend sends transactions via TonConnectUI, backend stops proxy-paying stakes. `/lobbies/:id/pay` only records pending payments tied to user + seat + tx hash.
+- **On-chain verified seats**: new `pending_payment` state, tx logs stay `pending` until `/ton/events` or manual verification confirms the hash, otherwise seats auto-release with `failed` status + reason.
+- **Transparent telemetry**: `/ton/round-state/:id` returns `isOnchain` / `isFallback` flags so Laboratory can call out mock/fallback data instead of silently fabricating hashes.
+- **Mock cleanup**: legacy static data moved under `backend/src/legacy/` and clearly labeled dev-only so production services only hit Supabase/TON.
+- **Workspace hygiene**: pnpm becomes the canonical package manager with a shared lockfile, and the frontend ships `.env.example` that lists all required Vite vars (API, WS, Ton Connect manifest, Telegram branding, salts).
+- **Migration & monitoring scaffolding**: contract versioning lands in `contracts/VERSIONS.md` + rounds table, Supabase migrations gain `MIGRATIONS.md`, and `docs/MONITORING.todo.md` enumerates the health pings + metrics (active lobbies, payment errors, WS status) planned for F6 full.

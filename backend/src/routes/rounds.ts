@@ -15,7 +15,8 @@ const serializeRound = async (round: RoundRow) => {
     winnerWallet: round.winner_wallet ?? undefined,
     payoutAmount: numberParsers.toNumber(round.payout_amount) ?? undefined,
     finalizedAt: round.finalized_at ?? undefined,
-    txHashes
+    txHashes,
+    contractVersion: round.contract_version ?? undefined
   };
 };
 

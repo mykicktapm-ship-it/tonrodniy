@@ -19,10 +19,16 @@ import {
   emitTimerTick,
   type SeatTimerSnapshot
 } from '../ws';
-import { sendFinalizeRound } from '../services/tonClient';
+import { sendFinalizeRound, verifyStakeTx } from '../services/tonClient';
 
 const RESERVATION_WINDOW_MS = 2 * 60 * 1000;
 const PAYMENT_WINDOW_MS = 5 * 60 * 1000;
+
+const normalizeTxHashValue = (value: string): string => {
+  const trimmed = value.trim().toLowerCase();
+  const withoutPrefix = trimmed.replace(/^0x/i, '');
+  return `0x${withoutPrefix}`;
+};
 
 const getSeatExpiration = (seat: SeatRow): string | undefined => {
   if (!seat.taken_at || seat.status === 'paid') {
@@ -236,9 +242,9 @@ lobbiesRouter.post('/:id/join', async (req, res) => {
 });
 
 lobbiesRouter.post('/:id/pay', async (req, res) => {
-  const { seatId, txHash } = req.body as { seatId?: string; txHash?: string };
-  if (!seatId || !txHash) {
-    return res.status(400).json({ error: 'seatId and txHash are required' });
+  const { seatId, txHash, userId } = req.body as { seatId?: string; txHash?: string; userId?: string };
+  if (!seatId || !txHash || !userId) {
+    return res.status(400).json({ error: 'seatId, userId, and txHash are required' });
   }
 
   try {
@@ -247,12 +253,15 @@ lobbiesRouter.post('/:id/pay', async (req, res) => {
     if (!seat) {
       return res.status(404).json({ error: 'Seat not found' });
     }
+    if (seat.user_id !== userId) {
+      return res.status(403).json({ error: 'Seat is reserved by another user' });
+    }
+    if (!seat.taken_at) {
+      return res.status(400).json({ error: 'Seat is not currently reserved' });
+    }
     if (seat.status === 'paid') {
       const seatTxMap = await txLogStore.latestSeatPayments([seat.id]);
       return res.json({ seat: serializeSeat(seat, seatTxMap), status: 'already_paid' });
-    }
-    if (seat.status !== 'taken' || !seat.user_id || !seat.taken_at) {
-      return res.status(400).json({ error: 'Seat is not reserved' });
     }
 
     const reservedAt = Date.parse(seat.taken_at);
@@ -264,32 +273,75 @@ lobbiesRouter.post('/:id/pay', async (req, res) => {
       return res.status(400).json({ error: 'Reservation expired' });
     }
 
-    const paidSeat = await seatStore.markPaid(
-      seat.id,
-      numberParsers.toNumber(lobby.lobby.stake_amount) ?? 0,
-      new Date().toISOString()
-    );
-    await txLogStore.insert({
-      userId: paidSeat.user_id ?? undefined,
+    const user = await userStore.getById(userId);
+    if (!user?.wallet) {
+      return res.status(400).json({ error: 'User wallet is required before paying' });
+    }
+
+    const stakeTon = numberParsers.toNumber(lobby.lobby.stake_amount) ?? 0;
+    const pendingSeat =
+      seat.status === 'pending_payment' ? seat : await seatStore.markPendingPayment(seat.id);
+
+    const normalizedHash = normalizeTxHashValue(txHash);
+
+    const txLog = await txLogStore.insert({
+      userId: pendingSeat.user_id ?? undefined,
       lobbyId: lobby.lobby.id,
-      seatId: paidSeat.id,
+      seatId: pendingSeat.id,
       action: 'pay',
-      txHash,
-      amountTon: numberParsers.toNumber(lobby.lobby.stake_amount) ?? undefined,
+      txHash: normalizedHash,
+      amountTon: stakeTon,
+      status: 'pending',
       metadata: {
         lobbyId: lobby.lobby.id,
         lobbyCode: lobby.lobby.lobby_code,
-        seatIndex: paidSeat.seat_index,
+        seatIndex: pendingSeat.seat_index,
         roundId: lobby.currentRound?.id ?? null
       }
     });
 
-    const seatTxMap = await txLogStore.latestSeatPayments([paidSeat.id]);
-    const seatPayload = serializeSeat(paidSeat, seatTxMap);
+    let verification = await verifyStakeTx({
+      txHash: normalizedHash,
+      lobbyId: lobby.lobby.id,
+      seatId: pendingSeat.id,
+      expectedAmountTon: stakeTon,
+      expectedSender: user.wallet,
+      expectedSeatIndex: pendingSeat.seat_index,
+      expectedContractAddress: lobby.lobby.round_wallet
+    });
+
+    let latestSeat = pendingSeat;
+    if (verification.status === 'confirmed') {
+      latestSeat = await seatStore.markPaid(pendingSeat.id, stakeTon, new Date().toISOString());
+      await txLogStore.updateStatus(txLog.id, 'confirmed');
+      const seatTxMap = await txLogStore.latestSeatPayments([latestSeat.id]);
+      const seatPayload = serializeSeat(latestSeat, seatTxMap);
+      emitSeatUpdate({ lobbyId: req.params.id, seat: seatPayload });
+      emitPaymentConfirmed({ lobbyId: req.params.id, seat: seatPayload, txHash: normalizedHash });
+      emitTimerTick(buildSeatTimerTickPayload(req.params.id, seatPayload));
+      return res.json({ seat: seatPayload, status: 'confirmed', verification });
+    }
+
+    if (verification.status === 'failed') {
+      await seatStore.markFailed(pendingSeat.id, new Date().toISOString());
+      await seatStore.releaseSeat(pendingSeat.id, new Date().toISOString());
+      await txLogStore.updateStatus(txLog.id, 'failed', {
+        ...(txLog.metadata ?? {}),
+        verification
+      });
+      const refreshedSeat = await seatStore.findById(pendingSeat.id);
+      const seatTxMap = await txLogStore.latestSeatPayments([pendingSeat.id]);
+      const seatPayload = serializeSeat(refreshedSeat ?? pendingSeat, seatTxMap);
+      emitSeatUpdate({ lobbyId: req.params.id, seat: seatPayload });
+      emitTimerTick(buildSeatTimerTickPayload(req.params.id, seatPayload));
+      return res.status(400).json({ error: 'Transaction rejected on-chain', seat: seatPayload, verification });
+    }
+
+    const seatTxMap = await txLogStore.latestSeatPayments([pendingSeat.id]);
+    const seatPayload = serializeSeat(pendingSeat, seatTxMap);
     emitSeatUpdate({ lobbyId: req.params.id, seat: seatPayload });
-    emitPaymentConfirmed({ lobbyId: req.params.id, seat: seatPayload, txHash });
     emitTimerTick(buildSeatTimerTickPayload(req.params.id, seatPayload));
-    res.json({ seat: seatPayload, status: 'pending_confirmation' });
+    res.json({ seat: seatPayload, status: 'pending_payment', verification });
   } catch (error) {
     res.status(400).json({ error: (error as Error).message });
   }

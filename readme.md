@@ -47,15 +47,19 @@ the following files before running any process.
 
 ### Frontend `.env`
 
-Create `frontend/.env` (or `.env.local` ignored by Git) with:
+Copy [`frontend/.env.example`](./frontend/.env.example) to `.env` (or `.env.local`) and fill:
 
 ```
-VITE_API_BASE_URL=http://localhost:4000          # or your deployed backend URL
-VITE_TON_CONTRACT_ADDRESS=EQYourLiveContract…    # used for telemetry displays
+VITE_API_BASE_URL=http://localhost:4000
+VITE_WS_URL=ws://localhost:4000/ws
+VITE_TONCONNECT_MANIFEST_URL=/tonconnect-manifest.json
+VITE_TON_CONTRACT_ADDRESS=EQYourLiveContract…
+VITE_TG_BOT_NAME=@yourbot
+VITE_TG_APP_TITLE=TONRODY
+VITE_APP_SALT=dev-only-salt
 ```
 
-When `VITE_API_BASE_URL` is set, all fetches in [`frontend/src/lib/api.ts`](./frontend/src/lib/api.ts) target the live backend
-instead of deterministic mocks, so keep it aligned with the environment you run.
+`VITE_API_BASE_URL`/`VITE_WS_URL` control REST + WebSocket URLs, `VITE_TONCONNECT_MANIFEST_URL` points TonConnect wallets to the manifest, and the Telegram/app fields drive UI branding.
 
 ---
 
@@ -170,9 +174,9 @@ subscriptions when sockets close to prevent stale listeners.
    - Click the Ton Connect button in the header; select a wallet (Tonkeeper, MyTonWallet, OpenMask, etc.).
    - Choose **Testnet** inside the wallet when prompted and scan/confirm the pairing request.
    - Ensure the wallet holds testnet TON from the faucet before paying seats or deploying contracts.
-4. **Transactions** – The frontend currently simulates stakes through `src/services/fakeTonService.ts`, but once wired, calls to
-   `TonConnectUI.sendTransaction` will carry the live `round_wallet` destination, amount, and payload (lobby ID + seat index +
-   hash commitment). Keep wallets connected while testing to capture realtime state and WebSocket broadcasts.
+4. **Transactions** – The frontend now calls `TonConnectUI.sendTransaction` directly, signing transfers to the lobby contract
+   with payloads that contain `lobbyId`, `seatId`, and the caller’s identity. The backend only records the tx hash and waits for
+   TON/webhook confirmation before marking a seat paid, so keep wallets connected to watch the full on-chain flow.
 
 ---
 

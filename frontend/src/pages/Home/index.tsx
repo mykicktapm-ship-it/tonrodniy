@@ -13,26 +13,32 @@ import {
   Text,
   useToast
 } from '@chakra-ui/react';
-import { useMemo, useCallback } from 'react';
+import { useMemo, useCallback, useState } from 'react';
 import { PageSection } from '../../components/PageSection';
 import { StatusBadge } from '../../components/StatusBadge';
 import { useLobbiesQuery } from '../../hooks/useLobbyData';
 import { useConnectedUser } from '../../hooks/useConnectedUser';
 import { useWalletStore } from '../../stores/walletStore';
 import { useMutation, useQueryClient } from '../../lib/queryClient';
-import { joinLobby, payForSeat, sendStakeTransaction, type LobbySeat } from '../../lib/api';
+import { joinLobby, payForSeat, type LobbySeat } from '../../lib/api';
 import { useLobbyChannel } from '../../hooks/useLobbyChannel';
 import { syncSeatAcrossCaches } from '../../lib/lobbyUtils';
+import { sendStakeViaTonConnect } from '../../lib/tonConnect';
 import { TON_CONTRACT_ADDRESS } from '../../lib/constants';
 
 const formatSeatLabel = (seat: LobbySeat) => {
-  if (seat.status === 'paid') {
-    return `Seat #${seat.seatIndex + 1} paid`;
+  switch (seat.status) {
+    case 'paid':
+      return `Seat #${seat.seatIndex + 1} paid`;
+    case 'pending_payment':
+      return `Seat #${seat.seatIndex + 1} awaiting confirmation`;
+    case 'taken':
+      return `Seat #${seat.seatIndex + 1} reserved`;
+    case 'failed':
+      return `Seat #${seat.seatIndex + 1} payment failed`;
+    default:
+      return `Seat #${seat.seatIndex + 1} open`;
   }
-  if (seat.status === 'taken') {
-    return `Seat #${seat.seatIndex + 1} reserved`;
-  }
-  return `Seat #${seat.seatIndex + 1} open`;
 };
 
 const formatTimestamp = (value?: string) => {
@@ -50,10 +56,11 @@ export default function HomePage() {
   const toast = useToast();
   const { data: lobbies, isLoading: isLobbiesLoading } = useLobbiesQuery();
   const { data: userProfile, status: userStatus, error: userError } = useConnectedUser();
-  const { connect, status: walletStatus, address } = useWalletStore((state) => ({
+  const { connect, status: walletStatus, address, controller } = useWalletStore((state) => ({
     connect: state.connect,
     status: state.status,
-    address: state.address
+    address: state.address,
+    controller: state.controller
   }));
   const queryClient = useQueryClient();
 
@@ -65,6 +72,9 @@ export default function HomePage() {
   }, [lobbies]);
 
   useLobbyChannel(activeLobby?.id);
+
+  const [stakeUiState, setStakeUiState] = useState<'idle' | 'awaiting_signature' | 'submitted' | 'rejected' | 'error'>('idle');
+  const [lastTxHash, setLastTxHash] = useState<string | null>(null);
 
   const mySeat = useMemo(() => {
     if (!activeLobby || !userProfile?.id) {
@@ -86,6 +96,38 @@ export default function HomePage() {
       });
   }, [activeLobby]);
 
+  const stakeStatusMessage = useMemo(() => {
+    switch (stakeUiState) {
+      case 'awaiting_signature':
+        return 'Waiting for wallet signature…';
+      case 'submitted':
+        return lastTxHash
+          ? `Submitted ${lastTxHash.slice(0, 10)}…, awaiting TON confirmation.`
+          : 'Transaction submitted, awaiting TON confirmation.';
+      case 'rejected':
+        return 'Signature rejected in wallet.';
+      case 'error':
+        return 'Payment failed before reaching TON.';
+      default:
+        return null;
+    }
+  }, [lastTxHash, stakeUiState]);
+
+  const stakeStatusColor = useMemo(() => {
+    switch (stakeUiState) {
+      case 'awaiting_signature':
+        return 'blue.300';
+      case 'submitted':
+        return 'yellow.300';
+      case 'rejected':
+        return 'orange.300';
+      case 'error':
+        return 'red.300';
+      default:
+        return 'gray.400';
+    }
+  }, [stakeUiState]);
+
   const joinMutation = useMutation({
     mutationFn: async ({ lobbyId, userId }: { lobbyId: string; userId: string }) => joinLobby(lobbyId, userId),
     onSuccess: (result, variables) => {
@@ -94,8 +136,17 @@ export default function HomePage() {
   });
 
   const payMutation = useMutation({
-    mutationFn: async ({ lobbyId, seatId, txHash }: { lobbyId: string; seatId: string; txHash: string }) =>
-      payForSeat(lobbyId, seatId, txHash),
+    mutationFn: async ({
+      lobbyId,
+      seatId,
+      txHash,
+      userId
+    }: {
+      lobbyId: string;
+      seatId: string;
+      txHash: string;
+      userId: string;
+    }) => payForSeat(lobbyId, seatId, txHash, userId),
     onSuccess: (result, variables) => {
       syncSeatAcrossCaches(queryClient, variables.lobbyId, result.seat);
     }
@@ -147,48 +198,74 @@ export default function HomePage() {
   }, [activeLobby, joinMutation, requireWalletConnection, toast, userProfile?.id, userStatus]);
 
   const handlePayStake = useCallback(async () => {
-    if (!activeLobby || !mySeat) {
+    if (!activeLobby || !mySeat || !userProfile?.id) {
       return;
     }
     const hasWallet = await requireWalletConnection();
     if (!hasWallet || !address) {
       return;
     }
-    try {
+    if (!controller) {
       toast({
-        title: 'Sending TON stake',
-        description: 'Dispatching transaction via tonClient…',
-        status: 'info',
-        duration: 4000,
-        isClosable: true
-      });
-      const submission = await sendStakeTransaction({
-        lobbyId: activeLobby.id,
-        seatId: mySeat.id,
-        participantWallet: address,
-        amountTon: activeLobby.stake
-      });
-      await payMutation.mutateAsync({ lobbyId: activeLobby.id, seatId: mySeat.id, txHash: submission.txHash });
-      toast({
-        title: 'Stake confirmed',
-        description: `TX ${submission.txHash.slice(0, 10)}…`,
-        status: 'success',
+        title: 'TonConnect unavailable',
+        description: 'Wallet controller is not ready yet.',
+        status: 'error',
         duration: 5000,
         isClosable: true
       });
-    } catch (error) {
+      return;
+    }
+    setStakeUiState('awaiting_signature');
+    setLastTxHash(null);
+    try {
+      const { txHash } = await sendStakeViaTonConnect({
+        controller,
+        lobbyId: activeLobby.id,
+        seatId: mySeat.id,
+        seatIndex: mySeat.seatIndex,
+        stakeTon: activeLobby.stake,
+        userId: userProfile.id
+      });
+      setLastTxHash(txHash);
+      setStakeUiState('submitted');
+      const result = await payMutation.mutateAsync({
+        lobbyId: activeLobby.id,
+        seatId: mySeat.id,
+        txHash,
+        userId: userProfile.id
+      });
+      const confirmed = result.status === 'confirmed';
+      setStakeUiState(confirmed ? 'idle' : 'submitted');
       toast({
-        title: 'Payment failed',
-        description: error instanceof Error ? error.message : 'Unknown error',
+        title: confirmed ? 'Stake confirmed' : 'Stake submitted',
+        description: confirmed
+          ? `TX ${txHash.slice(0, 10)}…`
+          : 'Waiting for TON confirmation…',
+        status: confirmed ? 'success' : 'info',
+        duration: confirmed ? 5000 : 4000,
+        isClosable: true
+      });
+    } catch (error) {
+      const message = error instanceof Error ? error.message : 'Unknown error';
+      const rejected = /reject/i.test(message);
+      setStakeUiState(rejected ? 'rejected' : 'error');
+      toast({
+        title: rejected ? 'Signature rejected' : 'Payment failed',
+        description: message,
         status: 'error',
         duration: 5000,
         isClosable: true
       });
     }
-  }, [activeLobby, address, mySeat, payMutation, requireWalletConnection, toast]);
+  }, [activeLobby, address, controller, mySeat, payMutation, requireWalletConnection, toast, userProfile?.id]);
 
   const isReserveDisabled = !activeLobby || joinMutation.isPending || walletStatus === 'connecting';
-  const isPayDisabled = !activeLobby || !mySeat || mySeat.status === 'paid' || payMutation.isPending;
+  const isPayDisabled =
+    !activeLobby ||
+    !mySeat ||
+    mySeat.status === 'paid' ||
+    payMutation.isPending ||
+    stakeUiState === 'awaiting_signature';
   const progressValue = activeLobby ? Math.min(100, (activeLobby.paidSeats / activeLobby.seatsTotal) * 100) : 0;
 
   return (
@@ -231,6 +308,11 @@ export default function HomePage() {
                       Pay stake
                     </Button>
                   </HStack>
+                  {stakeStatusMessage && (
+                    <Text fontSize="sm" color={stakeStatusColor}>
+                      {stakeStatusMessage}
+                    </Text>
+                  )}
                   {userError && walletStatus === 'connected' && (
                     <Text fontSize="sm" color="orange.300">
                       {userError instanceof Error ? userError.message : 'Unable to resolve wallet profile'}

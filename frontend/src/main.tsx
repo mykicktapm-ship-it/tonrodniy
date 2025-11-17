@@ -6,6 +6,7 @@ import App from './App';
 import { theme } from './theme';
 import { TonConnectUIProvider } from './providers/TonConnectUIProvider';
 import { QueryClient, QueryClientProvider } from './lib/queryClient';
+import { TONCONNECT_MANIFEST_URL } from './lib/constants';
 
 const queryClient = new QueryClient();
 
@@ -15,7 +16,7 @@ ReactDOM.createRoot(document.getElementById('root') as HTMLElement).render(
       <ColorModeScript initialColorMode={theme.config.initialColorMode} />
       <QueryClientProvider client={queryClient}>
         <BrowserRouter>
-          <TonConnectUIProvider manifestUrl="/tonconnect-manifest.json">
+          <TonConnectUIProvider manifestUrl={TONCONNECT_MANIFEST_URL}>
             <App />
           </TonConnectUIProvider>
         </BrowserRouter>
