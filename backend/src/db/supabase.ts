@@ -2,7 +2,7 @@ import { createClient, PostgrestError, SupabaseClient } from '@supabase/supabase
 import { getActiveContractVersion } from '../config/contracts';
 import { env } from '../config/env';
 
-type Json = string | number | boolean | null | { [key: string]: Json } | Json[];
+export type Json = string | number | boolean | null | { [key: string]: Json } | Json[];
 
 type LobbyStatus = 'open' | 'filling' | 'locked' | 'finalized' | 'archived';
 type SeatStatus = 'free' | 'taken' | 'pending_payment' | 'paid' | 'failed';
@@ -628,6 +628,22 @@ export const auditLogStore = {
       .select('*')
       .single();
     return extractRequired('auditLogs.insert', data, error);
+  },
+
+  async findByHash(action: string, hash: string): Promise<AuditLogRow | null> {
+    const client = getClient();
+    const { data, error } = await client
+      .from('audit_logs')
+      .select('*')
+      .eq('action', action)
+      .eq('hash', hash)
+      .order('created_at', { ascending: false })
+      .limit(1)
+      .maybeSingle();
+    if (error) {
+      raise('auditLogs.findByHash', error);
+    }
+    return data ?? null;
   },
 
   async recordSeedCommit(args: { lobbyId: string; actorId: string; seed: string; commit: string }): Promise<AuditLogRow> {

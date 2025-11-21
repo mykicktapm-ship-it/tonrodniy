@@ -1,9 +1,19 @@
-import { createHash, randomUUID } from 'crypto';
+import { createHash, createHmac, randomUUID, timingSafeEqual } from 'crypto';
+import type { Request } from 'express';
 import { Router } from 'express';
 import { z } from 'zod';
 
 import { env } from '../config/env';
-import { auditLogStore, roundStore, SeatRow, seatStore, txLogStore } from '../db/supabase';
+import {
+  auditLogStore,
+  lobbyStore,
+  numberParsers,
+  roundStore,
+  SeatRow,
+  seatStore,
+  txLogStore,
+  type Json
+} from '../db/supabase';
 import { getLobbyState } from '../services/tonClient';
 import {
   buildSeatTimerTickPayload,
@@ -123,10 +133,14 @@ const tonEventSchema = z.discriminatedUnion('type', [
 const tonEventsSchema = z.array(tonEventSchema);
 type TonEventInput = z.infer<typeof tonEventSchema>;
 
+interface RawBodyRequest extends Request {
+  rawBody?: Buffer;
+}
+
 const NANO_IN_TON = 1_000_000_000n;
 const RESERVATION_WINDOW_MS = 2 * 60 * 1000;
 
-type JsonRecord = Record<string, unknown>;
+type JsonRecord = Record<string, Json>;
 
 interface BaseEvent {
   type: ContractEventType;
@@ -182,7 +196,7 @@ type Receipt = {
   eventId: string;
   lobbyId: string;
   type: ContractEventType;
-  status: 'persisted' | 'error';
+  status: 'persisted' | 'duplicate' | 'error';
   persisted?: Record<string, unknown>;
   error?: string;
 };
@@ -274,9 +288,16 @@ const sanitizeRecord = (value: unknown): JsonRecord => {
 };
 
 const normalizeEvent = (event: TonEventInput): TonWebhookEvent => {
+  const rawEventId = (event as { eventId?: unknown }).eventId;
+  const eventId =
+    typeof rawEventId === 'string' && rawEventId.trim().length
+      ? rawEventId
+      : 'txHash' in event && typeof event.txHash === 'string' && event.txHash.trim().length
+        ? event.txHash
+        : randomUUID();
   const base: BaseEvent = {
     type: event.type,
-    eventId: event.eventId ?? ('txHash' in event && event.txHash ? event.txHash : randomUUID()),
+    eventId,
     lobbyId: toLobbyId(event.lobbyId),
     occurredAtIso: toIsoTimestamp('occurredAt' in event ? event.occurredAt : undefined) ??
       toIsoTimestamp('timestamp' in event ? event.timestamp : undefined),
@@ -351,6 +372,38 @@ const parseEvents = (raw: unknown): TonWebhookEvent[] => {
 
 const validateSecret = (provided?: string | null) => provided === env.tonWebhookSecret;
 
+const isAllowedSource = (req: Request) => {
+  if (!env.tonWebhookAllowlist.length) {
+    return true;
+  }
+  const candidates = [req.ip, req.headers['x-forwarded-for'] as string | undefined]
+    .filter(Boolean)
+    .flatMap((value) =>
+      value
+        ?.toString()
+        .split(',')
+        .map((entry) => entry.trim()) ?? []
+    )
+    .map((ip) => ip.replace('::ffff:', ''));
+  return candidates.some((ip) => env.tonWebhookAllowlist.includes(ip));
+};
+
+const verifyHmacSignature = (req: RawBodyRequest) => {
+  if (!req.rawBody?.length) {
+    throw new Error('Missing raw webhook body for signature verification');
+  }
+  const provided = req.get('x-ton-signature');
+  if (!provided) {
+    throw new Error('x-ton-signature header is required');
+  }
+  const expected = createHmac('sha256', env.tonWebhookHmacSecret).update(req.rawBody).digest('hex');
+  const providedBuffer = Buffer.from(provided);
+  const expectedBuffer = Buffer.from(expected);
+  if (providedBuffer.length !== expectedBuffer.length || !timingSafeEqual(providedBuffer, expectedBuffer)) {
+    throw new Error('Invalid HMAC signature');
+  }
+};
+
 const getSeatExpiration = (seat: SeatRow): string | undefined => {
   if (!seat.taken_at || seat.status === 'paid') {
     return undefined;
@@ -393,23 +446,30 @@ const canonicalizeTxHash = (hash?: string | null): string | undefined => {
   return `0x${withoutPrefix}`;
 };
 
-const recordAuditTrail = async (event: TonWebhookEvent) => {
-  const digest = createHash('sha256')
+const computeEventHash = (event: TonWebhookEvent): string =>
+  createHash('sha256')
     .update([event.type, event.lobbyId, event.eventId, event.occurredAtIso ?? ''].join(':'))
     .digest('hex');
-  return auditLogStore.insert({
+
+const ensureUniqueEvent = async (event: TonWebhookEvent) => {
+  const hash = computeEventHash(event);
+  const existing = await auditLogStore.findByHash(event.type, hash);
+  return { hash, duplicateAuditId: existing?.id };
+};
+
+const recordAuditTrail = async (event: TonWebhookEvent, hash: string) =>
+  auditLogStore.insert({
     actorType: 'contract',
     actorId: env.ton.contractAddress,
     action: event.type,
     payload: {
       lobbyId: event.lobbyId,
       eventId: event.eventId,
-      occurredAt: event.occurredAtIso,
+      occurredAt: event.occurredAtIso ?? null,
       data: event.raw
-    },
-    hash: digest
+    } as Json,
+    hash
   });
-};
 
 const findSeatForDeposit = async (event: DepositReceivedEvent): Promise<SeatRow> => {
   if (event.seatId) {
@@ -425,6 +485,18 @@ const findSeatForDeposit = async (event: DepositReceivedEvent): Promise<SeatRow>
   return seat;
 };
 
+const getLobbyStakeTon = async (lobbyId: string): Promise<number> => {
+  const lobby = await lobbyStore.getDetailed(lobbyId);
+  if (!lobby) {
+    throw new Error(`Lobby ${lobbyId} not found`);
+  }
+  const stake = numberParsers.toNumber(lobby.lobby.stake_amount) ?? Number.NaN;
+  if (!Number.isFinite(stake)) {
+    throw new Error(`Stake amount is not configured for lobby ${lobbyId}`);
+  }
+  return stake;
+};
+
 const getLatestRoundForLobby = async (lobbyId: string) => {
   const roundMap = await roundStore.getLatestByLobbyIds([lobbyId]);
   const round = roundMap.get(lobbyId);
@@ -434,12 +506,42 @@ const getLatestRoundForLobby = async (lobbyId: string) => {
   return round;
 };
 
-const handleDepositReceived = async (event: DepositReceivedEvent) => {
+const handleDepositReceived = async (event: DepositReceivedEvent, auditHash: string) => {
   const seat = await findSeatForDeposit(event);
   const normalizedHash = canonicalizeTxHash(event.txHash);
   const existingLog = normalizedHash ? await txLogStore.findPayLogByHash(normalizedHash) : null;
   if (existingLog?.status === 'confirmed') {
     return { seatId: seat.id, txLogId: existingLog.id };
+  }
+
+  const stakeTon = await getLobbyStakeTon(event.lobbyId);
+  const expectedMatch = Math.abs(event.amountTon - stakeTon) < 1e-9;
+  if (!expectedMatch) {
+    const failedSeat =
+      seat.status === 'paid'
+        ? seat
+        : await seatStore.markFailed(seat.id, event.occurredAtIso ?? new Date().toISOString());
+    await txLogStore.insert({
+      userId: failedSeat.user_id ?? undefined,
+      lobbyId: event.lobbyId,
+      seatId: failedSeat.id,
+      action: 'pay',
+      txHash: normalizedHash ?? event.txHash,
+      amountTon: event.amountTon,
+      status: 'failed',
+      metadata: {
+        source: 'ton_webhook',
+        eventType: event.type,
+        seatIndex: failedSeat.seat_index,
+        sender: event.sender,
+        occurredAt: event.occurredAtIso ?? null,
+        memo: event.memo ?? null,
+        reason: 'stake_mismatch',
+        expectedStakeTon: stakeTon
+      }
+    });
+    await recordAuditTrail(event, auditHash);
+    throw new Error(`Deposit amount ${event.amountTon} TON does not match stake ${stakeTon} TON`);
   }
 
   const shouldUpdateSeat = seat.status !== 'paid';
@@ -462,25 +564,29 @@ const handleDepositReceived = async (event: DepositReceivedEvent) => {
           eventType: event.type,
           seatIndex: paidSeat.seat_index,
           sender: event.sender,
-          occurredAt: event.occurredAtIso,
-          memo: event.memo
+          occurredAt: event.occurredAtIso ?? null,
+          memo: event.memo ?? null
         }
       });
 
-  const audit = await recordAuditTrail(event);
+  const audit = await recordAuditTrail(event, auditHash);
   const seatPayload = buildSeatPayload(paidSeat, txLog.tx_hash ?? normalizedHash);
-  emitSeatUpdate({ lobbyId: event.lobbyId, seat: seatPayload });
-  emitPaymentConfirmed({ lobbyId: event.lobbyId, seat: seatPayload, txHash: txLog.tx_hash ?? normalizedHash });
+  emitSeatUpdate({ lobbyId: event.lobbyId, seat: seatPayload as unknown as Record<string, unknown> });
+  emitPaymentConfirmed({
+    lobbyId: event.lobbyId,
+    seat: seatPayload as unknown as Record<string, unknown>,
+    txHash: txLog.tx_hash ?? normalizedHash
+  });
   emitTimerTick(buildSeatTimerTickPayload(event.lobbyId, seatPayload));
   return { auditLogId: audit.id, txLogId: txLog.id, seatId: paidSeat.id };
 };
 
-const handleLobbyFilled = async (event: LobbyFilledEvent) => {
-  const audit = await recordAuditTrail(event);
+const handleLobbyFilled = async (event: LobbyFilledEvent, auditHash: string) => {
+  const audit = await recordAuditTrail(event, auditHash);
   return { auditLogId: audit.id, poolTon: event.poolTon, participantsCount: event.participantsCount };
 };
 
-const handleWinnerSelected = async (event: WinnerSelectedEvent) => {
+const handleWinnerSelected = async (event: WinnerSelectedEvent, auditHash: string) => {
   const round = await getLatestRoundForLobby(event.lobbyId);
   const updatedRound = await roundStore.update(round.id, {
     winner_wallet: event.winnerAddr,
@@ -501,7 +607,7 @@ const handleWinnerSelected = async (event: WinnerSelectedEvent) => {
       roundHash: updatedRound.round_hash
     }
   });
-  const audit = await recordAuditTrail(event);
+  const audit = await recordAuditTrail(event, auditHash);
   emitRoundFinalized({
     lobbyId: event.lobbyId,
     roundId: updatedRound.id,
@@ -512,7 +618,7 @@ const handleWinnerSelected = async (event: WinnerSelectedEvent) => {
   return { auditLogId: audit.id, txLogId: txLog.id, roundId: updatedRound.id };
 };
 
-const handlePayoutSent = async (event: PayoutSentEvent) => {
+const handlePayoutSent = async (event: PayoutSentEvent, auditHash: string) => {
   const round = await getLatestRoundForLobby(event.lobbyId);
   const updatedRound = await roundStore.update(round.id, {
     payout_amount: event.payoutTon,
@@ -533,7 +639,7 @@ const handlePayoutSent = async (event: PayoutSentEvent) => {
       success: event.success
     }
   });
-  const audit = await recordAuditTrail(event);
+  const audit = await recordAuditTrail(event, auditHash);
   emitPayoutSent({
     lobbyId: event.lobbyId,
     roundId: updatedRound.id,
@@ -545,18 +651,18 @@ const handlePayoutSent = async (event: PayoutSentEvent) => {
   return { auditLogId: audit.id, txLogId: txLog.id, roundId: updatedRound.id };
 };
 
-const handleEvent = async (event: TonWebhookEvent) => {
+const handleEvent = async (event: TonWebhookEvent, auditHash: string) => {
   switch (event.type) {
     case 'DepositReceived':
-      return handleDepositReceived(event);
+      return handleDepositReceived(event, auditHash);
     case 'LobbyFilled':
-      return handleLobbyFilled(event);
+      return handleLobbyFilled(event, auditHash);
     case 'WinnerSelected':
-      return handleWinnerSelected(event);
+      return handleWinnerSelected(event, auditHash);
     case 'PayoutSent':
-      return handlePayoutSent(event);
+      return handlePayoutSent(event, auditHash);
     default:
-      throw new Error(`Unhandled event ${event.type}`);
+      throw new Error('Unhandled event type');
   }
 };
 
@@ -564,6 +670,16 @@ tonWebhookRouter.post('/events', async (req, res) => {
   const secret = req.get('x-ton-webhook-secret') ?? (req.query.secret as string | undefined);
   if (!validateSecret(secret)) {
     return res.status(401).json({ error: 'invalid webhook secret' });
+  }
+
+  if (!isAllowedSource(req)) {
+    return res.status(403).json({ error: 'webhook source not allowed' });
+  }
+
+  try {
+    verifyHmacSignature(req as RawBodyRequest);
+  } catch (error) {
+    return res.status(401).json({ error: (error as Error).message });
   }
 
   let events: TonWebhookEvent[] = [];
@@ -580,13 +696,25 @@ tonWebhookRouter.post('/events', async (req, res) => {
   const receipts: Receipt[] = [];
   for (const event of events) {
     try {
-      const persisted = await handleEvent(event);
+      const uniqueness = await ensureUniqueEvent(event);
+      if (uniqueness.duplicateAuditId) {
+        receipts.push({
+          eventId: event.eventId,
+          lobbyId: event.lobbyId,
+          type: event.type,
+          status: 'duplicate',
+          persisted: { auditLogId: uniqueness.duplicateAuditId, hash: uniqueness.hash }
+        });
+        continue;
+      }
+
+      const persisted = await handleEvent(event, uniqueness.hash);
       receipts.push({
         eventId: event.eventId,
         lobbyId: event.lobbyId,
         type: event.type,
         status: 'persisted',
-        persisted
+        persisted: { ...persisted, hash: uniqueness.hash }
       });
     } catch (error) {
       receipts.push({

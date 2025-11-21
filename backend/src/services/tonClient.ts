@@ -367,7 +367,12 @@ export const sendFinalizeRound = async (
     'finalize_round',
     GAS_BUFFER_TON.finalize,
     buildFinalizePayload(params, roundHash),
-    params
+    {
+      lobbyId: params.lobbyId,
+      roundId: params.roundId,
+      winnerWallet: params.winnerWallet,
+      payoutTon: params.payoutTon
+    }
   );
 
   return {
@@ -388,7 +393,8 @@ export const sendWithdrawPool = async (
     'withdraw_pool',
     GAS_BUFFER_TON.withdraw,
     buildWithdrawPayload(params, withdrawableTon),
-    { ...params, withdrawableTon }
+    { lobbyId: params.lobbyId, treasuryWallet: params.treasuryWallet, withdrawableTon },
+    params.treasuryWallet
   );
 
   return {
@@ -486,7 +492,10 @@ export const verifyStakeTx = async (params: VerifyStakeParams): Promise<StakeVer
 
   try {
     const address = normalizeAddress(params.expectedContractAddress ?? tonEnv.contractAddress);
-    const transactions = (await tonweb.provider.getTransactions(address, 32)) as TonTransaction[];
+    const provider = tonweb.provider as unknown as {
+      getTransactions: (address: string, limit: number) => Promise<unknown[]>;
+    };
+    const transactions = (await provider.getTransactions(address, 32)) as TonTransaction[];
     const candidate = transactions.find((tx) => normalizeTxHash(tx.in_msg?.hash ?? tx.hash) === normalizedHash);
     if (!candidate) {
       return {
