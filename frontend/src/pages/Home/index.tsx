@@ -6,6 +6,7 @@ import {
   HStack,
   Progress,
   Skeleton,
+  SkeletonText,
   Stack,
   Stat,
   StatLabel,
@@ -13,14 +14,14 @@ import {
   Text,
   useToast
 } from '@chakra-ui/react';
-import { useMemo, useCallback, useState } from 'react';
+import { useMemo, useCallback, useState, useEffect } from 'react';
 import { PageSection } from '../../components/PageSection';
 import { StatusBadge } from '../../components/StatusBadge';
 import { useLobbiesQuery } from '../../hooks/useLobbyData';
 import { useConnectedUser } from '../../hooks/useConnectedUser';
 import { useWalletStore } from '../../stores/walletStore';
 import { useMutation, useQueryClient } from '../../lib/queryClient';
-import { joinLobby, payForSeat, type LobbySeat } from '../../lib/api';
+import { joinLobby, payForSeat, type LobbySeat, type LobbySummary } from '../../lib/api';
 import { useLobbyChannel } from '../../hooks/useLobbyChannel';
 import { syncSeatAcrossCaches } from '../../lib/lobbyUtils';
 import { sendStakeViaTonConnect } from '../../lib/tonConnect';
@@ -71,6 +72,16 @@ export default function HomePage() {
     return lobbies.find((lobby) => lobby.status !== 'archived') ?? lobbies[0];
   }, [lobbies]);
 
+  const [persistedLobby, setPersistedLobby] = useState<LobbySummary | undefined>();
+
+  useEffect(() => {
+    if (activeLobby) {
+      setPersistedLobby(activeLobby);
+    }
+  }, [activeLobby]);
+
+  const displayLobby = activeLobby ?? persistedLobby;
+
   useLobbyChannel(activeLobby?.id);
 
   const [stakeUiState, setStakeUiState] = useState<'idle' | 'awaiting_signature' | 'submitted' | 'rejected' | 'error'>('idle');
@@ -84,17 +95,17 @@ export default function HomePage() {
   }, [activeLobby, userProfile?.id]);
 
   const activityFeed = useMemo(() => {
-    if (!activeLobby) {
+    if (!displayLobby) {
       return [];
     }
-    return [...activeLobby.seats]
+    return [...displayLobby.seats]
       .filter((seat) => seat.status !== 'free')
       .sort((a, b) => {
         const tsA = Date.parse(a.paidAt ?? a.reservedAt ?? '');
         const tsB = Date.parse(b.paidAt ?? b.reservedAt ?? '');
         return (Number.isNaN(tsB) ? 0 : tsB) - (Number.isNaN(tsA) ? 0 : tsA);
       });
-  }, [activeLobby]);
+  }, [displayLobby]);
 
   const stakeStatusMessage = useMemo(() => {
     switch (stakeUiState) {
@@ -266,7 +277,7 @@ export default function HomePage() {
     mySeat.status === 'paid' ||
     payMutation.isPending ||
     stakeUiState === 'awaiting_signature';
-  const progressValue = activeLobby ? Math.min(100, (activeLobby.paidSeats / activeLobby.seatsTotal) * 100) : 0;
+  const progressValue = displayLobby ? Math.min(100, (displayLobby.paidSeats / displayLobby.seatsTotal) * 100) : 0;
 
   return (
     <Stack spacing={8}>
@@ -277,26 +288,42 @@ export default function HomePage() {
         <Grid templateColumns={{ base: '1fr', md: '2fr 1fr' }} gap={6}>
           <GridItem>
             <Stack spacing={4}>
-              {isLobbiesLoading ? (
-                <Skeleton height="24px" />
-              ) : activeLobby ? (
+              {isLobbiesLoading && !displayLobby ? (
+                <Stack spacing={3}>
+                  <Skeleton height="16px" w="60%" />
+                  <Skeleton height="10px" w="90%" />
+                  <SkeletonText mt={4} noOfLines={6} spacing={2} />
+                  <Skeleton height="40px" w="full" />
+                </Stack>
+              ) : displayLobby ? (
                 <>
                   <Text fontSize="sm" color="gray.400">
-                    {activeLobby.paidSeats} paid / {activeLobby.seatsTotal} seats · {activeLobby.stake} TON stake
+                    {displayLobby.paidSeats} paid / {displayLobby.seatsTotal} seats · {displayLobby.stake} TON stake
                   </Text>
                   <Progress value={progressValue} size="sm" colorScheme="purple" borderRadius="full" />
                   <Stack spacing={3}>
-                    {activeLobby.seats.map((seat) => (
-                      <HStack key={seat.id} justify="space-between">
-                        <Text fontFamily="mono" fontSize="sm">
+                    {displayLobby.seats.map((seat) => (
+                      <HStack
+                        key={seat.id}
+                        justify="space-between"
+                        align={{ base: 'flex-start', sm: 'center' }}
+                        flexDir={{ base: 'column', sm: 'row' }}
+                        gap={{ base: 1, sm: 3 }}
+                      >
+                        <Text fontFamily="mono" fontSize="sm" w="full">
                           Seat #{seat.seatIndex + 1}{seat.userId ? ` · ${seat.userId.slice(0, 4)}…` : ''}
                         </Text>
                         <StatusBadge status={seat.status as any} />
                       </HStack>
                     ))}
                   </Stack>
-                  <HStack spacing={3}>
-                    <Button onClick={handleReserveSeat} isDisabled={isReserveDisabled} isLoading={joinMutation.isPending}>
+                  <HStack spacing={3} flexWrap={{ base: 'wrap', sm: 'nowrap' }}>
+                    <Button
+                      onClick={handleReserveSeat}
+                      isDisabled={isReserveDisabled}
+                      isLoading={joinMutation.isPending}
+                      w={{ base: 'full', sm: 'auto' }}
+                    >
                       Reserve seat
                     </Button>
                     <Button
@@ -304,6 +331,7 @@ export default function HomePage() {
                       onClick={handlePayStake}
                       isDisabled={isPayDisabled}
                       isLoading={payMutation.isPending}
+                      w={{ base: 'full', sm: 'auto' }}
                     >
                       Pay stake
                     </Button>
@@ -328,7 +356,9 @@ export default function HomePage() {
             <Stat>
               <StatLabel>Round hash</StatLabel>
               <StatNumber fontSize="lg" fontFamily="mono">
-                {activeLobby?.roundHash ?? '—'}
+                <Text as="span" wordBreak="break-word">
+                  {displayLobby?.roundHash ?? '—'}
+                </Text>
               </StatNumber>
               <Text fontSize="sm" color="gray.400" mt={2}>
                 Hash and stake are signed by the operator wallet {TON_CONTRACT_ADDRESS.slice(0, 10)}…
@@ -344,7 +374,13 @@ export default function HomePage() {
         ) : (
           <Stack spacing={4}>
             {activityFeed.map((seat) => (
-              <HStack key={seat.id} justify="space-between">
+              <HStack
+                key={seat.id}
+                justify="space-between"
+                align={{ base: 'flex-start', sm: 'center' }}
+                flexDir={{ base: 'column', sm: 'row' }}
+                gap={{ base: 1, sm: 3 }}
+              >
                 <Text>{formatSeatLabel(seat)}</Text>
                 <Text color="gray.500" fontSize="sm">
                   {formatTimestamp(seat.paidAt ?? seat.reservedAt)}
@@ -357,16 +393,16 @@ export default function HomePage() {
 
       <PageSection title="Fairness protocol" description="Commit → collect → reveal lifecycle.">
         <Grid templateColumns={{ base: '1fr', md: 'repeat(3, 1fr)' }} gap={4}>
-          {[
-            { label: 'Seed commit', value: activeLobby?.seedCommit ?? '—', helper: 'Published before the lobby opens.' },
+            {[
+            { label: 'Seed commit', value: displayLobby?.seedCommit ?? '—', helper: 'Published before the lobby opens.' },
             {
               label: 'Collect stakes',
-              value: `${activeLobby?.paidSeats ?? 0}/${activeLobby?.seatsTotal ?? 0} paid`,
+              value: `${displayLobby?.paidSeats ?? 0}/${displayLobby?.seatsTotal ?? 0} paid`,
               helper: 'Wallet + TON client confirm each payment.'
             },
             {
               label: 'Seed reveal',
-              value: activeLobby?.seedReveal ?? 'Pending',
+              value: displayLobby?.seedReveal ?? 'Pending',
               helper: 'Revealed when the round finalizes.'
             }
           ].map((step) => (
