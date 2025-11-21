@@ -35,7 +35,10 @@ const base64ToBytes = (value: string): Uint8Array => {
     }
     return bytes;
   }
-  return Buffer.from(value, 'base64');
+
+  // Create a fresh Uint8Array so the underlying buffer is a standard ArrayBuffer,
+  // which satisfies the Web Crypto API's expected BufferSource type signature.
+  return new Uint8Array(Buffer.from(value, 'base64'));
 };
 
 const bytesToHex = (buffer: ArrayBuffer): string => {
@@ -49,7 +52,13 @@ const sha256Hex = async (bytes: Uint8Array): Promise<string> => {
   if (!globalThis.crypto?.subtle) {
     throw new Error('Web Crypto API is unavailable');
   }
-  const digest = await globalThis.crypto.subtle.digest('SHA-256', bytes);
+
+  // Copy into a fresh ArrayBuffer to avoid SharedArrayBuffer typings that
+  // don't satisfy the Web Crypto API's BufferSource constraint.
+  const buffer = new ArrayBuffer(bytes.byteLength);
+  new Uint8Array(buffer).set(bytes);
+
+  const digest = await globalThis.crypto.subtle.digest('SHA-256', buffer);
   return `0x${bytesToHex(digest)}`;
 };
 
