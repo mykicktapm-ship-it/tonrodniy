@@ -47,6 +47,8 @@ const ERR_ALREADY_FINALIZED: Int = 106;
 const ERR_INVALID_REVEAL: Int = 107;
 const ERR_WITHDRAWN: Int = 108;
 const ERR_NOT_WINNER: Int = 109;
+const ERR_WALLET_BUSY: Int = 110;
+const ERR_INVALID_SEAT: Int = 111;
 
 fun emptyTxLog(): cell {
     return beginCell().endCell();
@@ -72,6 +74,10 @@ contract Tonrody {
     payoutSent: Bool;
     txLog: cell;
     lobbyCreatedAt: Int;
+    stakeTxHashes: map<Int, Int>;
+    finalizeTimestamp: Int;
+    finalizeValue: Int;
+    finalizeTxHash: Int;
 
     init(config: TonrodyConfig) {
         self.config = config;
@@ -86,6 +92,10 @@ contract Tonrody {
         self.payoutSent = false;
         self.txLog = emptyTxLog();
         self.lobbyCreatedAt = 0;
+        self.stakeTxHashes = mapEmpty<Int, Int>();
+        self.finalizeTimestamp = 0;
+        self.finalizeValue = 0;
+        self.finalizeTxHash = 0;
     }
 
     receive(msg: CreateLobby) {
@@ -101,6 +111,10 @@ contract Tonrody {
         self.participantsCount = 0;
         self.txLog = emptyTxLog();
         self.lobbyCreatedAt = msg.createdAt;
+        self.stakeTxHashes = mapEmpty<Int, Int>();
+        self.finalizeTimestamp = 0;
+        self.finalizeValue = 0;
+        self.finalizeTxHash = 0;
     }
 
     receive(msg: PayStake) {
@@ -109,12 +123,16 @@ contract Tonrody {
         require(self.participantsCount < self.config.lobbySize, ERR_NOT_READY);
         let value = context.value;
         require(value >= self.config.minDeposit, ERR_INVALID_AMOUNT);
+        require(msg.seatIndex >= 0 && msg.seatIndex < self.config.lobbySize, ERR_INVALID_SEAT);
         require(!self.participants.has(msg.seatIndex), ERR_SEAT_BUSY);
+        require(!self.walletAlreadyParticipating(context.sender), ERR_WALLET_BUSY);
 
         let participant = Participant(context.sender, value, msg.memo);
         self.participants = self.participants.set(msg.seatIndex, participant);
         self.participantsCount = self.participantsCount + 1;
         self.poolAmount = self.poolAmount + value;
+        let stakeTxHash = self.readMessageHash();
+        self.stakeTxHashes = self.stakeTxHashes.set(msg.seatIndex, stakeTxHash);
 
         self.txLog = self.appendTxLog(OP_DEPOSIT, msg.seatIndex, context.sender, value, msg.memo);
         emit DepositReceived(self.currentLobbyId, msg.seatIndex, context.sender, value, msg.memo);
@@ -130,34 +148,31 @@ contract Tonrody {
         require(!self.isFinalized(), ERR_ALREADY_FINALIZED);
         require(self.shaCommit(msg.seedReveal) == self.seedCommit, ERR_INVALID_REVEAL);
 
-        let hashSeed = self.buildRoundHashSeed(msg.seedReveal);
+        let finalizeTimestamp = now();
+        let finalizeValue = context.value;
+        let finalizeTxHash = self.readMessageHash();
+        self.finalizeTimestamp = finalizeTimestamp;
+        self.finalizeValue = finalizeValue;
+        self.finalizeTxHash = finalizeTxHash;
+
+        let hashSeed = self.buildRoundHashSeed(msg.seedReveal, finalizeTimestamp, finalizeValue, finalizeTxHash);
         self.roundHash = hashSeed.hash();
         self.seedReveal = msg.seedReveal;
         let size = self.config.lobbySize;
         let winnerIndex = self.roundHash % size;
         self.winnerIndex = winnerIndex;
 
-        let payout = self.poolAmount;
-        emit WinnerSelected(self.currentLobbyId, self.lookupWinnerAddress(), self.roundHash, payout);
-        self.txLog = self.appendTxLog(OP_FINALIZE, winnerIndex, self.lookupWinnerAddress(), payout, msg.seedReveal);
+        let winner = self.lookupWinnerAddress();
+        let payout = self.computeNetPayoutAmount();
+
+        emit WinnerSelected(self.currentLobbyId, winner, self.roundHash, payout);
+        self.txLog = self.appendTxLog(OP_FINALIZE, winnerIndex, winner, payout, msg.seedReveal);
+        self.distributePayout(winner, payout);
     }
 
     receive(_: WithdrawPool) {
         require(self.isFinalized(), ERR_NOT_READY);
-        require(!self.payoutSent, ERR_WITHDRAWN);
-        require(context.sender == self.lookupWinnerAddress(), ERR_NOT_WINNER);
-
-        let payout = self.computeNetPayout();
-        self.payoutSent = true;
-        send(SendParameters{
-            to: context.sender,
-            value: payout,
-            bounce: true,
-            mode: SendIgnoreErrors,
-            body: null()
-        });
-        emit PayoutSent(self.currentLobbyId, context.sender, payout, true);
-        self.txLog = self.appendTxLog(OP_PAYOUT, self.winnerIndex, context.sender, payout, self.roundHash);
+        require(false, ERR_WITHDRAWN);
     }
 
     fun isActiveLobby(): Bool {
@@ -166,6 +181,20 @@ contract Tonrody {
 
     fun isFinalized(): Bool {
         return self.winnerIndex >= 0;
+    }
+
+    fun walletAlreadyParticipating(addr: Address): Bool {
+        var index = 0;
+        while (index < self.config.lobbySize) {
+            if (self.participants.has(index)) {
+                let participant = self.participants.get(index).get();
+                if (participant.wallet == addr) {
+                    return true;
+                }
+            }
+            index = index + 1;
+        }
+        return false;
     }
 
     fun lookupWinnerAddress(): Address {
@@ -179,28 +208,21 @@ contract Tonrody {
         return null();
     }
 
-    fun computeNetPayout(): Int {
-        let fee = (self.poolAmount * self.config.feeBps) / 10_000;
-        if (fee > 0 && self.config.treasury != null()) {
-            send(SendParameters{
-                to: self.config.treasury,
-                value: fee,
-                bounce: false,
-                mode: SendIgnoreErrors,
-                body: null()
-            });
-        }
-        return self.poolAmount - fee;
+    fun computeFee(): Int {
+        return (self.poolAmount * self.config.feeBps) / 10_000;
     }
 
-    fun buildRoundHashSeed(seedReveal: Int): cell {
+    fun computeNetPayoutAmount(): Int {
+        return self.poolAmount - self.computeFee();
+    }
+
+    fun buildRoundHashSeed(seedReveal: Int, finalizeTimestamp: Int, finalizeValue: Int, finalizeTxHash: Int): cell {
         let builder = beginCell();
         builder.storeUint(self.currentLobbyId, 64);
-        builder.storeUint(self.participantsCount, 16);
-        builder.storeUint(self.poolAmount, 128);
+        builder.storeUint(finalizeTimestamp, 64);
+        builder.storeUint(finalizeValue, 128);
+        builder.storeRef(self.serializeTxHashes(finalizeTxHash));
         builder.storeUint(seedReveal, 256);
-        builder.storeUint(self.lobbyCreatedAt, 64);
-        builder.storeRef(self.serializeParticipants());
         return builder.endCell();
     }
 
@@ -222,6 +244,21 @@ contract Tonrody {
         return cursor.endCell();
     }
 
+    fun serializeTxHashes(finalizeTxHash: Int): cell {
+        var cursor = beginCell();
+        var index = 0;
+        while (index < self.config.lobbySize) {
+            if (self.stakeTxHashes.has(index)) {
+                cursor.storeUint(self.stakeTxHashes.get(index).get(), 256);
+            } else {
+                cursor.storeUint(0, 256);
+            }
+            index = index + 1;
+        }
+        cursor.storeUint(finalizeTxHash, 256);
+        return cursor.endCell();
+    }
+
     fun appendTxLog(op: Int, seat: Int, addr: Address, amount: Int, aux: Int): cell {
         let builder = beginCell();
         builder.storeUint(op, 8);
@@ -238,6 +275,36 @@ contract Tonrody {
         let cell = beginCell();
         cell.storeUint(seed, 256);
         return cell.endCell().hash();
+    }
+
+    fun readMessageHash(): Int {
+        return context.raw.hash();
+    }
+
+    fun distributePayout(winner: Address, payout: Int): Int {
+        self.payoutSent = true;
+        let fee = self.computeFee();
+        if (fee > 0 && self.config.treasury != null()) {
+            send(SendParameters{
+                to: self.config.treasury,
+                value: fee,
+                bounce: false,
+                mode: SendIgnoreErrors,
+                body: null()
+            });
+        }
+        if (winner != null()) {
+            send(SendParameters{
+                to: winner,
+                value: payout,
+                bounce: true,
+                mode: SendIgnoreErrors,
+                body: null()
+            });
+            emit PayoutSent(self.currentLobbyId, winner, payout, true);
+            self.txLog = self.appendTxLog(OP_PAYOUT, self.winnerIndex, winner, payout, self.roundHash);
+        }
+        return payout;
     }
 
     get fun getConfig(): TonrodyConfig {
@@ -257,5 +324,9 @@ contract Tonrody {
 
     get fun getTxLog(): cell {
         return self.txLog;
+    }
+
+    get fun getEntropyProof(): tuple {
+        return (self.finalizeTimestamp, self.finalizeValue, self.finalizeTxHash, self.serializeTxHashes(self.finalizeTxHash));
     }
 }
