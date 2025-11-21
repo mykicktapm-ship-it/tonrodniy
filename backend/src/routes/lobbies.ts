@@ -13,13 +13,12 @@ import {
 } from '../db/supabase';
 import {
   buildSeatTimerTickPayload,
-  emitPaymentConfirmed,
   emitRoundFinalized,
   emitSeatUpdate,
   emitTimerTick,
   type SeatTimerSnapshot
 } from '../ws';
-import { sendFinalizeRound, verifyStakeTx } from '../services/tonClient';
+import { sendFinalizeRound } from '../services/tonClient';
 
 const RESERVATION_WINDOW_MS = 2 * 60 * 1000;
 const PAYMENT_WINDOW_MS = 5 * 60 * 1000;
@@ -284,7 +283,7 @@ lobbiesRouter.post('/:id/pay', async (req, res) => {
 
     const normalizedHash = normalizeTxHashValue(txHash);
 
-    const txLog = await txLogStore.insert({
+    await txLogStore.insert({
       userId: pendingSeat.user_id ?? undefined,
       lobbyId: lobby.lobby.id,
       seatId: pendingSeat.id,
@@ -299,49 +298,10 @@ lobbiesRouter.post('/:id/pay', async (req, res) => {
         roundId: lobby.currentRound?.id ?? null
       }
     });
-
-    let verification = await verifyStakeTx({
-      txHash: normalizedHash,
-      lobbyId: lobby.lobby.id,
-      seatId: pendingSeat.id,
-      expectedAmountTon: stakeTon,
-      expectedSender: user.wallet,
-      expectedSeatIndex: pendingSeat.seat_index,
-      expectedContractAddress: lobby.lobby.round_wallet
-    });
-
-    let latestSeat = pendingSeat;
-    if (verification.status === 'confirmed') {
-      latestSeat = await seatStore.markPaid(pendingSeat.id, stakeTon, new Date().toISOString());
-      await txLogStore.updateStatus(txLog.id, 'confirmed');
-      const seatTxMap = await txLogStore.latestSeatPayments([latestSeat.id]);
-      const seatPayload = serializeSeat(latestSeat, seatTxMap);
-      emitSeatUpdate({ lobbyId: req.params.id, seat: seatPayload });
-      emitPaymentConfirmed({ lobbyId: req.params.id, seat: seatPayload, txHash: normalizedHash });
-      emitTimerTick(buildSeatTimerTickPayload(req.params.id, seatPayload));
-      return res.json({ seat: seatPayload, status: 'confirmed', verification });
-    }
-
-    if (verification.status === 'failed') {
-      await seatStore.markFailed(pendingSeat.id, new Date().toISOString());
-      await seatStore.releaseSeat(pendingSeat.id, new Date().toISOString());
-      await txLogStore.updateStatus(txLog.id, 'failed', {
-        ...(txLog.metadata ?? {}),
-        verification
-      });
-      const refreshedSeat = await seatStore.findById(pendingSeat.id);
-      const seatTxMap = await txLogStore.latestSeatPayments([pendingSeat.id]);
-      const seatPayload = serializeSeat(refreshedSeat ?? pendingSeat, seatTxMap);
-      emitSeatUpdate({ lobbyId: req.params.id, seat: seatPayload });
-      emitTimerTick(buildSeatTimerTickPayload(req.params.id, seatPayload));
-      return res.status(400).json({ error: 'Transaction rejected on-chain', seat: seatPayload, verification });
-    }
-
     const seatTxMap = await txLogStore.latestSeatPayments([pendingSeat.id]);
     const seatPayload = serializeSeat(pendingSeat, seatTxMap);
     emitSeatUpdate({ lobbyId: req.params.id, seat: seatPayload });
-    emitTimerTick(buildSeatTimerTickPayload(req.params.id, seatPayload));
-    res.json({ seat: seatPayload, status: 'pending_payment', verification });
+    res.json({ seat: seatPayload, status: 'pending_payment' });
   } catch (error) {
     res.status(400).json({ error: (error as Error).message });
   }
