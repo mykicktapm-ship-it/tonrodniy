@@ -287,16 +287,27 @@ export default function HomePage() {
                   <Progress value={progressValue} size="sm" colorScheme="purple" borderRadius="full" />
                   <Stack spacing={3}>
                     {activeLobby.seats.map((seat) => (
-                      <HStack key={seat.id} justify="space-between">
-                        <Text fontFamily="mono" fontSize="sm">
+                      <HStack
+                        key={seat.id}
+                        justify="space-between"
+                        align={{ base: 'flex-start', sm: 'center' }}
+                        flexDir={{ base: 'column', sm: 'row' }}
+                        gap={{ base: 1, sm: 3 }}
+                      >
+                        <Text fontFamily="mono" fontSize="sm" w="full">
                           Seat #{seat.seatIndex + 1}{seat.userId ? ` · ${seat.userId.slice(0, 4)}…` : ''}
                         </Text>
                         <StatusBadge status={seat.status as any} />
                       </HStack>
                     ))}
                   </Stack>
-                  <HStack spacing={3}>
-                    <Button onClick={handleReserveSeat} isDisabled={isReserveDisabled} isLoading={joinMutation.isPending}>
+                  <HStack spacing={3} flexWrap={{ base: 'wrap', sm: 'nowrap' }}>
+                    <Button
+                      onClick={handleReserveSeat}
+                      isDisabled={isReserveDisabled}
+                      isLoading={joinMutation.isPending}
+                      w={{ base: 'full', sm: 'auto' }}
+                    >
                       Reserve seat
                     </Button>
                     <Button
@@ -304,6 +315,7 @@ export default function HomePage() {
                       onClick={handlePayStake}
                       isDisabled={isPayDisabled}
                       isLoading={payMutation.isPending}
+                      w={{ base: 'full', sm: 'auto' }}
                     >
                       Pay stake
                     </Button>
@@ -344,7 +356,13 @@ export default function HomePage() {
         ) : (
           <Stack spacing={4}>
             {activityFeed.map((seat) => (
-              <HStack key={seat.id} justify="space-between">
+              <HStack
+                key={seat.id}
+                justify="space-between"
+                align={{ base: 'flex-start', sm: 'center' }}
+                flexDir={{ base: 'column', sm: 'row' }}
+                gap={{ base: 1, sm: 3 }}
+              >
                 <Text>{formatSeatLabel(seat)}</Text>
                 <Text color="gray.500" fontSize="sm">
                   {formatTimestamp(seat.paidAt ?? seat.reservedAt)}

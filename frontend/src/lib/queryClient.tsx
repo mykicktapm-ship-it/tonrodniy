@@ -172,7 +172,8 @@ export function useQuery<TData>({ queryKey, queryFn, enabled = true, staleTime =
     data: entry.data,
     error: entry.error,
     status: entry.status,
-    isLoading: entry.status === 'idle' || entry.status === 'loading',
+    isLoading:
+      entry.status === 'idle' || (entry.status === 'loading' && typeof entry.data === 'undefined'),
     isFetching: entry.status === 'loading',
     refetch: runFetch
   };
