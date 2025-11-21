@@ -47,19 +47,20 @@ the following files before running any process.
 
 ### Frontend `.env`
 
-Copy [`frontend/.env.example`](./frontend/.env.example) to `.env` (or `.env.local`) and fill:
+Copy [`frontend/.env.example`](./frontend/.env.example) to `.env` (or `.env.local`) after installing workspace deps with `pnpm install`.
+Each entry in the template is annotated to explain how it maps to the Vite-powered frontend:
 
 ```
 VITE_API_BASE_URL=http://localhost:4000
 VITE_WS_URL=ws://localhost:4000/ws
 VITE_TONCONNECT_MANIFEST_URL=/tonconnect-manifest.json
-VITE_TON_CONTRACT_ADDRESS=EQYourLiveContract…
+VITE_TON_CONTRACT_ADDRESS=EQ_TonrodyContractAddress
 VITE_TG_BOT_NAME=@yourbot
 VITE_TG_APP_TITLE=TONRODY
-VITE_APP_SALT=dev-only-salt
+VITE_APP_SALT=change-me
 ```
 
-`VITE_API_BASE_URL`/`VITE_WS_URL` control REST + WebSocket URLs, `VITE_TONCONNECT_MANIFEST_URL` points TonConnect wallets to the manifest, and the Telegram/app fields drive UI branding.
+`VITE_API_BASE_URL`/`VITE_WS_URL` control REST + WebSocket URLs, `VITE_TONCONNECT_MANIFEST_URL` points TonConnect wallets to the manifest, and the Telegram/app fields drive UI branding. The contract address and salt should match the backend + deployment settings you run alongside `pnpm dev`.
 
 ---
 
