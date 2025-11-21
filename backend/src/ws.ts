@@ -9,12 +9,12 @@ export type LobbyEvent = {
     | 'lobby_status'
     | 'timer_tick'
     | 'payout_sent';
-  payload: Record<string, unknown>;
+  payload: unknown;
 };
 
 type SeatEventPayload = {
   lobbyId: string;
-  seat: Record<string, unknown>;
+  seat: unknown;
 };
 
 export type PaymentConfirmedPayload = SeatEventPayload & { txHash?: string };
@@ -126,8 +126,8 @@ export const broadcastLobbyEvent = (lobbyId: string, event: LobbyEvent) => {
   hubInstance.broadcast(channelName(lobbyId), event);
 };
 
-const dispatchSeatEvent = (eventType: LobbyEvent['type'], payload: Record<string, unknown>) => {
-  const lobbyId = payload.lobbyId as string;
+const dispatchSeatEvent = (eventType: LobbyEvent['type'], payload: unknown) => {
+  const lobbyId = (payload as { lobbyId?: string })?.lobbyId;
   if (!lobbyId) return;
   broadcastLobbyEvent(lobbyId, { type: eventType, payload });
 };

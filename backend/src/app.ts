@@ -1,5 +1,6 @@
 import cors from 'cors';
 import express from 'express';
+import type { Request } from 'express';
 import { env } from './config/env';
 import { healthRouter } from './routes/health';
 import { lobbiesRouter } from './routes/lobbies';
@@ -17,7 +18,15 @@ const corsOptions = env.corsOrigins.length
   : undefined;
 
 app.use(cors(corsOptions));
-app.use(express.json());
+app.use(
+  express.json({
+    verify: (req: Request & { rawBody?: Buffer }, _res, buf) => {
+      if (buf?.length) {
+        req.rawBody = Buffer.from(buf);
+      }
+    }
+  })
+);
 
 app.get('/', (_req, res) => {
   res.json({ service: 'tonrody-backend', status: 'online' });
