@@ -1,0 +1,1220 @@
+<!DOCTYPE html>
+<!-- saved from url=(0132)blob:https://5sztbeo9ao17lgs1ae3gwz9s6nqnaxz6yzhv9ooziu5gqz7dqg-h839267052.scf.usercontent.goog/b7e25d5b-c477-42cc-bb44-a09fe82473c2 -->
+<html lang="ru"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8"><script>(function(firebaseConfig, initialAuthToken, appId) {
+        window.__firebase_config = firebaseConfig;
+        window.__initial_auth_token = initialAuthToken;
+        window.__app_id = appId;
+            })("\n{\n  \"apiKey\": \"AIzaSyCqyCcs2R2e7AegGjvFAwG98wlamtbHvZY\",\n  \"authDomain\": \"bard-frontend.firebaseapp.com\",\n  \"projectId\": \"bard-frontend\",\n  \"storageBucket\": \"bard-frontend.firebasestorage.app\",\n  \"messagingSenderId\": \"175205271074\",\n  \"appId\": \"1:175205271074:web:2b7bd4d34d33bf38e6ec7b\"\n}\n","eyJhbGciOiJSUzI1NiIsImtpZCI6IjExYjc0YTUyNzgwMDk5ZjEzNDY0MmNlZWM3ZGE4MjNkMTc4MDc2ZjIiLCJ0eXAiOiJKV1QifQ.eyJzdWIiOiJmaXJlYmFzZS1hZG1pbnNkay1mYnN2Y0BiYXJkLWZyb250ZW5kLmlhbS5nc2VydmljZWFjY291bnQuY29tIiwiYXVkIjoiaHR0cHM6Ly9pZGVudGl0eXRvb2xraXQuZ29vZ2xlYXBpcy5jb20vZ29vZ2xlLmlkZW50aXR5LmlkZW50aXR5dG9vbGtpdC52MS5JZGVudGl0eVRvb2xraXQiLCJ1aWQiOiIxNTkwNjMwMzA0OTk0Njc0MTUyOSIsImlzcyI6ImZpcmViYXNlLWFkbWluc2RrLWZic3ZjQGJhcmQtZnJvbnRlbmQuaWFtLmdzZXJ2aWNlYWNjb3VudC5jb20iLCJjbGFpbXMiOnsiYXBwSWQiOiJjX2FjOWU4MjE4Y2U0YTg0NDJfdG9ucm9keV9pbnRlcmFjdGl2ZV9jb2RleC5odG1sLTI3NCJ9LCJleHAiOjE3NjQ5ODkzNTgsImlhdCI6MTc2NDk4NTc1OCwiYWxnIjoiUlMyNTYifQ.SFk9413gCkCP3XAIxGIQc3T-O-cYh7AK1VrAODfhzUdvqiyJGJu1zIFQUim_ntWiZ0E2pSugg4ZKPL1qMs0puSenPAwVFa34qx-CksNOHqpqBjWQYMlumQITkcjdESmiqRiyZUW2Y3JdwnnL-Qscehe0fdeLpS9X4PwxdDB0f0hSrsjazN7bjIF5IguX26aq64CK4gBiVimHRdiviWtQgWERsSxV7qzSXSgZm5gZmGjmkZxRQy7-ZMhGKNIC-9LF2Mu8Ybz8vsD_19mHESaWNQtzJUxGft8XYoCQa4srJdvN0KUF_csANFHkH_fsqcJJzFSzzgnFyYHzwzB5g6NoIg","c_ac9e8218ce4a8442_tonrody_interactive_codex.html-274")</script><script>'use strict';var h=typeof Object.defineProperties=="function"?Object.defineProperty:function(a,b,d){if(a==Array.prototype||a==Object.prototype)return a;a[b]=d.value;return a};function l(a){a=["object"==typeof globalThis&&globalThis,a,"object"==typeof window&&window,"object"==typeof self&&self,"object"==typeof global&&global];for(var b=0;b<a.length;++b){var d=a[b];if(d&&d.Math==Math)return d}throw Error("Cannot find global object");}var n=l(this);
+function p(a,b){if(b)a:{var d=n;a=a.split(".");for(var c=0;c<a.length-1;c++){var e=a[c];if(!(e in d))break a;d=d[e]}a=a[a.length-1];c=d[a];b=b(c);b!=c&&b!=null&&h(d,a,{configurable:!0,writable:!0,value:b})}}function r(a){function b(c){return a.next(c)}function d(c){return a.throw(c)}return new Promise(function(c,e){function f(g){g.done?c(g.value):Promise.resolve(g.value).then(b,d).then(f,e)}f(a.next())})}function t(a){return r(a())}
+p("Object.values",function(a){return a?a:function(b){var d=[],c;for(c in b)Object.prototype.hasOwnProperty.call(b,c)&&d.push(b[c]);return d}});p("Array.prototype.includes",function(a){return a?a:function(b,d){var c=this;c instanceof String&&(c=String(c));var e=c.length;d=d||0;for(d<0&&(d=Math.max(d+e,0));d<e;d++){var f=c[d];if(f===b||Object.is(f,b))return!0}return!1}});/*
+
+ MIT License
+
+ Copyright (c) 2017-2023 W.Y.
+
+ Permission is hereby granted, free of charge, to any person obtaining a copy
+ of this software and associated documentation files (the "Software"), to deal
+ in the Software without restriction, including without limitation the rights
+ to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ copies of the Software, and to permit persons to whom the Software is
+ furnished to do so, subject to the following conditions:
+
+ The above copyright notice and this permission notice shall be included in
+ all copies or substantial portions of the Software.
+
+ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+ SOFTWARE.
+
+*/
+function u(a,b){const d=a.style;b.backgroundColor&&(d.backgroundColor=b.backgroundColor);b.width&&(d.width=`${b.width}px`);b.height&&(d.height=`${b.height}px`);const c=b.style;c!=null&&Object.keys(c).forEach(e=>{d[e]=c[e]})};var v=(()=>{let a=0;return()=>{a+=1;return`u${`0000${(Math.random()*1679616<<0).toString(36)}`.slice(-4)}${a}`}})();function w(a){const b=[];for(let d=0,c=a.length;d<c;d++)b.push(a[d]);return b}let x=null;function y(a={}){return x?x:a.l?x=a.l:x=w(window.getComputedStyle(document.documentElement))}function z(a,b){return(a=(a.ownerDocument.defaultView||window).getComputedStyle(a).getPropertyValue(b))?parseFloat(a.replace("px","")):0}
+function A(a,b={}){var d;if(!(d=b.width)){d=z(a,"border-left-width");var c=z(a,"border-right-width");d=a.clientWidth+d+c}(b=b.height)||(b=z(a,"border-top-width"),c=z(a,"border-bottom-width"),b=a.clientHeight+b+c);return{width:d,height:b}}function B(a){return new Promise((b,d)=>{const c=new Image;c.onload=()=>{c.decode().then(()=>{requestAnimationFrame(()=>b(c))})};c.onerror=d;c.crossOrigin="anonymous";c.decoding="async";c.src=a})}
+function C(a){return t(function*(){return Promise.resolve().then(()=>(new XMLSerializer).serializeToString(a)).then(encodeURIComponent).then(b=>`data:image/svg+xml;charset=utf-8,${b}`)})}
+function D(a,b,d){return t(function*(){const c=document.createElementNS("http://www.w3.org/2000/svg","svg"),e=document.createElementNS("http://www.w3.org/2000/svg","foreignObject");c.setAttribute("width",`${b}`);c.setAttribute("height",`${d}`);c.setAttribute("viewBox",`0 0 ${b} ${d}`);e.setAttribute("width","100%");e.setAttribute("height","100%");e.setAttribute("x","0");e.setAttribute("y","0");e.setAttribute("externalResourcesRequired","true");c.appendChild(e);e.appendChild(a);return C(c)})}
+var E=(a,b)=>{if(a instanceof b)return!0;a=Object.getPrototypeOf(a);return a===null?!1:a.constructor.name===b.name||E(a,b)};function F(a,b){return y(b).map(d=>{const c=a.getPropertyValue(d),e=a.getPropertyPriority(d);return`${d}: ${c}${e?" !important":""};`}).join(" ")}
+function G(a,b,d,c){a=window.getComputedStyle(a,d);var e=a.getPropertyValue("content");if(e!==""&&e!=="none"){var f=v();try{b.className=`${b.className} ${f}`}catch(k){return}e=document.createElement("style");var g=e.appendChild;d=`.${f}:${d}`;a.cssText?(c=a.getPropertyValue("content"),c=`${a.cssText} content: '${c.replace(/'|"/g,"")}';`):c=F(a,c);g.call(e,document.createTextNode(`${d}{${c}}`));b.appendChild(e)}};function H(a){return a.search(/^(data:)/)!==-1}function I(a,b,d){return t(function*(){const c=yield fetch(a,b);if(c.status===404)throw Error(`Resource "${c.url}" not found`);const e=yield c.blob();return new Promise((f,g)=>{const k=new FileReader;k.onerror=g;k.onloadend=()=>{try{f(d({o:c,result:k.result}))}catch(m){g(m)}};k.readAsDataURL(e)})})}const J={};function K(a,b,d){let c=a.replace(/\?.*/,"");d&&(c=a);/ttf|otf|eot|woff2?/i.test(c)&&(c=c.replace(/.*\//,""));return b?`[${b}]${c}`:c}
+function L(a,b,d){return t(function*(){const c=K(a,b,d.C);if(J[c]!=null)return J[c];d.u&&(a+=(/\?/.test(a)?"&":"?")+(new Date).getTime());let e;try{const f=yield I(a,d.i,({o:g,result:k})=>{b||(b=g.headers.get("Content-Type")||"");return k.split(/,/)[1]});e=`data:${b};base64,${f}`}catch(f){e=d.B||""}return J[c]=e})};const M={P:"application/font-woff",R:"application/font-woff",N:"application/font-truetype",v:"application/vnd.ms-fontobject",H:"image/png",F:"image/jpeg",D:"image/jpeg",A:"image/gif",M:"image/tiff",L:"image/svg+xml",O:"image/webp"};function N(a){return(a=/\.([^./]*?)$/g.exec(a))?a[1]:""};function O(a){return t(function*(){const b=a.toDataURL();return b==="data:,"?a.cloneNode(!1):B(b)})}function aa(a,b){return t(function*(){if(a.currentSrc){var d=document.createElement("canvas");const c=d.getContext("2d");d.width=a.clientWidth;d.height=a.clientHeight;c==null||c.drawImage(a,0,0,d.width,d.height);d=d.toDataURL();return B(d)}d=a.poster;d=yield L(d,M[N(d).toLowerCase()]||"",b);return B(d)})}
+function ba(a,b){return t(function*(){try{let d;if(a==null?0:(d=a.contentDocument)==null?0:d.body)return yield P(a.contentDocument.body,b,!0)}catch(d){}return a.cloneNode(!1)})}function ca(a,b){return t(function*(){return E(a,HTMLCanvasElement)?O(a):E(a,HTMLVideoElement)?aa(a,b):E(a,HTMLIFrameElement)?ba(a,b):a.cloneNode(a.tagName!=null&&a.tagName.toUpperCase()==="SVG")})}
+function da(a,b,d){return t(function*(){if(b.tagName!=null&&b.tagName.toUpperCase()==="SVG")return b;let c=[];if(a.tagName!=null&&a.tagName.toUpperCase()==="SLOT"&&a.assignedNodes)c=w(a.assignedNodes());else{let e;if(E(a,HTMLIFrameElement)&&((e=a.contentDocument)==null?0:e.body))c=w(a.contentDocument.body.childNodes);else{let f;c=w(((f=a.shadowRoot)!=null?f:a).childNodes)}}if(c.length===0||E(a,HTMLVideoElement))return b;yield c.reduce((e,f)=>e.then(()=>P(f,d)).then(g=>{g&&b.appendChild(g)}),Promise.resolve());
+return b})}function ea(a,b,d){const c=b.style;if(c){var e=window.getComputedStyle(a);e.cssText?(c.cssText=e.cssText,c.transformOrigin=e.transformOrigin):y(d).forEach(f=>{let g=e.getPropertyValue(f);f==="font-size"&&g.endsWith("px")&&(g=`${Math.floor(parseFloat(g.substring(0,g.length-2)))-.1}px`);E(a,HTMLIFrameElement)&&f==="display"&&g==="inline"&&(g="block");f==="d"&&b.getAttribute("d")&&(g=`path(${b.getAttribute("d")})`);c.setProperty(f,g,e.getPropertyPriority(f))})}}
+function fa(a,b){E(a,HTMLSelectElement)&&(b=Array.from(b.children).find(d=>a.value===d.getAttribute("value")))&&b.setAttribute("selected","")}
+function ha(a,b){return t(function*(){var d=a.querySelectorAll?a.querySelectorAll("use"):[];if(d.length===0)return a;var c={};for(var e=0;e<d.length;e++){var f=d[e].getAttribute("xlink:href");if(f){const g=document.querySelector(f);a.querySelector(f)||!g||c[f]||(c[f]=yield P(g,b,!0))}}d=Object.values(c);if(d.length){c=document.createElementNS("http://www.w3.org/1999/xhtml","svg");c.setAttribute("xmlns","http://www.w3.org/1999/xhtml");c.style.position="absolute";c.style.width="0";c.style.height="0";
+c.style.overflow="hidden";c.style.display="none";e=document.createElementNS("http://www.w3.org/1999/xhtml","defs");c.appendChild(e);for(f=0;f<d.length;f++)e.appendChild(d[f]);a.appendChild(c)}return a})}
+function P(a,b,d){return t(function*(){return d||!b.filter||b.filter(a)?Promise.resolve(a).then(c=>ca(c,b)).then(c=>da(a,c,b)).then(c=>{E(c,Element)&&(ea(a,c,b),G(a,c,":before",b),G(a,c,":after",b),E(a,HTMLTextAreaElement)&&(c.textContent=a.value),E(a,HTMLInputElement)&&c.setAttribute("value",a.value),fa(a,c));return c}).then(c=>ha(c,b)):null})};const Q=/url\((['"]?)([^'"]+?)\1\)/g,ia=/url\([^)]+\)\s*format\((["']?)([^"']+)\1\)/g,ja=/src:\s*(?:url\([^)]+\)\s*format\([^)]+\)[,;]\s*)+/g;function ka(a){const b=[];a.replace(Q,(d,c,e)=>{b.push(e);return d});return b.filter(d=>!H(d))}
+function la(a,b,d,c){return t(function*(){try{const e=d?(new URL(b,d||void 0)).toString():b;let f;f=yield L(e,M[N(b).toLowerCase()]||"",c);return a.replace(new RegExp(`(url\\(['"]?)(${b.replace(/([.*+?^${}()|\[\]\/\\])/g,"\\$1")})(['"]?\\))`,"g"),`$1${f}$3`)}catch(e){}return a})}function ma(a,{I:b}){return b?a.replace(ja,d=>{for(;;){const [c,,e]=ia.exec(d)||[],f=c,g=e;if(!g)return"";if(g===b)return`src: ${f};`}}):a}
+function R(a,b,d){return t(function*(){if(a.search(Q)===-1)return a;const c=ma(a,d);return ka(c).reduce((e,f)=>e.then(g=>la(g,f,b,d)),Promise.resolve(c))})};function S(a,b,d){return t(function*(){var c;const e=(c=b.style)==null?void 0:c.getPropertyValue(a);return e?(c=yield R(e,null,d),b.style.setProperty(a,c,b.style.getPropertyPriority(a)),!0):!1})}function na(a,b){return t(function*(){(yield S("background",a,b))||(yield S("background-image",a,b));(yield S("mask",a,b))||(yield S("-webkit-mask",a,b))||(yield S("mask-image",a,b))||(yield S("-webkit-mask-image",a,b))})}
+function oa(a,b){return t(function*(){const d=E(a,HTMLImageElement);if(d&&!H(a.src)||E(a,SVGImageElement)&&!H(a.href.baseVal)){var c=d?a.src:a.href.baseVal,e=yield L(c,M[N(c).toLowerCase()]||"",b);yield new Promise((f,g)=>{a.onload=f;a.onerror=b.m?(...k)=>{try{f(b.m(...k))}catch(m){g(m)}}:g;a.decode&&(a.decode=f);a.loading==="lazy"&&(a.loading="eager");d?(a.srcset="",a.src=e):a.href.baseVal=e})}})}
+function pa(a,b){return t(function*(){const d=w(a.childNodes).map(c=>T(c,b));yield Promise.all(d).then(()=>a)})}function T(a,b){return t(function*(){E(a,Element)&&(yield na(a,b),yield oa(a,b),yield pa(a,b))})};const U={};function V(a){return t(function*(){var b=U[a];if(b!=null)return b;b=yield(yield fetch(a)).text();b={url:a,cssText:b};return U[a]=b})}function W(a,b){return t(function*(){let d=a.cssText;const c=/url\(["']?([^"')]+)["']?\)/g,e=(d.match(/url\([^)]+\)/g)||[]).map(f=>t(function*(){let g=f.replace(c,"$1");g.startsWith("https://")||(g=(new URL(g,a.url)).href);return I(g,b.i,({result:k})=>{d=d.replace(f,`url(${k})`);return[f,k]})}));return Promise.all(e).then(()=>d)})}
+function X(a){if(a==null)return[];const b=[];a=a.replace(/(\/\*[\s\S]*?\*\/)/gi,"");for(var d=RegExp("((@.*?keyframes [\\s\\S]*?){([\\s\\S]*?}\\s*?)})","gi");;){var c=d.exec(a);if(c===null)break;b.push(c[0])}a=a.replace(d,"");d=/@import[\s\S]*?url\([^)]*\)[\s\S]*?;/gi;for(c=RegExp("((\\s*?(?:\\/\\*[\\s\\S]*?\\*\\/)?\\s*?@media[\\s\\S]*?){([\\s\\S]*?)}\\s*?})|(([\\s\\S]*?){([\\s\\S]*?)})","gi");;){let e=d.exec(a);if(e===null)if(e=c.exec(a),e===null)break;else d.lastIndex=c.lastIndex;else c.lastIndex=
+d.lastIndex;b.push(e[0])}return b}
+function qa(a,b){return t(function*(){const d=[],c=[];a.forEach(e=>{if("cssRules"in e)try{w(e.cssRules||[]).forEach((f,g)=>{if(f.type===CSSRule.IMPORT_RULE){let k=g+1;f=V(f.href).then(m=>W(m,b)).then(m=>X(m).forEach(q=>{try{e.insertRule(q,q.startsWith("@import")?k+=1:e.cssRules.length)}catch(Da){}})).catch(()=>{});c.push(f)}})}catch(f){const g=a.find(k=>k.href==null)||document.styleSheets[0];e.href!=null&&c.push(V(e.href).then(k=>W(k,b)).then(k=>X(k).forEach(m=>{g.insertRule(m,g.cssRules.length)})).catch(()=>
+{}))}});return Promise.all(c).then(()=>{a.forEach(e=>{if("cssRules"in e)try{w(e.cssRules||[]).forEach(f=>{d.push(f)})}catch(f){}});return d})})}function ra(a){return a.filter(b=>b.type===CSSRule.FONT_FACE_RULE).filter(b=>b.style.getPropertyValue("src").search(Q)!==-1)}function sa(a,b){return t(function*(){if(a.ownerDocument==null)throw Error("Provided element is not within a Document");var d=w(a.ownerDocument.styleSheets);d=yield qa(d,b);return ra(d)})}
+function ta(a){function b(c){(c.style.fontFamily||getComputedStyle(c).fontFamily).split(",").forEach(e=>{d.add(e.trim().replace(/["']/g,""))});Array.from(c.children).forEach(e=>{e instanceof HTMLElement&&b(e)})}const d=new Set;b(a);return d}function ua(a,b){return t(function*(){const d=yield sa(a,b),c=ta(a);return(yield Promise.all(d.filter(e=>c.has(e.style.fontFamily.trim().replace(/["']/g,""))).map(e=>R(e.cssText,e.parentStyleSheet?e.parentStyleSheet.href:null,b)))).join("\n")})}
+function va(a,b){return t(function*(){const d=b.j!=null?b.j:b.K?null:yield ua(a,b);if(d){const c=document.createElement("style");c.appendChild(document.createTextNode(d));a.firstChild?a.insertBefore(c,a.firstChild):a.appendChild(c)}})};function wa(a,b={}){return t(function*(){const {width:d,height:c}=A(a,b),e=yield P(a,b,!0);yield va(e,b);yield T(e,b);u(e,b);return yield D(e,d,c)})}
+function xa(a,b={}){return t(function*(){const {width:d,height:c}=A(a,b);var e=yield wa(a,b);e=yield B(e);const f=document.createElement("canvas"),g=f.getContext("2d"),k=b.G||window.devicePixelRatio||1,m=b.h||d,q=b.g||c;f.width=m*k;f.height=q*k;!b.J&&(f.width>16384||f.height>16384)&&(f.width>16384&&f.height>16384?f.width>f.height?(f.height*=16384/f.width,f.width=16384):(f.width*=16384/f.height,f.height=16384):f.width>16384?(f.height*=16384/f.width,f.width=16384):(f.width*=16384/f.height,f.height=
+16384));f.style.width=`${m}`;f.style.height=`${q}`;b.backgroundColor&&(g.fillStyle=b.backgroundColor,g.fillRect(0,0,f.width,f.height));g.drawImage(e,0,0,f.width,f.height);return f})}function ya(a,b={}){return t(function*(){return(yield xa(a,b)).toDataURL()})};const za=["gemini.google.com","corp.google.com","proxy.googlers.com"];function Y(){return document.body.querySelectorAll('[class*="animate"]').length>0}function Z(a){return t(function*(){try{return yield ya(a,{h:a.offsetWidth,g:a.offsetHeight})}catch(d){var b=a.offsetHeight;const c=document.createElement("canvas");c.width=a.offsetWidth;c.height=b;return c.toDataURL("image/png")}})}
+function Aa(){return t(function*(){const a=document.body.offsetWidth,b=document.body.offsetHeight,d=document.body.cloneNode(!0);d.querySelectorAll('[class*="animate"]').forEach(c=>{c.classList.remove(...Array.from(c.classList).filter(e=>e.startsWith("animate")))});d.style.width=`${a}px`;d.style.height=`${b}px`;return d})}
+function Ba(a){return t(function*(){let b=document.body;if(Y()){var d=yield Aa();b=d;document.body.appendChild(d)}d=yield Z(b);Y()&&document.body.removeChild(b);window.parent.postMessage({type:"SEND_SCREENSHOT",image:d,topOffset:document.documentElement.scrollTop},a.origin)})}function Ca(a){return t(function*(){const b={type:"SEND_SCREENSHOT_FOR_DATA_VISUALIZATION",image:yield Z(document.body),topOffset:0};window.parent.postMessage(b,a.origin)})}
+window.addEventListener("message",a=>t(function*(){if(za.some(d=>a.origin.includes(d))){var b=a.data;b&&(b.type==="MAKE_SCREENSHOT"&&(yield Ba(a)),b.type==="MAKE_SCREENSHOT_FOR_DATA_VISUALIZATION"&&(yield Ca(a)))}}));
+</script><script>(function() {
+  // Ensure this script is executed only once
+  if (window.firebaseAuthBridgeScriptLoaded) {
+    return;
+  }
+  window.firebaseAuthBridgeScriptLoaded = true;
+
+  let nextTokenPromiseId = 0;
+
+  // Stores { resolve, reject } for ongoing token requests
+  const pendingTokenPromises = {};
+
+  // Listen for messages from the Host Application
+  window.addEventListener('message', function(event) {
+
+    const messageData = event.data;
+
+  if (messageData && messageData.type === 'RESOLVE_NEW_FIREBASE_TOKEN') {
+      const { success, token, error, promiseId } = messageData ?? {};
+      if (pendingTokenPromises[promiseId]) {
+        if (success) {
+          pendingTokenPromises[promiseId].resolve(token);
+        } else {
+          pendingTokenPromises[promiseId].reject(new Error(error || 'Token refresh failed from host.'));
+        }
+        delete pendingTokenPromises[promiseId];
+      }
+    }
+  });
+
+  // Expose a function for the Generated App to request a new Firebase token
+  window.requestNewFirebaseToken = function() {
+    const currentPromiseId = nextTokenPromiseId++;
+    const promise = new Promise((resolve, reject) => {
+      pendingTokenPromises[currentPromiseId] = { resolve, reject };
+    });
+    if (window.parent && window.parent !== window) {
+      window.parent.postMessage({
+        type: 'REQUEST_NEW_FIREBASE_TOKEN',
+        promiseId: currentPromiseId
+      }, '*');
+    } else {
+      pendingTokenPromises[currentPromiseId].reject(new Error('No parent window to request token from.'));
+      delete pendingTokenPromises[currentPromiseId];
+    }
+    return promise;
+  };
+})();</script><script>
+let realOriginalGetUserMedia = null;
+if (navigator.mediaDevices && navigator.mediaDevices.getUserMedia) {
+  realOriginalGetUserMedia = navigator.mediaDevices.getUserMedia.bind(navigator.mediaDevices);
+}
+
+(function() {
+  if (navigator.mediaDevices && navigator.mediaDevices.__proto__) {
+    try {
+      Object.defineProperty(navigator.mediaDevices.__proto__, 'getUserMedia', {
+        get: function() {
+          return undefined; // Or throw an error
+        },
+        configurable: false
+      });
+    } catch (error) {
+      console.error("Error defining prototype getter:", error);
+    }
+  }
+})();
+
+(function() {
+  const pendingMediaResolvers = {};
+  let nextMediaPromiseId = 0;
+
+  function requestMediaPermissions(constraints) {
+    const mediaPromiseId = nextMediaPromiseId++;
+    const promise = new Promise((resolve, reject) => {
+      pendingMediaResolvers[mediaPromiseId] = (granted) => {
+        delete pendingMediaResolvers[mediaPromiseId];
+        resolve(granted);
+      };
+    });
+
+    window.parent.postMessage({
+      type: 'requestMediaPermission',
+      constraints: constraints,
+      promiseId: mediaPromiseId,
+    }, '*');
+
+    return promise;
+  }
+
+  let originalGetUserMedia = realOriginalGetUserMedia;
+
+  function interceptGetUserMedia() {
+    if (navigator.mediaDevices) {
+      Object.defineProperty(navigator.mediaDevices, 'getUserMedia', {
+        value: function(constraints) {
+          return requestMediaPermissions(constraints).then((granted) => {
+            if (granted) {
+              if (originalGetUserMedia) {
+                return originalGetUserMedia(constraints);
+              } else {
+                throw new Error("Original getUserMedia not available.");
+              }
+            } else {
+              throw new DOMException('Permission denied', 'NotAllowedError');
+            }
+          });
+        },
+        writable: false,
+        configurable: false
+      });
+    }
+  }
+
+  interceptGetUserMedia();
+
+  const observer = new MutationObserver(function(mutationsList, observer) {
+    for (const mutation of mutationsList) {
+      if (mutation.type === 'reconfigured' && mutation.name === 'getUserMedia' && mutation.object === navigator.mediaDevices) {
+        interceptGetUserMedia();
+      } else if (mutation.type === 'attributes' && mutation.attributeName === 'getUserMedia' && mutation.target === navigator.mediaDevices) {
+        interceptGetUserMedia();
+      } else if (mutation.type === 'childList' && mutation.addedNodes) {
+        mutation.addedNodes.forEach(node => {
+          if (node === navigator.mediaDevices) {
+            interceptGetUserMedia();
+          }
+        });
+      }
+    }
+  });
+
+  function interceptSpeechRecognition() {
+    if (!window.SpeechRecognition && !window.webkitSpeechRecognition) {
+      return;
+    }
+
+    const OriginalSpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+
+    const SpeechRecognitionWrapper = function(...args) {
+      const recognizer = new OriginalSpeechRecognition(...args);
+      const originalStart = recognizer.start.bind(recognizer);
+
+      recognizer.start = function() {
+        requestMediaPermissions({ audio: true }).then(granted => {
+          if (granted) {
+            originalStart();
+          } else {
+            const errorEvent = new SpeechRecognitionErrorEvent('error');
+            errorEvent.error = 'not-allowed'; // This is the standard error for permission denial.
+            recognizer.dispatchEvent(errorEvent);
+          }
+        });
+      };
+
+      return recognizer;
+    };
+
+    SpeechRecognitionWrapper.prototype = OriginalSpeechRecognition.prototype;
+    SpeechRecognitionWrapper.prototype.constructor = SpeechRecognitionWrapper;
+
+    if (window.SpeechRecognition) {
+      window.SpeechRecognition = SpeechRecognitionWrapper;
+    }
+    if (window.webkitSpeechRecognition) {
+      window.webkitSpeechRecognition = SpeechRecognitionWrapper;
+    }
+  }
+
+  interceptSpeechRecognition();
+
+  window.addEventListener('message', function(event) {
+    if (event.data) {
+      if (event.data.type === 'resolveMediaPermission') {
+        const { promiseId, granted } = event.data;
+        if (pendingMediaResolvers[promiseId]) {
+          pendingMediaResolvers[promiseId](granted);
+        }
+      }
+    }
+  });
+
+})();</script><script>((function(modelInformation) {
+  const originalFetch = window.fetch;
+  // TODO: b/421908508 - Move these out of the script and match all generative AI model calls.
+  let googleLlmBaseApiUrls = [
+    'https://generativelanguage.googleapis.com/v1beta/models/' + modelInformation.textModelName + ':streamGenerateContent',
+    'https://generativelanguage.googleapis.com/v1beta/models/' + modelInformation.textModelName + ':generateContent',
+    'https://generativelanguage.googleapis.com/v1beta/models/' + modelInformation.imageModelName + ':predict',
+    'https://generativelanguage.googleapis.com/v1beta/models/' + modelInformation.imageModelName + ':predictLongRunning',
+    'https://generativelanguage.googleapis.com/v1beta/models/' + modelInformation.imageEditModelName + ':generateContent',
+    'https://generativelanguage.googleapis.com/v1beta/models/' + modelInformation.imageTransformModelName + ':generateContent',
+    'https://generativelanguage.googleapis.com/v1beta/models/' + modelInformation.videoModelName + ':predict',
+    'https://generativelanguage.googleapis.com/v1beta/models/' + modelInformation.videoModelName + ':predictLongRunning',
+    'https://generativelanguage.googleapis.com/v1beta/models/' + modelInformation.ttsModelName + ':generateContent',
+  ];
+  modelInformation.deprecatedTextModelNames.forEach((modelName) => {
+    googleLlmBaseApiUrls.push(
+      'https://generativelanguage.googleapis.com/v1beta/models/' + modelName + ':streamGenerateContent',
+      'https://generativelanguage.googleapis.com/v1beta/models/' + modelName + ':generateContent',
+    );
+  });
+  modelInformation.deprecatedImageModelNames.forEach((modelName) => {
+    googleLlmBaseApiUrls.push(
+      'https://generativelanguage.googleapis.com/v1beta/models/' + modelName + ':predict',
+      'https://generativelanguage.googleapis.com/v1beta/models/' + modelName + ':predictLongRunning',
+    );
+  });
+
+  const pendingFetchResolvers = {};
+  let nextPromiseId = 0;
+
+  function handleStringInput(input, optionsArgument) {
+    const actualUrl = input;
+    const fetchCallArgs = [actualUrl, optionsArgument];
+    const effectiveOptions = optionsArgument || {};
+    const bodyForApiKeyCheck = effectiveOptions.body;
+    const bodyForPostMessage = effectiveOptions.body;
+    return { actualUrl, fetchCallArgs, effectiveOptions, bodyForApiKeyCheck, bodyForPostMessage };
+  }
+
+  function handleRequestInput(input, optionsArgument) {
+    const actualUrl = input.url;
+    const fetchCallArgs = [input, optionsArgument];
+    const effectiveOptions = { method: input.method, headers: new Headers(input.headers) };
+    let bodyForApiKeyCheck;
+    let bodyForPostMessage;
+
+    if (optionsArgument) {
+      if (optionsArgument.method) effectiveOptions.method = optionsArgument.method;
+      if (optionsArgument.headers) effectiveOptions.headers = new Headers(optionsArgument.headers);
+      if ('body' in optionsArgument) {
+        bodyForApiKeyCheck = optionsArgument.body;
+        bodyForPostMessage = optionsArgument.body;
+      } else {
+        bodyForApiKeyCheck = undefined;
+        bodyForPostMessage = input.body;
+      }
+    } else {
+      bodyForApiKeyCheck = undefined;
+      bodyForPostMessage = input.body;
+    }
+    return { actualUrl, fetchCallArgs, effectiveOptions, bodyForApiKeyCheck, bodyForPostMessage };
+  }
+
+  window.fetch = function(input, optionsArgument) {
+    let actualUrl;
+    let fetchCallArgs;
+    let effectiveOptions = {};
+    let bodyForApiKeyCheck;
+    let bodyForPostMessage;
+
+    if (typeof input === 'string') {
+      ({actualUrl, fetchCallArgs, effectiveOptions, bodyForApiKeyCheck, bodyForPostMessage} = handleStringInput(input, optionsArgument));
+    } else if (input instanceof Request) {
+      ({actualUrl, fetchCallArgs, effectiveOptions, bodyForApiKeyCheck, bodyForPostMessage} = handleRequestInput(input, optionsArgument));
+    } else {
+      return originalFetch.apply(window, [input, optionsArgument]);
+    }
+
+    effectiveOptions.method = effectiveOptions.method || 'GET';
+    if (!effectiveOptions.headers) {
+      effectiveOptions.headers = new Headers();
+    }
+
+
+    if (typeof actualUrl === 'string' && googleLlmBaseApiUrls.some((url) => actualUrl.startsWith(url))) {
+      let apiKeyIsNull = true;
+
+      const regex = new RegExp("models/([^:]+)");
+      const modelNameMatch = actualUrl.match(regex);
+      const modelName = modelNameMatch ? modelNameMatch[1] : 'unspecified';
+
+
+      try {
+        const urlObject = new URL(actualUrl);  // Use URL object for robust parsing
+        const apiKeyParam = urlObject.searchParams.get('key');
+        if (apiKeyParam) {
+          apiKeyIsNull = false;
+        }
+      } catch (e) {
+        // Continue checks even if URL parsing fails
+      }
+
+      if (apiKeyIsNull && effectiveOptions.headers) {
+        const h = new Headers(effectiveOptions.headers);
+        const apiKeyHeaderValue = h.get('X-API-Key') || h.get('x-api-key');
+        if (apiKeyHeaderValue) {
+          apiKeyIsNull = false;
+          return originalFetch.apply(window, fetchCallArgs);
+        }
+      }
+
+      if (apiKeyIsNull && effectiveOptions.method && ['POST', 'PUT', 'PATCH'].includes(effectiveOptions.method.toUpperCase()) && typeof bodyForApiKeyCheck === 'string') {
+        try {
+          const bodyData = JSON.parse(bodyForApiKeyCheck);
+          if (bodyData && bodyData.apiKey) {
+            apiKeyIsNull = false;
+            return originalFetch.apply(window, fetchCallArgs);
+          }
+        } catch (e) {
+          // Ignore JSON parsing errors
+        }
+      }
+
+      if(apiKeyIsNull) {
+        const promiseId = nextPromiseId++;
+        const promise = new Promise((resolve) => {
+          pendingFetchResolvers[promiseId] = (resolvedResponse) => {
+            delete pendingFetchResolvers[promiseId];
+            resolve(resolvedResponse);
+          };
+        });
+
+        let serializedBodyForPostMessage;
+        if (typeof bodyForPostMessage === 'string' || bodyForPostMessage == null) {
+            serializedBodyForPostMessage = bodyForPostMessage;
+        } else if (bodyForPostMessage instanceof ReadableStream) {
+            serializedBodyForPostMessage = null;
+        } else {
+            try {
+                serializedBodyForPostMessage = JSON.stringify(bodyForPostMessage);
+            } catch (e) {
+                serializedBodyForPostMessage = null;
+            }
+        }
+
+        const messageOptions = {
+            method: effectiveOptions.method,
+            headers: Object.fromEntries(new Headers(effectiveOptions.headers).entries()),
+            body: serializedBodyForPostMessage
+        };
+
+        window.parent.postMessage({
+          type: 'requestFetch',
+          url: actualUrl,
+          modelName: modelName,
+          options: messageOptions,
+          promiseId: promiseId,
+        }, '*');
+
+        return promise;
+      }
+      return originalFetch.apply(window, fetchCallArgs);
+    }
+    return originalFetch.apply(window, fetchCallArgs);
+  };
+
+  window.addEventListener('message', function(event) {
+    if (event.data && event.data.type === 'resolveFetch') {
+      const { promiseId, response } = event.data;
+      if (pendingFetchResolvers[promiseId]) {
+        try {
+          const reconstructedResponse = new Response(response.body, {
+            status: response.status,
+            statusText: response.statusText,
+            headers: new Headers(response.headers),
+          });
+          pendingFetchResolvers[promiseId](reconstructedResponse);
+        } catch (error) {
+          pendingFetchResolvers[promiseId](new Response(null, { status: 500, statusText: "Interceptor Response Reconstruction Error" }));
+        }
+      }
+    }
+  });
+
+}))({"textModelName":"gemini-2.5-flash-preview-09-2025","imageModelName":"imagen-4.0-generate-001","imageEditModelName":"gemini-2.5-flash-image-preview","imageTransformModelName":"gemini-2.5-flash-image-preview","videoModelName":"veo-2.0-generate-001","ttsModelName":"gemini-2.5-flash-preview-tts","deprecatedTextModelNames":["gemini-2.0-flash","gemini-2.5-flash-preview-04-17","gemini-2.5-flash-preview-05-20"],"deprecatedImageModelNames":["imagen-3.0-generate-001","imagen-3.0-generate-002"]})</script><script>(function() {
+  const originalConsoleLog = console.log;
+  const originalConsoleError = console.error;
+
+    /**
+   * Normalizes an error event or a promise rejection reason into a structured error object.
+   * @param {*} errorEventOrReason The error object or reason.
+   * @return {object} Structured error data { message, name, stack }.
+   */
+  function getErrorObject(errorEventOrReason) {
+    if (errorEventOrReason instanceof Error) {
+      return {
+        message: errorEventOrReason.message,
+        name: errorEventOrReason.name,
+        stack: errorEventOrReason.stack,
+      };
+    }
+    // Fallback for non-Error objects.
+    try {
+      return {
+        message: JSON.stringify(errorEventOrReason),
+        name: 'UnknownErrorType',
+        stack: null,
+      };
+    } catch (e) {
+      return {
+        message: String(errorEventOrReason),
+        name: 'UnknownErrorTypeNonStringifiable',
+        stack: null,
+      };
+    }
+  }
+
+  /**
+   * Converts an array of arguments (from log/error) into a single string.
+   * Handles Error objects specially to include their message and stack.
+   * @param {Array<*>} args - Arguments passed to console methods.
+   * @return {string} A string representation of the arguments.
+   */
+  function stringifyArgs(args) {
+    return args
+      .map((arg) => {
+        if (arg instanceof Error) {
+          const {message, stack} = arg;
+          return `Error: ${message}${stack ? ('\nStack: ' + stack) : ''}`;
+        }
+        if (typeof arg === 'object' && arg !== null) {
+          try {
+            return JSON.stringify(arg);
+          } catch (error) {
+            return '[Circular Object]';
+          }
+        } else {
+          return String(arg);
+        }
+      })
+      .join(' ');
+  }
+
+  console.log = function(...args) {
+    const logString = stringifyArgs(args);
+    window.parent.postMessage({ type: 'log', message: logString }, '*');
+    originalConsoleLog.apply(console, args);
+  };
+
+  console.error = function(...args) {
+    let errorData;
+    if (args.length > 0 && args[0] instanceof Error) {
+      const err = args[0];
+      // If the first arg is an Error, capture its details.
+      errorData = {
+        type: 'error',
+        source: 'CONSOLE_ERROR',
+        ...getErrorObject(err),
+        rawArgsString: stringifyArgs(args.slice(1)),
+        timestamp: new Date().toISOString(),
+      };
+    } else {
+      // If not an Error object, treat all args as a general error message.
+      errorData = {
+        type: 'error',
+        source: 'CONSOLE_ERROR',
+        message: stringifyArgs(args),
+        name: 'ConsoleLoggedError',
+        stack: null,
+        timestamp: new Date().toISOString(),
+      };
+    }
+    window.parent.postMessage(errorData, '*');
+    originalConsoleError.apply(console, args);
+  };
+
+  // Listen for global unhandled synchronous errors.
+  window.addEventListener('error', function(event) {
+    const errorDetails = event.error ? getErrorObject(event.error) : {
+      message: event.message,
+      name: 'GlobalError',
+      stack: null,
+      filename: event.filename,
+      lineno: event.lineno,
+      colno: event.colno,
+    };
+
+    window.parent.postMessage({
+      type: 'error',
+      source: 'global',
+      ...errorDetails,
+      message: errorDetails.message || event.message,
+      timestamp: new Date().toISOString(),
+    }, '*');
+  });
+
+  // Listen for unhandled promise rejections (asynchronous errors).
+  window.addEventListener('unhandledrejection', function(event) {
+    const errorDetails = getErrorObject(event.reason);
+
+    window.parent.postMessage({
+      type: 'error',
+      source: 'unhandledrejection',
+      ...errorDetails,
+      message: errorDetails.message || 'Unhandled Promise Rejection',
+      timestamp: new Date().toISOString(),
+    }, '*');
+  });
+
+})();</script>
+    
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>TONRODY: Интерактивный Кодекс v2.1</title>
+    <script src="https://cdn.tailwindcss.com/"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js" crossorigin="anonymous"></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;700&display=swap');
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #f5f5f4; /* Stone 100 - Warm Neutral */
+            color: #1c1917; /* Stone 900 */
+        }
+
+        .mono {
+            font-family: 'JetBrains Mono', monospace;
+        }
+
+        /* Chart Container Styling - MANDATORY */
+        .chart-container {
+            position: relative;
+            width: 100%;
+            max-width: 600px;
+            margin-left: auto;
+            margin-right: auto;
+            height: 300px;
+            max-height: 400px;
+        }
+        @media (min-width: 768px) {
+            .chart-container {
+                height: 350px;
+            }
+        }
+
+        /* Simulation Specific Styles */
+        .sim-container {
+            background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .slot {
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.5);
+        }
+
+        .slot.active {
+            border-color: #2dd4bf; /* Teal-400 */
+            box-shadow: 0 0 15px rgba(45, 212, 191, 0.5);
+        }
+
+        .slot.winner {
+            border-color: #4ade80 !important; /* Green-400 */
+            background-color: rgba(74, 222, 128, 0.2);
+            transform: scale(1.2);
+            box-shadow: 0 0 25px rgba(74, 222, 128, 0.8);
+            z-index: 10;
+        }
+
+        .slot.loser {
+            opacity: 0.3;
+            filter: grayscale(100%);
+        }
+
+        @keyframes pulse-ring {
+            0% { transform: scale(0.95); opacity: 0.7; }
+            50% { transform: scale(1.05); opacity: 1; }
+            100% { transform: scale(0.95); opacity: 0.7; }
+        }
+
+        .pulsing {
+            animation: pulse-ring 2s infinite ease-in-out;
+        }
+
+        .matrix-text {
+            text-shadow: 0 0 5px #2dd4bf;
+        }
+        
+        .nav-link:hover {
+            color: #0d9488; /* Teal-600 */
+            border-bottom: 2px solid #0d9488;
+        }
+
+        /* Utility for glowing text */
+        .glow-text {
+            text-shadow: 0 0 10px currentColor;
+        }
+    </style>
+
+    <!-- Chosen Palette: Warm Neutral (Background) + Deep Slate/Teal/Neon Green (Simulation UI) -->
+    <!-- Application Structure Plan: 
+         1. Header/Nav: Quick access to sections.
+         2. Hero: Mission Statement and Philosophy (PULSE).
+         3. The Interactive Arena (Simulation): Centerpiece. Direct visualization of Section XVIII. Allows user to "play" a round to understand the mechanics.
+         4. Architecture & Stack: Explains the 3 layers (Frontend, Backend, Chain).
+         5. Fairness & Security: Dashboard of security measures.
+         6. Timeline/Lifecycle: Interactive step-by-step user journey.
+         Rationale: The report emphasizes "Visual Immersion" and "Transparency". A static text page contradicts this. The simulator brings the "Codex" to life.
+    -->
+    <!-- Visualization & Content Choices:
+         1. DOM-based Simulator: To visualize Section XVIII (Round Animations). Goal: Inform/Change. Interaction: Play button triggers Phase 1-4.
+         2. Doughnut Chart: To show the distribution of logic/responsibility across the stack. Goal: Compare.
+         3. Bar Chart: To visualize phase timings. Goal: Inform.
+         4. Confirming NO SVG graphics used (FontAwesome + CSS shapes). NO Mermaid JS used.
+    -->
+    <!-- CONFIRMATION: NO SVG graphics used. NO Mermaid JS used. -->
+<style>*, ::before, ::after{--tw-border-spacing-x:0;--tw-border-spacing-y:0;--tw-translate-x:0;--tw-translate-y:0;--tw-rotate:0;--tw-skew-x:0;--tw-skew-y:0;--tw-scale-x:1;--tw-scale-y:1;--tw-pan-x: ;--tw-pan-y: ;--tw-pinch-zoom: ;--tw-scroll-snap-strictness:proximity;--tw-gradient-from-position: ;--tw-gradient-via-position: ;--tw-gradient-to-position: ;--tw-ordinal: ;--tw-slashed-zero: ;--tw-numeric-figure: ;--tw-numeric-spacing: ;--tw-numeric-fraction: ;--tw-ring-inset: ;--tw-ring-offset-width:0px;--tw-ring-offset-color:#fff;--tw-ring-color:rgb(59 130 246 / 0.5);--tw-ring-offset-shadow:0 0 #0000;--tw-ring-shadow:0 0 #0000;--tw-shadow:0 0 #0000;--tw-shadow-colored:0 0 #0000;--tw-blur: ;--tw-brightness: ;--tw-contrast: ;--tw-grayscale: ;--tw-hue-rotate: ;--tw-invert: ;--tw-saturate: ;--tw-sepia: ;--tw-drop-shadow: ;--tw-backdrop-blur: ;--tw-backdrop-brightness: ;--tw-backdrop-contrast: ;--tw-backdrop-grayscale: ;--tw-backdrop-hue-rotate: ;--tw-backdrop-invert: ;--tw-backdrop-opacity: ;--tw-backdrop-saturate: ;--tw-backdrop-sepia: ;--tw-contain-size: ;--tw-contain-layout: ;--tw-contain-paint: ;--tw-contain-style: }::backdrop{--tw-border-spacing-x:0;--tw-border-spacing-y:0;--tw-translate-x:0;--tw-translate-y:0;--tw-rotate:0;--tw-skew-x:0;--tw-skew-y:0;--tw-scale-x:1;--tw-scale-y:1;--tw-pan-x: ;--tw-pan-y: ;--tw-pinch-zoom: ;--tw-scroll-snap-strictness:proximity;--tw-gradient-from-position: ;--tw-gradient-via-position: ;--tw-gradient-to-position: ;--tw-ordinal: ;--tw-slashed-zero: ;--tw-numeric-figure: ;--tw-numeric-spacing: ;--tw-numeric-fraction: ;--tw-ring-inset: ;--tw-ring-offset-width:0px;--tw-ring-offset-color:#fff;--tw-ring-color:rgb(59 130 246 / 0.5);--tw-ring-offset-shadow:0 0 #0000;--tw-ring-shadow:0 0 #0000;--tw-shadow:0 0 #0000;--tw-shadow-colored:0 0 #0000;--tw-blur: ;--tw-brightness: ;--tw-contrast: ;--tw-grayscale: ;--tw-hue-rotate: ;--tw-invert: ;--tw-saturate: ;--tw-sepia: ;--tw-drop-shadow: ;--tw-backdrop-blur: ;--tw-backdrop-brightness: ;--tw-backdrop-contrast: ;--tw-backdrop-grayscale: ;--tw-backdrop-hue-rotate: ;--tw-backdrop-invert: ;--tw-backdrop-opacity: ;--tw-backdrop-saturate: ;--tw-backdrop-sepia: ;--tw-contain-size: ;--tw-contain-layout: ;--tw-contain-paint: ;--tw-contain-style: }/* ! tailwindcss v3.4.17 | MIT License | https://tailwindcss.com */*,::after,::before{box-sizing:border-box;border-width:0;border-style:solid;border-color:#e5e7eb}::after,::before{--tw-content:''}:host,html{line-height:1.5;-webkit-text-size-adjust:100%;-moz-tab-size:4;tab-size:4;font-family:ui-sans-serif, system-ui, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji";font-feature-settings:normal;font-variation-settings:normal;-webkit-tap-highlight-color:transparent}body{margin:0;line-height:inherit}hr{height:0;color:inherit;border-top-width:1px}abbr:where([title]){-webkit-text-decoration:underline dotted;text-decoration:underline dotted}h1,h2,h3,h4,h5,h6{font-size:inherit;font-weight:inherit}a{color:inherit;text-decoration:inherit}b,strong{font-weight:bolder}code,kbd,pre,samp{font-family:ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;font-feature-settings:normal;font-variation-settings:normal;font-size:1em}small{font-size:80%}sub,sup{font-size:75%;line-height:0;position:relative;vertical-align:baseline}sub{bottom:-.25em}sup{top:-.5em}table{text-indent:0;border-color:inherit;border-collapse:collapse}button,input,optgroup,select,textarea{font-family:inherit;font-feature-settings:inherit;font-variation-settings:inherit;font-size:100%;font-weight:inherit;line-height:inherit;letter-spacing:inherit;color:inherit;margin:0;padding:0}button,select{text-transform:none}button,input:where([type=button]),input:where([type=reset]),input:where([type=submit]){-webkit-appearance:button;background-color:transparent;background-image:none}:-moz-focusring{outline:auto}:-moz-ui-invalid{box-shadow:none}progress{vertical-align:baseline}::-webkit-inner-spin-button,::-webkit-outer-spin-button{height:auto}[type=search]{-webkit-appearance:textfield;outline-offset:-2px}::-webkit-search-decoration{-webkit-appearance:none}::-webkit-file-upload-button{-webkit-appearance:button;font:inherit}summary{display:list-item}blockquote,dd,dl,figure,h1,h2,h3,h4,h5,h6,hr,p,pre{margin:0}fieldset{margin:0;padding:0}legend{padding:0}menu,ol,ul{list-style:none;margin:0;padding:0}dialog{padding:0}textarea{resize:vertical}input::placeholder,textarea::placeholder{opacity:1;color:#9ca3af}[role=button],button{cursor:pointer}:disabled{cursor:default}audio,canvas,embed,iframe,img,object,svg,video{display:block;vertical-align:middle}img,video{max-width:100%;height:auto}[hidden]:where(:not([hidden=until-found])){display:none}.pointer-events-none{pointer-events:none}.absolute{position:absolute}.relative{position:relative}.sticky{position:sticky}.inset-0{inset:0px}.left-0{left:0px}.left-4{left:1rem}.right-4{right:1rem}.top-0{top:0px}.top-1\/2{top:50%}.top-4{top:1rem}.-z-0{z-index:0}.z-0{z-index:0}.z-10{z-index:10}.z-20{z-index:20}.z-50{z-index:50}.mx-auto{margin-left:auto;margin-right:auto}.mb-1{margin-bottom:0.25rem}.mb-10{margin-bottom:2.5rem}.mb-12{margin-bottom:3rem}.mb-16{margin-bottom:4rem}.mb-2{margin-bottom:0.5rem}.mb-3{margin-bottom:0.75rem}.mb-4{margin-bottom:1rem}.mb-6{margin-bottom:1.5rem}.mb-8{margin-bottom:2rem}.ml-2{margin-left:0.5rem}.mr-2{margin-right:0.5rem}.mt-1{margin-top:0.25rem}.mt-12{margin-top:3rem}.mt-2{margin-top:0.5rem}.mt-4{margin-top:1rem}.mt-auto{margin-top:auto}.flex{display:flex}.grid{display:grid}.hidden{display:none}.h-1{height:0.25rem}.h-12{height:3rem}.h-16{height:4rem}.h-2{height:0.5rem}.h-3{height:0.75rem}.h-48{height:12rem}.h-\[500px\]{height:500px}.h-10{height:2.5rem}.min-h-screen{min-height:100vh}.w-12{width:3rem}.w-2{width:0.5rem}.w-3{width:0.75rem}.w-48{width:12rem}.w-64{width:16rem}.w-full{width:100%}.w-10{width:2.5rem}.max-w-3xl{max-width:48rem}.max-w-5xl{max-width:64rem}.max-w-6xl{max-width:72rem}.max-w-7xl{max-width:80rem}.grid-cols-1{grid-template-columns:repeat(1, minmax(0, 1fr))}.flex-col{flex-direction:column}.items-start{align-items:flex-start}.items-center{align-items:center}.justify-center{justify-content:center}.justify-between{justify-content:space-between}.gap-12{gap:3rem}.gap-2{gap:0.5rem}.gap-3{gap:0.75rem}.gap-4{gap:1rem}.gap-6{gap:1.5rem}.space-x-8 > :not([hidden]) ~ :not([hidden]){--tw-space-x-reverse:0;margin-right:calc(2rem * var(--tw-space-x-reverse));margin-left:calc(2rem * calc(1 - var(--tw-space-x-reverse)))}.space-y-1 > :not([hidden]) ~ :not([hidden]){--tw-space-y-reverse:0;margin-top:calc(0.25rem * calc(1 - var(--tw-space-y-reverse)));margin-bottom:calc(0.25rem * var(--tw-space-y-reverse))}.space-y-6 > :not([hidden]) ~ :not([hidden]){--tw-space-y-reverse:0;margin-top:calc(1.5rem * calc(1 - var(--tw-space-y-reverse)));margin-bottom:calc(1.5rem * var(--tw-space-y-reverse))}.space-y-8 > :not([hidden]) ~ :not([hidden]){--tw-space-y-reverse:0;margin-top:calc(2rem * calc(1 - var(--tw-space-y-reverse)));margin-bottom:calc(2rem * var(--tw-space-y-reverse))}.rounded{border-radius:0.25rem}.rounded-2xl{border-radius:1rem}.rounded-full{border-radius:9999px}.rounded-lg{border-radius:0.5rem}.rounded-xl{border-radius:0.75rem}.border{border-width:1px}.border-2{border-width:2px}.border-4{border-width:4px}.border-b{border-bottom-width:1px}.border-l-4{border-left-width:4px}.border-t{border-top-width:1px}.border-slate-600{--tw-border-opacity:1;border-color:rgb(71 85 105 / var(--tw-border-opacity, 1))}.border-slate-700{--tw-border-opacity:1;border-color:rgb(51 65 85 / var(--tw-border-opacity, 1))}.border-stone-100{--tw-border-opacity:1;border-color:rgb(245 245 244 / var(--tw-border-opacity, 1))}.border-stone-200{--tw-border-opacity:1;border-color:rgb(231 229 228 / var(--tw-border-opacity, 1))}.border-stone-300{--tw-border-opacity:1;border-color:rgb(214 211 209 / var(--tw-border-opacity, 1))}.border-teal-500{--tw-border-opacity:1;border-color:rgb(20 184 166 / var(--tw-border-opacity, 1))}.bg-blue-500{--tw-bg-opacity:1;background-color:rgb(59 130 246 / var(--tw-bg-opacity, 1))}.bg-green-500{--tw-bg-opacity:1;background-color:rgb(34 197 94 / var(--tw-bg-opacity, 1))}.bg-indigo-100{--tw-bg-opacity:1;background-color:rgb(224 231 255 / var(--tw-bg-opacity, 1))}.bg-sky-100{--tw-bg-opacity:1;background-color:rgb(224 242 254 / var(--tw-bg-opacity, 1))}.bg-slate-500{--tw-bg-opacity:1;background-color:rgb(100 116 139 / var(--tw-bg-opacity, 1))}.bg-slate-800\/80{background-color:rgb(30 41 59 / 0.8)}.bg-slate-900{--tw-bg-opacity:1;background-color:rgb(15 23 42 / var(--tw-bg-opacity, 1))}.bg-slate-900\/50{background-color:rgb(15 23 42 / 0.5)}.bg-stone-100{--tw-bg-opacity:1;background-color:rgb(245 245 244 / var(--tw-bg-opacity, 1))}.bg-stone-300{--tw-bg-opacity:1;background-color:rgb(214 211 209 / var(--tw-bg-opacity, 1))}.bg-stone-50{--tw-bg-opacity:1;background-color:rgb(250 250 249 / var(--tw-bg-opacity, 1))}.bg-stone-900{--tw-bg-opacity:1;background-color:rgb(28 25 23 / var(--tw-bg-opacity, 1))}.bg-teal-100{--tw-bg-opacity:1;background-color:rgb(204 251 241 / var(--tw-bg-opacity, 1))}.bg-teal-500{--tw-bg-opacity:1;background-color:rgb(20 184 166 / var(--tw-bg-opacity, 1))}.bg-white{--tw-bg-opacity:1;background-color:rgb(255 255 255 / var(--tw-bg-opacity, 1))}.bg-slate-800{--tw-bg-opacity:1;background-color:rgb(30 41 59 / var(--tw-bg-opacity, 1))}.bg-\[url\(\'data\:image\/png\;base64\2c iVBORw0KGgoAAAANSUhEUgAAAAoAAAAKCAYAAACNMs\+9AAAAAXNSR0IArs4c6QAAACNJREFUGFdjZCAZGmVgYMiA4owMKMCIz0BYAC5JmBKyJkIuAAA8ygYd5oP\/eAAAAABJRU5ErkJggg\=\=\'\)\]{background-image:url('data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAoAAAAKCAYAAACNMs+9AAAAAXNSR0IArs4c6QAAACNJREFUGFdjZCAZGmVgYMiA4owMKMCIz0BYAC5JmBKyJkIuAAA8ygYd5oP/eAAAAABJRU5ErkJggg==')}.bg-gradient-to-r{background-image:linear-gradient(to right, var(--tw-gradient-stops))}.from-teal-500{--tw-gradient-from:#14b8a6 var(--tw-gradient-from-position);--tw-gradient-to:rgb(20 184 166 / 0) var(--tw-gradient-to-position);--tw-gradient-stops:var(--tw-gradient-from), var(--tw-gradient-to)}.to-emerald-600{--tw-gradient-to:#059669 var(--tw-gradient-to-position)}.bg-clip-text{-webkit-background-clip:text;background-clip:text}.p-2{padding:0.5rem}.p-4{padding:1rem}.p-5{padding:1.25rem}.p-6{padding:1.5rem}.px-2{padding-left:0.5rem;padding-right:0.5rem}.px-3{padding-left:0.75rem;padding-right:0.75rem}.px-4{padding-left:1rem;padding-right:1rem}.px-8{padding-left:2rem;padding-right:2rem}.py-0\.5{padding-top:0.125rem;padding-bottom:0.125rem}.py-1{padding-top:0.25rem;padding-bottom:0.25rem}.py-12{padding-top:3rem;padding-bottom:3rem}.py-16{padding-top:4rem;padding-bottom:4rem}.py-2{padding-top:0.5rem;padding-bottom:0.5rem}.py-3{padding-top:0.75rem;padding-bottom:0.75rem}.text-left{text-align:left}.text-center{text-align:center}.text-right{text-align:right}.font-mono{font-family:ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace}.text-2xl{font-size:1.5rem;line-height:2rem}.text-3xl{font-size:1.875rem;line-height:2.25rem}.text-4xl{font-size:2.25rem;line-height:2.5rem}.text-lg{font-size:1.125rem;line-height:1.75rem}.text-sm{font-size:0.875rem;line-height:1.25rem}.text-xl{font-size:1.25rem;line-height:1.75rem}.text-xs{font-size:0.75rem;line-height:1rem}.font-bold{font-weight:700}.font-extrabold{font-weight:800}.font-medium{font-weight:500}.uppercase{text-transform:uppercase}.leading-relaxed{line-height:1.625}.tracking-tight{letter-spacing:-0.025em}.tracking-widest{letter-spacing:0.1em}.text-amber-600{--tw-text-opacity:1;color:rgb(217 119 6 / var(--tw-text-opacity, 1))}.text-blue-600{--tw-text-opacity:1;color:rgb(37 99 235 / var(--tw-text-opacity, 1))}.text-green-600{--tw-text-opacity:1;color:rgb(22 163 74 / var(--tw-text-opacity, 1))}.text-indigo-500{--tw-text-opacity:1;color:rgb(99 102 241 / var(--tw-text-opacity, 1))}.text-indigo-700{--tw-text-opacity:1;color:rgb(67 56 202 / var(--tw-text-opacity, 1))}.text-sky-500{--tw-text-opacity:1;color:rgb(14 165 233 / var(--tw-text-opacity, 1))}.text-sky-700{--tw-text-opacity:1;color:rgb(3 105 161 / var(--tw-text-opacity, 1))}.text-slate-200{--tw-text-opacity:1;color:rgb(226 232 240 / var(--tw-text-opacity, 1))}.text-slate-400{--tw-text-opacity:1;color:rgb(148 163 184 / var(--tw-text-opacity, 1))}.text-slate-500{--tw-text-opacity:1;color:rgb(100 116 139 / var(--tw-text-opacity, 1))}.text-slate-600{--tw-text-opacity:1;color:rgb(71 85 105 / var(--tw-text-opacity, 1))}.text-stone-400{--tw-text-opacity:1;color:rgb(168 162 158 / var(--tw-text-opacity, 1))}.text-stone-500{--tw-text-opacity:1;color:rgb(120 113 108 / var(--tw-text-opacity, 1))}.text-stone-600{--tw-text-opacity:1;color:rgb(87 83 78 / var(--tw-text-opacity, 1))}.text-stone-800{--tw-text-opacity:1;color:rgb(41 37 36 / var(--tw-text-opacity, 1))}.text-stone-900{--tw-text-opacity:1;color:rgb(28 25 23 / var(--tw-text-opacity, 1))}.text-teal-400{--tw-text-opacity:1;color:rgb(45 212 191 / var(--tw-text-opacity, 1))}.text-teal-500{--tw-text-opacity:1;color:rgb(20 184 166 / var(--tw-text-opacity, 1))}.text-teal-600{--tw-text-opacity:1;color:rgb(13 148 136 / var(--tw-text-opacity, 1))}.text-teal-700{--tw-text-opacity:1;color:rgb(15 118 110 / var(--tw-text-opacity, 1))}.text-transparent{color:transparent}.text-white{--tw-text-opacity:1;color:rgb(255 255 255 / var(--tw-text-opacity, 1))}.opacity-10{opacity:0.1}.shadow-\[0_0_30px_rgba\(0\2c 0\2c 0\2c 0\.5\)\]{--tw-shadow:0 0 30px rgba(0,0,0,0.5);--tw-shadow-colored:0 0 30px var(--tw-shadow-color);box-shadow:var(--tw-ring-offset-shadow, 0 0 #0000), var(--tw-ring-shadow, 0 0 #0000), var(--tw-shadow)}.shadow-lg{--tw-shadow:0 10px 15px -3px rgb(0 0 0 / 0.1), 0 4px 6px -4px rgb(0 0 0 / 0.1);--tw-shadow-colored:0 10px 15px -3px var(--tw-shadow-color), 0 4px 6px -4px var(--tw-shadow-color);box-shadow:var(--tw-ring-offset-shadow, 0 0 #0000), var(--tw-ring-shadow, 0 0 #0000), var(--tw-shadow)}.shadow-sm{--tw-shadow:0 1px 2px 0 rgb(0 0 0 / 0.05);--tw-shadow-colored:0 1px 2px 0 var(--tw-shadow-color);box-shadow:var(--tw-ring-offset-shadow, 0 0 #0000), var(--tw-ring-shadow, 0 0 #0000), var(--tw-shadow)}.shadow-xl{--tw-shadow:0 20px 25px -5px rgb(0 0 0 / 0.1), 0 8px 10px -6px rgb(0 0 0 / 0.1);--tw-shadow-colored:0 20px 25px -5px var(--tw-shadow-color), 0 8px 10px -6px var(--tw-shadow-color);box-shadow:var(--tw-ring-offset-shadow, 0 0 #0000), var(--tw-ring-shadow, 0 0 #0000), var(--tw-shadow)}.backdrop-blur{--tw-backdrop-blur:blur(8px);-webkit-backdrop-filter:var(--tw-backdrop-blur) var(--tw-backdrop-brightness) var(--tw-backdrop-contrast) var(--tw-backdrop-grayscale) var(--tw-backdrop-hue-rotate) var(--tw-backdrop-invert) var(--tw-backdrop-opacity) var(--tw-backdrop-saturate) var(--tw-backdrop-sepia);backdrop-filter:var(--tw-backdrop-blur) var(--tw-backdrop-brightness) var(--tw-backdrop-contrast) var(--tw-backdrop-grayscale) var(--tw-backdrop-hue-rotate) var(--tw-backdrop-invert) var(--tw-backdrop-opacity) var(--tw-backdrop-saturate) var(--tw-backdrop-sepia)}.transition-all{transition-property:all;transition-timing-function:cubic-bezier(0.4, 0, 0.2, 1);transition-duration:150ms}.transition-colors{transition-property:color, background-color, border-color, fill, stroke, -webkit-text-decoration-color;transition-property:color, background-color, border-color, text-decoration-color, fill, stroke;transition-property:color, background-color, border-color, text-decoration-color, fill, stroke, -webkit-text-decoration-color;transition-timing-function:cubic-bezier(0.4, 0, 0.2, 1);transition-duration:150ms}.transition-shadow{transition-property:box-shadow;transition-timing-function:cubic-bezier(0.4, 0, 0.2, 1);transition-duration:150ms}.transition-transform{transition-property:transform;transition-timing-function:cubic-bezier(0.4, 0, 0.2, 1);transition-duration:150ms}.duration-300{transition-duration:300ms}.hover\:border-teal-300:hover{--tw-border-opacity:1;border-color:rgb(94 234 212 / var(--tw-border-opacity, 1))}.hover\:bg-stone-800:hover{--tw-bg-opacity:1;background-color:rgb(41 37 36 / var(--tw-bg-opacity, 1))}.hover\:shadow-md:hover{--tw-shadow:0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1);--tw-shadow-colored:0 4px 6px -1px var(--tw-shadow-color), 0 2px 4px -2px var(--tw-shadow-color);box-shadow:var(--tw-ring-offset-shadow, 0 0 #0000), var(--tw-ring-shadow, 0 0 #0000), var(--tw-shadow)}.active\:scale-95:active{--tw-scale-x:.95;--tw-scale-y:.95;transform:translate(var(--tw-translate-x), var(--tw-translate-y)) rotate(var(--tw-rotate)) skewX(var(--tw-skew-x)) skewY(var(--tw-skew-y)) scaleX(var(--tw-scale-x)) scaleY(var(--tw-scale-y))}.group:hover .group-hover\:border-blue-500{--tw-border-opacity:1;border-color:rgb(59 130 246 / var(--tw-border-opacity, 1))}.group:hover .group-hover\:border-green-500{--tw-border-opacity:1;border-color:rgb(34 197 94 / var(--tw-border-opacity, 1))}.group:hover .group-hover\:border-teal-500{--tw-border-opacity:1;border-color:rgb(20 184 166 / var(--tw-border-opacity, 1))}.group:hover .group-hover\:text-blue-600{--tw-text-opacity:1;color:rgb(37 99 235 / var(--tw-text-opacity, 1))}.group:hover .group-hover\:text-green-600{--tw-text-opacity:1;color:rgb(22 163 74 / var(--tw-text-opacity, 1))}.group:hover .group-hover\:text-teal-600{--tw-text-opacity:1;color:rgb(13 148 136 / var(--tw-text-opacity, 1))}@media (min-width: 640px){.sm\:flex-row{flex-direction:row}.sm\:px-6{padding-left:1.5rem;padding-right:1.5rem}}@media (min-width: 768px){.md\:mb-0{margin-bottom:0px}.md\:block{display:block}.md\:flex{display:flex}.md\:grid-cols-2{grid-template-columns:repeat(2, minmax(0, 1fr))}.md\:grid-cols-3{grid-template-columns:repeat(3, minmax(0, 1fr))}.md\:flex-row{flex-direction:row}.md\:space-y-0 > :not([hidden]) ~ :not([hidden]){--tw-space-y-reverse:0;margin-top:calc(0px * calc(1 - var(--tw-space-y-reverse)));margin-bottom:calc(0px * var(--tw-space-y-reverse))}.md\:text-5xl{font-size:3rem;line-height:1}}@media (min-width: 1024px){.lg\:grid-cols-2{grid-template-columns:repeat(2, minmax(0, 1fr))}.lg\:grid-cols-4{grid-template-columns:repeat(4, minmax(0, 1fr))}.lg\:px-8{padding-left:2rem;padding-right:2rem}}</style></head>
+<body class="flex flex-col min-h-screen">
+
+    <!-- Navigation -->
+    <nav class="bg-white border-b border-stone-200 sticky top-0 z-50 shadow-sm">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex justify-between h-16">
+                <div class="flex items-center">
+                    <span class="text-2xl font-bold tracking-tight text-stone-800">TON<span class="text-teal-600">RODY</span></span>
+                    <span class="ml-2 px-2 py-0.5 rounded text-xs font-mono bg-stone-100 text-stone-500 border border-stone-300">CODEX v2.1</span>
+                </div>
+                <div class="hidden md:flex space-x-8 items-center">
+                    <button onclick="scrollToSection(&#39;mission&#39;)" class="nav-link text-stone-600 font-medium transition-colors">Миссия</button>
+                    <button onclick="scrollToSection(&#39;arena&#39;)" class="nav-link text-stone-600 font-medium transition-colors">Арена (Sim)</button>
+                    <button onclick="scrollToSection(&#39;architecture&#39;)" class="nav-link text-stone-600 font-medium transition-colors">Архитектура</button>
+                    <button onclick="scrollToSection(&#39;security&#39;)" class="nav-link text-stone-600 font-medium transition-colors">Безопасность</button>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Hero Section -->
+    <section id="mission" class="bg-white py-16 border-b border-stone-200">
+        <div class="max-w-5xl mx-auto px-4 text-center">
+            <h1 class="text-4xl md:text-5xl font-extrabold text-stone-900 mb-6 tracking-tight">
+                Доказуемая Честность. <br>
+                <span class="text-transparent bg-clip-text bg-gradient-to-r from-teal-500 to-emerald-600">Визуализированная Математика.</span>
+            </h1>
+            <p class="text-lg text-stone-600 mb-8 max-w-3xl mx-auto leading-relaxed">
+                TONRODY — это не просто лотерея, это протокол. Мы заменяем человеческий фактор на криптографические хеши. 
+                Наша миссия — превратить "черный ящик" рандома в прозрачный стеклянный куб, где каждое действие видимо, неизменно и верифицируемо.
+            </p>
+            
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mt-12 text-left">
+                <div class="p-6 bg-stone-50 rounded-xl border border-stone-200 hover:border-teal-300 transition-colors">
+                    <div class="text-teal-600 text-2xl mb-3"><i class="fa-solid fa-fingerprint"></i></div>
+                    <h3 class="font-bold text-stone-800 mb-2">Философия PULSE</h3>
+                    <p class="text-sm text-stone-600">Каждый раунд — это резонанс. Анимации не украшают, а доказывают честность, визуализируя вычисления в реальном времени.</p>
+                </div>
+                <div class="p-6 bg-stone-50 rounded-xl border border-stone-200 hover:border-teal-300 transition-colors">
+                    <div class="text-teal-600 text-2xl mb-3"><i class="fa-solid fa-cube"></i></div>
+                    <h3 class="font-bold text-stone-800 mb-2">Immutable State</h3>
+                    <p class="text-sm text-stone-600">Ничто не может быть изменено после старта. Хеши фиксируются в блокчейне, создавая нерушимую историю событий.</p>
+                </div>
+                <div class="p-6 bg-stone-50 rounded-xl border border-stone-200 hover:border-teal-300 transition-colors">
+                    <div class="text-teal-600 text-2xl mb-3"><i class="fa-brands fa-telegram"></i></div>
+                    <h3 class="font-bold text-stone-800 mb-2">TON Native</h3>
+                    <p class="text-sm text-stone-600">Глубокая интеграция с TON Connect. Смарт-контракты на Tact. Молниеносные WebSocket обновления.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Interactive Simulation Section -->
+    <section id="arena" class="py-16 bg-stone-100">
+        <div class="max-w-6xl mx-auto px-4">
+            <div class="mb-10 text-center">
+                <h2 class="text-3xl font-bold text-stone-900 mb-4">Визуальное Ядро: Симуляция Раунда</h2>
+                <p class="text-stone-600 max-w-3xl mx-auto">
+                    В разделе XVIII "Полный UX / UI Поведения" описана точная хореография раунда. 
+                    Этот интерактивный симулятор воспроизводит 4 фазы жизни раунда: 
+                    <span class="font-bold text-teal-600">Ожидание</span>, 
+                    <span class="font-bold text-blue-600">Вычисление</span>, 
+                    <span class="font-bold text-green-600">Объявление</span> и 
+                    <span class="font-bold text-amber-600">Выплата</span>. 
+                    Нажмите кнопку запуска, чтобы увидеть алгоритм в действии.
+                </p>
+            </div>
+
+            <!-- The Simulator Container -->
+            <div class="bg-white p-2 rounded-2xl shadow-xl border border-stone-300">
+                <div class="sim-container rounded-xl h-[500px] w-full flex flex-col items-center justify-center relative">
+                    
+                    <!-- HUD / Status Overlay -->
+                    <div class="absolute top-4 left-4 z-20">
+                        <div class="bg-slate-800/80 backdrop-blur px-4 py-2 rounded-full border border-slate-600 flex items-center gap-3">
+                            <div id="status-dot" class="w-3 h-3 rounded-full bg-slate-500"></div>
+                            <span id="status-text" class="text-slate-200 font-mono text-xs uppercase tracking-widest">IDLE</span>
+                        </div>
+                    </div>
+                    
+                    <div class="absolute top-4 right-4 z-20 text-right">
+                        <div class="text-slate-400 text-xs font-mono mb-1">CURRENT HASH</div>
+                        <div id="hash-display" class="text-teal-400 font-mono text-sm bg-slate-900/50 px-3 py-1 rounded border border-slate-700">WAITING_FOR_DATA...</div>
+                    </div>
+
+                    <!-- Canvas for connecting lines -->
+                    <canvas id="connection-canvas" class="absolute inset-0 pointer-events-none z-10" width="1039" height="500"></canvas>
+
+                    <!-- Central Core -->
+                    <div class="relative z-20 w-48 h-48 rounded-full border-2 border-slate-700 bg-slate-900 flex flex-col items-center justify-center shadow-[0_0_30px_rgba(0,0,0,0.5)]">
+                        <div id="core-icon" class="text-4xl text-slate-600 mb-2 transition-all duration-300">
+                            <i class="fa-solid fa-shield-halved"></i>
+                        </div>
+                        <div id="core-label" class="text-slate-500 text-xs font-mono text-center">TONRODY<br>PROTOCOL</div>
+                    </div>
+
+                    <!-- Slots Container (Generated by JS) -->
+                    <div id="slots-ring" class="absolute inset-0 pointer-events-none flex items-center justify-center">
+                        <!-- Slots injected here -->
+                    <div class="slot absolute w-10 h-10 rounded-lg bg-slate-800 border-2 border-slate-600 flex items-center justify-center text-slate-400 z-20" data-index="0" style="transform: translate(8.57253e-15px, -140px);"><i class="fa-solid fa-user"></i></div><div class="slot absolute w-10 h-10 rounded-lg bg-slate-800 border-2 border-slate-600 flex items-center justify-center text-slate-400 z-20" data-index="1" style="transform: translate(98.9949px, -98.9949px);"><i class="fa-solid fa-user"></i></div><div class="slot absolute w-10 h-10 rounded-lg bg-slate-800 border-2 border-slate-600 flex items-center justify-center text-slate-400 z-20" data-index="2" style="transform: translate(140px, 0px);"><i class="fa-solid fa-user"></i></div><div class="slot absolute w-10 h-10 rounded-lg bg-slate-800 border-2 border-slate-600 flex items-center justify-center text-slate-400 z-20" data-index="3" style="transform: translate(98.9949px, 98.9949px);"><i class="fa-solid fa-user"></i></div><div class="slot absolute w-10 h-10 rounded-lg bg-slate-800 border-2 border-slate-600 flex items-center justify-center text-slate-400 z-20" data-index="4" style="transform: translate(8.57253e-15px, 140px);"><i class="fa-solid fa-user"></i></div><div class="slot absolute w-10 h-10 rounded-lg bg-slate-800 border-2 border-slate-600 flex items-center justify-center text-slate-400 z-20" data-index="5" style="transform: translate(-98.9949px, 98.9949px);"><i class="fa-solid fa-user"></i></div><div class="slot absolute w-10 h-10 rounded-lg bg-slate-800 border-2 border-slate-600 flex items-center justify-center text-slate-400 z-20" data-index="6" style="transform: translate(-140px, 1.71451e-14px);"><i class="fa-solid fa-user"></i></div><div class="slot absolute w-10 h-10 rounded-lg bg-slate-800 border-2 border-slate-600 flex items-center justify-center text-slate-400 z-20" data-index="7" style="transform: translate(-98.9949px, -98.9949px);"><i class="fa-solid fa-user"></i></div></div>
+
+                    <!-- Background Grid/Mist -->
+                    <div class="absolute inset-0 opacity-10 bg-[url(&#39;data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAoAAAAKCAYAAACNMs+9AAAAAXNSR0IArs4c6QAAACNJREFUGFdjZCAZGmVgYMiA4owMKMCIz0BYAC5JmBKyJkIuAAA8ygYd5oP/eAAAAABJRU5ErkJggg==&#39;)] z-0"></div>
+
+                </div>
+
+                <!-- Controls -->
+                <div class="p-6 bg-white border-t border-stone-100 flex flex-col sm:flex-row justify-between items-center gap-4">
+                    <div class="text-sm text-stone-500">
+                        <div class="flex items-center gap-2 mb-1">
+                            <span class="w-2 h-2 rounded-full bg-teal-500"></span> Фаза 1: Пульсация (Сбор ставок)
+                        </div>
+                        <div class="flex items-center gap-2 mb-1">
+                            <span class="w-2 h-2 rounded-full bg-blue-500"></span> Фаза 2: Матрица (Вычисление Хеша)
+                        </div>
+                        <div class="flex items-center gap-2">
+                            <span class="w-2 h-2 rounded-full bg-green-500"></span> Фаза 3: Вспышка (Победитель)
+                        </div>
+                    </div>
+                    <button id="run-sim-btn" class="px-8 py-3 bg-stone-900 hover:bg-stone-800 text-white font-bold rounded-lg shadow-lg transition-transform active:scale-95 flex items-center gap-2">
+                        <i class="fa-solid fa-play"></i> Запустить Раунд
+                    </button>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Architecture & Stats Section -->
+    <section id="architecture" class="py-16 bg-white border-b border-stone-200">
+        <div class="max-w-7xl mx-auto px-4">
+            <div class="mb-12">
+                <h2 class="text-3xl font-bold text-stone-900 mb-4">Архитектура Проекта</h2>
+                <p class="text-stone-600 max-w-3xl">
+                    TONRODY построен на взаимодействии трех слоев, обеспечивающих баланс между пользовательским опытом (UX), надежностью (Backend) и истиной (Blockchain). 
+                    Ниже представлена визуализация стека и распределения логической нагрузки.
+                </p>
+            </div>
+
+            <div class="grid grid-cols-1 lg:grid-cols-2 gap-12 items-start">
+                
+                <!-- Stack Details -->
+                <div class="space-y-6">
+                    <div class="p-5 border border-stone-200 rounded-lg hover:shadow-md transition-shadow">
+                        <div class="flex items-center justify-between mb-2">
+                            <h3 class="font-bold text-stone-800 text-lg">Frontend (Client)</h3>
+                            <span class="px-2 py-1 bg-teal-100 text-teal-700 text-xs font-bold rounded">Visual Layer</span>
+                        </div>
+                        <p class="text-stone-600 text-sm mb-3">React, Zustand, Tailwind, Framer Motion.</p>
+                        <ul class="text-sm text-stone-500 space-y-1">
+                            <li><i class="fa-solid fa-check text-teal-500 mr-2"></i>Иммерсивные анимации частиц</li>
+                            <li><i class="fa-solid fa-check text-teal-500 mr-2"></i>Клиентская верификация хешей (crypto.subtle)</li>
+                            <li><i class="fa-solid fa-check text-teal-500 mr-2"></i>Интеграция Telegram Mini App</li>
+                        </ul>
+                    </div>
+
+                    <div class="p-5 border border-stone-200 rounded-lg hover:shadow-md transition-shadow">
+                        <div class="flex items-center justify-between mb-2">
+                            <h3 class="font-bold text-stone-800 text-lg">Backend (Orchestrator)</h3>
+                            <span class="px-2 py-1 bg-indigo-100 text-indigo-700 text-xs font-bold rounded">Sync Layer</span>
+                        </div>
+                        <p class="text-stone-600 text-sm mb-3">Node.js, WebSocket (Socket.io), Supabase.</p>
+                        <ul class="text-sm text-stone-500 space-y-1">
+                            <li><i class="fa-solid fa-check text-indigo-500 mr-2"></i>Синхронизация событий в реальном времени</li>
+                            <li><i class="fa-solid fa-check text-indigo-500 mr-2"></i>Валидация транзакций TON Connect</li>
+                            <li><i class="fa-solid fa-check text-indigo-500 mr-2"></i>Управление лобби и историей</li>
+                        </ul>
+                    </div>
+
+                    <div class="p-5 border border-stone-200 rounded-lg hover:shadow-md transition-shadow">
+                        <div class="flex items-center justify-between mb-2">
+                            <h3 class="font-bold text-stone-800 text-lg">Blockchain (Truth)</h3>
+                            <span class="px-2 py-1 bg-sky-100 text-sky-700 text-xs font-bold rounded">Finality Layer</span>
+                        </div>
+                        <p class="text-stone-600 text-sm mb-3">TON Smart Contracts (Tact Language).</p>
+                        <ul class="text-sm text-stone-500 space-y-1">
+                            <li><i class="fa-solid fa-check text-sky-500 mr-2"></i>Неизменное хранение хешей</li>
+                            <li><i class="fa-solid fa-check text-sky-500 mr-2"></i>Автоматическое распределение выплат</li>
+                            <li><i class="fa-solid fa-check text-sky-500 mr-2"></i>Hash-proof логика победителя</li>
+                        </ul>
+                    </div>
+                </div>
+
+                <!-- Charts Area -->
+                <div class="bg-stone-50 p-6 rounded-xl border border-stone-200">
+                    <h3 class="font-bold text-stone-800 mb-6 text-center">Распределение Ответственности</h3>
+                    
+                    <div class="chart-container mb-8">
+                        <canvas id="architectureChart" width="361" height="278" style="display: block; box-sizing: border-box; height: 350px; width: 454.1px;"></canvas>
+                    </div>
+
+                    <div class="chart-container">
+                        <canvas id="timingChart" width="361" height="278" style="display: block; box-sizing: border-box; height: 350px; width: 454.1px;"></canvas>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </section>
+
+    <!-- Security & Lifecycle Section -->
+    <section id="security" class="py-16 bg-stone-100">
+        <div class="max-w-7xl mx-auto px-4">
+            <h2 class="text-3xl font-bold text-stone-900 mb-8 text-center">Безопасность и Жизненный Цикл</h2>
+
+            <!-- Timeline -->
+            <div class="mb-16">
+                <div class="flex flex-col md:flex-row justify-between items-center relative space-y-8 md:space-y-0">
+                    <!-- Connector Line (Desktop) -->
+                    <div class="hidden md:block absolute top-1/2 left-0 w-full h-1 bg-stone-300 -z-0"></div>
+
+                    <!-- Step 1 -->
+                    <div class="relative z-10 flex flex-col items-center group">
+                        <div class="w-12 h-12 rounded-full bg-white border-4 border-stone-300 group-hover:border-teal-500 transition-colors flex items-center justify-center text-stone-500 group-hover:text-teal-600 font-bold shadow-sm">1</div>
+                        <div class="mt-4 bg-white p-4 rounded shadow-sm border border-stone-200 w-64 text-center">
+                            <h4 class="font-bold text-stone-800">Вход &amp; Ставка</h4>
+                            <p class="text-xs text-stone-500 mt-1">Подключение TON Connect. "Жидкая" анимация заливки слота.</p>
+                        </div>
+                    </div>
+
+                    <!-- Step 2 -->
+                    <div class="relative z-10 flex flex-col items-center group">
+                        <div class="w-12 h-12 rounded-full bg-white border-4 border-stone-300 group-hover:border-blue-500 transition-colors flex items-center justify-center text-stone-500 group-hover:text-blue-600 font-bold shadow-sm">2</div>
+                        <div class="mt-4 bg-white p-4 rounded shadow-sm border border-stone-200 w-64 text-center">
+                            <h4 class="font-bold text-stone-800">Фиксация &amp; Хеш</h4>
+                            <p class="text-xs text-stone-500 mt-1">Блокировка интерфейса. Генерация неизменного хеша раунда.</p>
+                        </div>
+                    </div>
+
+                    <!-- Step 3 -->
+                    <div class="relative z-10 flex flex-col items-center group">
+                        <div class="w-12 h-12 rounded-full bg-white border-4 border-stone-300 group-hover:border-green-500 transition-colors flex items-center justify-center text-stone-500 group-hover:text-green-600 font-bold shadow-sm">3</div>
+                        <div class="mt-4 bg-white p-4 rounded shadow-sm border border-stone-200 w-64 text-center">
+                            <h4 class="font-bold text-stone-800">Победа &amp; Выплата</h4>
+                            <p class="text-xs text-stone-500 mt-1">Определение победителя (Mod). Взрыв частиц. Выплата TON.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Security Grid -->
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+                <div class="bg-white p-6 rounded-lg shadow-sm border-l-4 border-teal-500">
+                    <h4 class="font-bold text-stone-800 mb-2">Hash-Proof</h4>
+                    <p class="text-sm text-stone-600">Результат предопределен хешем до начала анимации. Изменить его невозможно.</p>
+                </div>
+                <div class="bg-white p-6 rounded-lg shadow-sm border-l-4 border-teal-500">
+                    <h4 class="font-bold text-stone-800 mb-2">Zero-Backdoor</h4>
+                    <p class="text-sm text-stone-600">Механика работает автономно. Нет админских панелей для подкрутки.</p>
+                </div>
+                <div class="bg-white p-6 rounded-lg shadow-sm border-l-4 border-teal-500">
+                    <h4 class="font-bold text-stone-800 mb-2">Tx-Proof</h4>
+                    <p class="text-sm text-stone-600">Каждая ставка — это реальная транзакция в блокчейне TON, видимая в Explorer.</p>
+                </div>
+                <div class="bg-white p-6 rounded-lg shadow-sm border-l-4 border-teal-500">
+                    <h4 class="font-bold text-stone-800 mb-2">Timeout-Safety</h4>
+                    <p class="text-sm text-stone-600">Если участник не оплатил место за время X, система автоматически освобождает его.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="bg-stone-900 text-stone-400 py-12 mt-auto">
+        <div class="max-w-7xl mx-auto px-4 flex flex-col md:flex-row justify-between items-center">
+            <div class="mb-4 md:mb-0">
+                <span class="text-xl font-bold text-white tracking-tight">TON<span class="text-teal-500">RODY</span></span>
+                <p class="text-sm mt-2">Единая система честной вероятности.</p>
+            </div>
+            <div class="text-sm text-right">
+                <p>Based on Full Codex v2.1</p>
+                <p class="mt-1">PULSE Philosophy Integrated</p>
+            </div>
+        </div>
+    </footer>
+
+    <!-- JavaScript Implementation -->
+    <script>
+        // --- Navigation Logic ---
+        function scrollToSection(id) {
+            const element = document.getElementById(id);
+            if (element) {
+                element.scrollIntoView({ behavior: 'smooth' });
+            }
+        }
+
+        // --- Chart.js Implementations ---
+        document.addEventListener('DOMContentLoaded', () => {
+            
+            // 1. Architecture Distribution Chart (Doughnut)
+            const ctxArch = document.getElementById('architectureChart').getContext('2d');
+            new Chart(ctxArch, {
+                type: 'doughnut',
+                data: {
+                    labels: ['Frontend (UX/Anim)', 'Backend (Orchestration)', 'Blockchain (Logic)'],
+                    datasets: [{
+                        data: [45, 30, 25], // Approximate effort/code weight based on Codex
+                        backgroundColor: [
+                            '#2dd4bf', // Teal 400
+                            '#6366f1', // Indigo 500
+                            '#0ea5e9'  // Sky 500
+                        ],
+                        borderWidth: 0,
+                        hoverOffset: 4
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: { position: 'bottom', labels: { font: { family: 'Inter' } } },
+                        title: { display: true, text: 'Вес Компонентов Системы', font: { family: 'Inter', size: 14 } }
+                    }
+                }
+            });
+
+            // 2. Round Timing Chart (Bar) - Visualization of Phase Durations
+            const ctxTime = document.getElementById('timingChart').getContext('2d');
+            new Chart(ctxTime, {
+                type: 'bar',
+                data: {
+                    labels: ['Ожидание (Var)', 'Вычисление (2-3s)', 'Объявление (1.5s)', 'Выплата (1s)'],
+                    datasets: [{
+                        label: 'Интенсивность Анимации (0-10)',
+                        data: [2, 8, 10, 5],
+                        backgroundColor: [
+                            '#cbd5e1', // Slate 300
+                            '#3b82f6', // Blue 500
+                            '#22c55e', // Green 500
+                            '#f59e0b'  // Amber 500
+                        ],
+                        borderRadius: 4
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    scales: {
+                        y: { beginAtZero: true, display: false },
+                        x: { grid: { display: false } }
+                    },
+                    plugins: {
+                        legend: { display: false },
+                        title: { display: true, text: 'Динамика Интенсивности Раунда', font: { family: 'Inter', size: 14 } }
+                    }
+                }
+            });
+
+            // Init Simulator
+            initSimulator();
+        });
+
+        // --- SIMULATOR LOGIC (The Core Feature) ---
+        
+        let simState = {
+            isRunning: false,
+            slots: [],
+            slotCount: 8,
+            radius: 140,
+            centerX: 0,
+            centerY: 0
+        };
+
+        const elements = {
+            ring: document.getElementById('slots-ring'),
+            statusDot: document.getElementById('status-dot'),
+            statusText: document.getElementById('status-text'),
+            hashDisplay: document.getElementById('hash-display'),
+            coreIcon: document.getElementById('core-icon'),
+            coreLabel: document.getElementById('core-label'),
+            canvas: document.getElementById('connection-canvas'),
+            btn: document.getElementById('run-sim-btn')
+        };
+
+        const ctxCanvas = elements.canvas.getContext('2d');
+
+        function initSimulator() {
+            // Setup responsive canvas
+            resizeCanvas();
+            window.addEventListener('resize', () => {
+                resizeCanvas();
+                positionSlots();
+            });
+
+            // Create Slots
+            for (let i = 0; i < simState.slotCount; i++) {
+                const slot = document.createElement('div');
+                slot.className = 'slot absolute w-10 h-10 rounded-lg bg-slate-800 border-2 border-slate-600 flex items-center justify-center text-slate-400 z-20';
+                slot.innerHTML = `<i class="fa-solid fa-user"></i>`;
+                slot.dataset.index = i;
+                elements.ring.appendChild(slot);
+                simState.slots.push(slot);
+            }
+            positionSlots();
+
+            elements.btn.addEventListener('click', runRound);
+        }
+
+        function resizeCanvas() {
+            const parent = elements.canvas.parentElement;
+            elements.canvas.width = parent.clientWidth;
+            elements.canvas.height = parent.clientHeight;
+            simState.centerX = parent.clientWidth / 2;
+            simState.centerY = parent.clientHeight / 2;
+        }
+
+        function positionSlots() {
+            simState.slots.forEach((slot, i) => {
+                const angle = (i / simState.slotCount) * Math.PI * 2 - (Math.PI / 2); // Start at top
+                const x = Math.cos(angle) * simState.radius;
+                const y = Math.sin(angle) * simState.radius;
+                slot.style.transform = `translate(${x}px, ${y}px)`;
+            });
+        }
+
+        function drawLines(progress) {
+            ctxCanvas.clearRect(0, 0, elements.canvas.width, elements.canvas.height);
+            
+            ctxCanvas.strokeStyle = '#2dd4bf'; // Teal
+            ctxCanvas.lineWidth = 2;
+            ctxCanvas.lineCap = 'round';
+
+            // Draw lines from slots to center based on progress (0 to 1)
+            simState.slots.forEach((slot, i) => {
+                // Get slot relative center position
+                const angle = (i / simState.slotCount) * Math.PI * 2 - (Math.PI / 2);
+                const startX = simState.centerX + Math.cos(angle) * (simState.radius - 20);
+                const startY = simState.centerY + Math.sin(angle) * (simState.radius - 20);
+                
+                const endX = simState.centerX;
+                const endY = simState.centerY;
+
+                const currX = startX + (endX - startX) * progress;
+                const currY = startY + (endY - startY) * progress;
+
+                ctxCanvas.beginPath();
+                ctxCanvas.moveTo(startX, startY);
+                ctxCanvas.lineTo(currX, currY);
+                ctxCanvas.stroke();
+            });
+        }
+
+        async function runRound() {
+            if (simState.isRunning) return;
+            simState.isRunning = true;
+            elements.btn.disabled = true;
+            elements.btn.classList.add('opacity-50', 'cursor-not-allowed');
+            
+            // Reset UI
+            simState.slots.forEach(s => {
+                s.className = 'slot absolute w-10 h-10 rounded-lg bg-slate-800 border-2 border-slate-600 flex items-center justify-center text-slate-400 z-20';
+                s.style.transform = s.style.transform.replace('scale(1.2)', ''); // remove scale
+            });
+            ctxCanvas.clearRect(0, 0, elements.canvas.width, elements.canvas.height);
+
+            // --- PHASE 1: WAITING (PULSE) ---
+            updateStatus('PHASE 1: PULSE', 'bg-teal-500', 'text-teal-400');
+            elements.coreIcon.innerHTML = '<i class="fa-solid fa-heart-pulse fa-beat"></i>';
+            elements.coreLabel.innerText = "ACCEPTING";
+            
+            // Activate slots one by one
+            for(let i=0; i<simState.slotCount; i++) {
+                await wait(200);
+                simState.slots[i].classList.add('active', 'pulsing');
+            }
+            await wait(1000);
+
+            // --- PHASE 2: CALCULATION (MATRIX) ---
+            updateStatus('PHASE 2: CALCULATION', 'bg-blue-500', 'text-blue-400');
+            elements.coreIcon.innerHTML = '<i class="fa-solid fa-microchip"></i>';
+            elements.coreLabel.innerText = "HASHING";
+            
+            // Stop pulsing, lock in
+            simState.slots.forEach(s => s.classList.remove('pulsing'));
+
+            // Matrix text effect
+            const matrixInterval = setInterval(() => {
+                const chars = "010101ABCDEF";
+                let str = "";
+                for(let k=0; k<16; k++) str += chars.charAt(Math.floor(Math.random() * chars.length));
+                elements.hashDisplay.innerText = str;
+            }, 50);
+
+            // Animate lines to center
+            let prog = 0;
+            while(prog < 1) {
+                prog += 0.05;
+                drawLines(prog);
+                await wait(30);
+            }
+
+            await wait(1500);
+            clearInterval(matrixInterval);
+            const finalHash = "8F3A...WIN";
+            elements.hashDisplay.innerText = finalHash;
+            elements.hashDisplay.classList.add('glow-text');
+
+            // --- PHASE 3: ANNOUNCEMENT (ROULETTE) ---
+            updateStatus('PHASE 3: WINNER', 'bg-green-500', 'text-green-400');
+            elements.coreIcon.innerHTML = '<i class="fa-solid fa-crosshairs"></i>';
+            elements.coreLabel.innerText = "SCANNING";
+            ctxCanvas.clearRect(0, 0, elements.canvas.width, elements.canvas.height); // clear lines
+
+            // Roulette logic
+            let currentIdx = 0;
+            const winnerIdx = Math.floor(Math.random() * simState.slotCount);
+            const totalSpins = simState.slotCount * 2 + winnerIdx;
+            
+            for(let i=0; i < totalSpins; i++) {
+                const idx = i % simState.slotCount;
+                // Highlight current
+                simState.slots.forEach(s => s.style.borderColor = '#475569'); // slate-600
+                simState.slots[idx].style.borderColor = '#ffffff';
+                
+                // Calculate delay (slow down at end)
+                let delay = 50;
+                if (i > totalSpins - 5) delay = 150;
+                if (i > totalSpins - 2) delay = 300;
+                
+                await wait(delay);
+            }
+
+            // --- PHASE 4: PAYOUT (EXPLOSION) ---
+            updateStatus('PHASE 4: PAYOUT', 'bg-amber-500', 'text-amber-400');
+            elements.coreIcon.innerHTML = '<i class="fa-solid fa-trophy text-amber-400"></i>';
+            elements.coreLabel.innerText = "SENT";
+
+            simState.slots.forEach((s, i) => {
+                if (i === winnerIdx) {
+                    s.classList.add('winner');
+                    s.innerHTML = '<i class="fa-solid fa-crown text-amber-500"></i>';
+                } else {
+                    s.classList.add('loser');
+                }
+            });
+
+            await wait(2000);
+
+            // Reset
+            elements.btn.disabled = false;
+            elements.btn.classList.remove('opacity-50', 'cursor-not-allowed');
+            elements.btn.innerHTML = '<i class="fa-solid fa-rotate-right"></i> Повторить Раунд';
+            simState.isRunning = false;
+            elements.hashDisplay.classList.remove('glow-text');
+        }
+
+        function updateStatus(text, bgClass, textClass) {
+            elements.statusDot.className = `w-3 h-3 rounded-full ${bgClass} shadow-[0_0_10px_currentColor]`;
+            elements.statusText.innerText = text;
+            elements.statusText.className = `font-mono text-xs uppercase tracking-widest ${textClass}`;
+        }
+
+        function wait(ms) {
+            return new Promise(resolve => setTimeout(resolve, ms));
+        }
+
+    </script>
+
+</body></html>

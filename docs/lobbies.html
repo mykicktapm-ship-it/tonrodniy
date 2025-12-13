@@ -1,0 +1,342 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8" />
+  <title>TONRODY Lobbies Mock</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <style>
+    :root {
+      --bg: #05060a;
+      --row-bg: #0b0f14;
+      --row-border: #151b28;
+      --accent: #4fd8ff;
+      --accent-soft: rgba(79, 216, 255, 0.18);
+      --text: #eef3ff;
+      --muted: #7e88a5;
+      --danger: #ff4f6a;
+      --radius: 12px;
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      background: radial-gradient(circle at top, #111727 0, #05060a 55%, #020308 100%);
+      color: var(--text);
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, "SF Pro Text", Roboto, sans-serif;
+      padding: 10px;
+    }
+
+    .lobbies-wrapper {
+      max-width: 480px;
+      margin: 0 auto;
+    }
+
+    .title {
+      font-size: 15px;
+      font-weight: 600;
+      margin-bottom: 4px;
+    }
+
+    .sub {
+      font-size: 11px;
+      color: var(--muted);
+      margin-bottom: 10px;
+    }
+
+    .lobby-row {
+      display: grid;
+      grid-template-columns: minmax(0, 1.7fr) minmax(0, 1.3fr);
+      gap: 8px;
+      padding: 10px 10px;
+      margin-bottom: 8px;
+      border-radius: var(--radius);
+      background: var(--row-bg);
+      border: 1px solid var(--row-border);
+      align-items: center;
+    }
+
+    .lobby-main {
+      min-width: 0;
+    }
+
+    .lobby-title {
+      font-size: 13px;
+      font-weight: 500;
+      margin-bottom: 2px;
+    }
+
+    .lobby-meta {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 6px;
+      font-size: 11px;
+      color: var(--muted);
+    }
+
+    .meta-pill {
+      padding: 2px 6px;
+      border-radius: 999px;
+      border: 1px solid rgba(126,136,165,0.4);
+    }
+
+    .meta-text {
+      opacity: 0.9;
+    }
+
+    .lobby-cta {
+      display: flex;
+      flex-direction: column;
+      align-items: flex-end;
+      gap: 4px;
+    }
+
+    .cta-btn {
+      position: relative;
+      width: 120px;
+      padding: 7px 10px 6px;
+      border-radius: 999px;
+      border: none;
+      cursor: pointer;
+      background: rgba(7, 15, 30, 0.98);
+      border: 1px solid rgba(79, 216, 255, 0.5);
+      display: flex;
+      flex-direction: column;
+      align-items: flex-start;
+      justify-content: center;
+      overflow: hidden;
+      transition: 0.15s ease;
+    }
+
+    .cta-btn:hover {
+      box-shadow: 0 0 12px rgba(79, 216, 255, 0.5);
+      transform: translateY(-1px);
+    }
+
+    .cta-main {
+      font-size: 11px;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+    }
+
+    .cta-sub {
+      font-size: 10px;
+      color: var(--muted);
+      margin-top: 1px;
+    }
+
+    .cta-badge {
+      position: absolute;
+      right: 8px;
+      top: 6px;
+      font-size: 9px;
+      padding: 2px 5px;
+      border-radius: 999px;
+      background: var(--accent-soft);
+      color: #dff7ff;
+      border: 1px solid rgba(79, 216, 255, 0.7);
+    }
+
+    .chance-line {
+      font-size: 10px;
+      color: var(--muted);
+    }
+
+    .chance-line strong {
+      color: var(--text);
+    }
+
+    .tiny-timer {
+      font-size: 10px;
+      color: var(--muted);
+    }
+
+    /* индикатор состояния */
+    .status-dot {
+      width: 7px;
+      height: 7px;
+      border-radius: 999px;
+      margin-right: 4px;
+      display: inline-block;
+    }
+    .status-filling { background: #4eff9d; box-shadow: 0 0 8px rgba(78,255,157,0.9); }
+    .status-almost { background: #ffd75a; box-shadow: 0 0 8px rgba(255,215,90,0.9); }
+    .status-running { background: #ff4f6a; box-shadow: 0 0 8px rgba(255,79,106,0.9); }
+
+    .row-tag {
+      font-size: 10px;
+      padding: 1px 6px;
+      border-radius: 999px;
+      border: 1px solid rgba(126,136,165,0.4);
+      color: var(--muted);
+    }
+  </style>
+</head>
+<body>
+<div class="lobbies-wrapper">
+  <div class="title">Лобби</div>
+  <div class="sub">Каждая строка — отдельный раунд. Режим — это просто тег.</div>
+
+  <div id="lobbyList"></div>
+</div>
+
+<script>
+  const data = [
+    {
+      id: 1,
+      title: "Раунд • 0.5 TON",
+      mode: "classic",
+      modeLabel: "CLASSIC",
+      stake: 0.5,
+      players: { current: 3, total: 5 },
+      status: "filling",
+      eta: "00:24",
+    },
+    {
+      id: 2,
+      title: "Раунд • 1 TON",
+      mode: "donate",
+      modeLabel: "DONATEROOM",
+      stake: 1,
+      players: { current: 8, total: 10 },
+      status: "almost",
+      eta: "00:07",
+      donate: 0.1,
+    },
+    {
+      id: 3,
+      title: "Раунд • 2 TON",
+      mode: "beta",
+      modeLabel: "EXPERIMENTAL",
+      stake: 2,
+      players: { current: 2, total: 2 },
+      status: "running",
+      eta: "идёт",
+    }
+  ];
+
+  const list = document.getElementById("lobbyList");
+
+  function getStatusDot(status) {
+    const span = document.createElement("span");
+    span.classList.add("status-dot");
+    if (status === "filling") span.classList.add("status-filling");
+    else if (status === "almost") span.classList.add("status-almost");
+    else span.classList.add("status-running");
+    return span;
+  }
+
+  function getStatusText(status) {
+    if (status === "filling") return "собираем игроков";
+    if (status === "almost") return "почти готово";
+    return "раунд в процессе";
+  }
+
+  function getChanceText(players) {
+    if (!players || !players.total) return "~?";
+    return `~${Math.round(100 / players.total)}%`;
+  }
+
+  data.forEach(lobby => {
+    const row = document.createElement("div");
+    row.className = "lobby-row";
+
+    const main = document.createElement("div");
+    main.className = "lobby-main";
+
+    const title = document.createElement("div");
+    title.className = "lobby-title";
+    title.textContent = lobby.title;
+
+    const meta = document.createElement("div");
+    meta.className = "lobby-meta";
+
+    // тег режима
+    const tagMode = document.createElement("span");
+    tagMode.className = "row-tag";
+    tagMode.textContent = lobby.modeLabel;
+    meta.appendChild(tagMode);
+
+    // игроки
+    const playersSpan = document.createElement("span");
+    playersSpan.className = "meta-text";
+    playersSpan.textContent = `Игроков: ${lobby.players.current}/${lobby.players.total}`;
+    meta.appendChild(playersSpan);
+
+    // статус
+    const statusSpan = document.createElement("span");
+    statusSpan.className = "meta-text";
+    const dot = getStatusDot(lobby.status);
+    statusSpan.appendChild(dot);
+    statusSpan.append(getStatusText(lobby.status));
+    meta.appendChild(statusSpan);
+
+    // донат (если есть)
+    if (lobby.donate) {
+      const donateSpan = document.createElement("span");
+      donateSpan.className = "meta-text";
+      donateSpan.textContent = `донат: ${lobby.donate} TON`;
+      meta.appendChild(donateSpan);
+    }
+
+    main.appendChild(title);
+    main.appendChild(meta);
+
+    // CTA-часть
+    const cta = document.createElement("div");
+    cta.className = "lobby-cta";
+
+    const btn = document.createElement("button");
+    btn.className = "cta-btn";
+
+    const mainLabel = document.createElement("span");
+    mainLabel.className = "cta-main";
+
+    if (lobby.status === "running") {
+      mainLabel.textContent = "СМОТРЕТЬ";
+    } else {
+      mainLabel.textContent = "ВОЙТИ";
+    }
+
+    const subLabel = document.createElement("span");
+    subLabel.className = "cta-sub";
+    subLabel.textContent = `ставка: ${lobby.stake} TON`;
+
+    const badge = document.createElement("span");
+    badge.className = "cta-badge";
+    badge.textContent = getChanceText(lobby.players);
+
+    btn.appendChild(mainLabel);
+    btn.appendChild(subLabel);
+    btn.appendChild(badge);
+
+    btn.addEventListener("click", () => {
+      // сюда потом придёт вызов контракта / переход
+      btn.classList.add("clicked");
+      mainLabel.textContent = lobby.status === "running" ? "ОТКРЫВАЕМ…" : "ПОДТВЕРЖДЕНИЕ…";
+      setTimeout(() => {
+        btn.classList.remove("clicked");
+        mainLabel.textContent = lobby.status === "running" ? "СМОТРЕТЬ" : "ВОЙТИ";
+      }, 800);
+    });
+
+    const chanceLine = document.createElement("div");
+    chanceLine.className = "chance-line";
+    chanceLine.innerHTML = `шанс <strong>${getChanceText(lobby.players)}</strong>`;
+
+    const timerLine = document.createElement("div");
+    timerLine.className = "tiny-timer";
+    timerLine.textContent = `до старта: ${lobby.eta}`;
+
+    cta.appendChild(btn);
+    cta.appendChild(chanceLine);
+    cta.appendChild(timerLine);
+
+    row.appendChild(main);
+    row.appendChild(cta);
+
+    list.appendChild(row);
+  });
+</script>
+</body>
+</html>

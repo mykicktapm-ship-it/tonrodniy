@@ -1,0 +1,310 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8" />
+  <title>TONRODY Lobbies Core</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <style>
+    body {
+      font-family: system-ui, sans-serif;
+      background: #05060a;
+      color: #eef3ff;
+      padding: 10px;
+    }
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      max-width: 520px;
+      margin: 0 auto;
+    }
+    th, td {
+      font-size: 12px;
+      padding: 6px 4px;
+      border-bottom: 1px solid #1b2234;
+    }
+    th {
+      text-align: left;
+      color: #7e88a5;
+      font-weight: 500;
+    }
+    tr:hover {
+      background: #0b0f18;
+    }
+    button {
+      font-size: 11px;
+      padding: 4px 8px;
+      border-radius: 999px;
+      border: 1px solid #2b3a55;
+      background: #0b0f18;
+      color: #eef3ff;
+      cursor: pointer;
+    }
+    button[disabled] {
+      opacity: 0.5;
+      cursor: default;
+    }
+    #log {
+      max-width: 520px;
+      margin: 12px auto 0;
+      font-size: 11px;
+      background: #050712;
+      border: 1px solid #1b2234;
+      padding: 8px;
+      border-radius: 6px;
+      color: #c9d4ff;
+      white-space: pre-wrap;
+    }
+  </style>
+</head>
+<body>
+  <h3>TONRODY · Лобби (core-click-flow)</h3>
+  <p style="font-size:11px;color:#7e88a5;">
+    Каждый клик по кнопке "Войти" проходит этапы: CHECK → CONFIRM → SEND_TX. 
+    Ниже в log видно, какой "вызов контракта" формируется.
+  </p>
+
+  <table id="lobbiesTable">
+    <thead>
+      <tr>
+        <th>ID</th>
+        <th>Режим</th>
+        <th>Ставка</th>
+        <th>Игроки</th>
+        <th>Статус</th>
+        <th>Действие</th>
+      </tr>
+    </thead>
+    <tbody></tbody>
+  </table>
+
+  <div id="log"></div>
+
+  <script>
+    // ==== MOCK ДАННЫЕ ЛОББИ (как будто view из контракта) ====
+    const LOBBIES = [
+      {
+        lobbyId: "1",
+        mode: "classic",
+        stakeTon: 0.5,
+        playersCurrent: 3,
+        playersTotal: 5,
+        status: "open"
+      },
+      {
+        lobbyId: "2",
+        mode: "donate",
+        stakeTon: 1,
+        playersCurrent: 8,
+        playersTotal: 10,
+        status: "open",
+        donateTon: 0.1
+      },
+      {
+        lobbyId: "3",
+        mode: "experimental",
+        stakeTon: 2,
+        playersCurrent: 2,
+        playersTotal: 2,
+        status: "running"
+      }
+    ];
+
+    // ===== УТИЛИТА ЛОГА =====
+    const logEl = document.getElementById("log");
+    function logStep(step, payload = {}) {
+      const time = new Date().toISOString().split("T")[1].split(".")[0];
+      logEl.textContent += `[${time}] ${step}\n` +
+        (Object.keys(payload).length ? JSON.stringify(payload, null, 2) + "\n" : "");
+      logEl.scrollTop = logEl.scrollHeight;
+    }
+
+    // ==== РЕНДЕР ТАБЛИЦЫ ====
+    const tbody = document.querySelector("#lobbiesTable tbody");
+
+    function renderTable() {
+      tbody.innerHTML = "";
+      LOBBIES.forEach(lobby => {
+        const tr = document.createElement("tr");
+
+        const tdId = document.createElement("td");
+        tdId.textContent = lobby.lobbyId;
+
+        const tdMode = document.createElement("td");
+        tdMode.textContent = lobby.mode;
+
+        const tdStake = document.createElement("td");
+        tdStake.textContent = lobby.stakeTon + " TON";
+
+        const tdPlayers = document.createElement("td");
+        tdPlayers.textContent = `${lobby.playersCurrent}/${lobby.playersTotal}`;
+
+        const tdStatus = document.createElement("td");
+        tdStatus.textContent = lobby.status;
+
+        const tdAction = document.createElement("td");
+        const btn = document.createElement("button");
+
+        if (lobby.status === "open") {
+          btn.textContent = "Войти";
+          btn.addEventListener("click", () => handleJoinClick(lobby.lobbyId));
+        } else if (lobby.status === "running") {
+          btn.textContent = "Смотреть";
+          btn.addEventListener("click", () => handleWatchClick(lobby.lobbyId));
+        } else {
+          btn.textContent = "Закрыто";
+          btn.disabled = true;
+        }
+
+        tdAction.appendChild(btn);
+
+        tr.appendChild(tdId);
+        tr.appendChild(tdMode);
+        tr.appendChild(tdStake);
+        tr.appendChild(tdPlayers);
+        tr.appendChild(tdStatus);
+        tr.appendChild(tdAction);
+
+        // клик по строке открывает детали
+        tr.addEventListener("click", (e) => {
+          // не реагируем на клик по кнопке, только по строке
+          if (e.target.tagName.toLowerCase() === "button") return;
+          handleViewDetails(lobby.lobbyId);
+        });
+
+        tbody.appendChild(tr);
+      });
+    }
+
+    renderTable();
+
+    // ==== ОБРАБОТЧИКИ КЛИКОВ ====
+
+    // 1) Клик по строке → viewDetails (чистое чтение контракта)
+    function handleViewDetails(lobbyId) {
+      logStep("VIEW_DETAILS_CLICK", { lobbyId });
+
+      // здесь в реальном коде:
+      // const lobbyState = await contract.getLobbyState(lobbyId);
+      const lobbyState = LOBBIES.find(l => l.lobbyId === lobbyId);
+
+      logStep("VIEW_DETAILS_RESULT (mock)", lobbyState);
+    }
+
+    // 2) Клик "Смотреть" (running) – это только UI, без транз
+    function handleWatchClick(lobbyId) {
+      logStep("WATCH_LOBBY_CLICK", { lobbyId });
+      // в проде: открыть экран просмотра/истории, подписаться на события
+    }
+
+    // 3) Клик "Войти" → многоступенчатый flow
+    async function handleJoinClick(lobbyId) {
+      logStep("JOIN_CLICK", { lobbyId });
+
+      // STATE: CHECKING
+      logStep("JOIN_STATE:CHECKING_LOBBY");
+      const lobby = await mockFetchLobbyFromContract(lobbyId);
+      logStep("JOIN_LOBBY_STATE", lobby);
+
+      // базовые проверки перед любым диалогом
+      if (!lobby) {
+        logStep("JOIN_ERROR:LOBBY_NOT_FOUND");
+        return;
+      }
+      if (lobby.status !== "open") {
+        logStep("JOIN_ERROR:LOBBY_NOT_OPEN");
+        return;
+      }
+      if (lobby.playersCurrent >= lobby.playersTotal) {
+        logStep("JOIN_ERROR:LOBBY_FULL");
+        return;
+      }
+
+      // STATE: CONFIRM
+      const text =
+        `Режим: ${lobby.mode}\n` +
+        `Ставка: ${lobby.stakeTon} TON\n` +
+        `Игроков сейчас: ${lobby.playersCurrent}/${lobby.playersTotal}\n\n` +
+        `Продолжить и отправить транзакцию в контракт?`;
+
+      const confirmed = window.confirm(text);
+      logStep("JOIN_CONFIRM_RESULT", { confirmed });
+
+      if (!confirmed) {
+        logStep("JOIN_ABORTED_BY_USER");
+        return;
+      }
+
+      // STATE: SENDING_TX
+      logStep("JOIN_STATE:SENDING_TX");
+
+      // здесь должен быть реальный вызов tonConnect / wallet API
+      const txPayload = buildJoinTxPayload(lobbyId, lobby.stakeTon);
+      logStep("JOIN_TX_BUILT", txPayload);
+
+      try {
+        // мок: "отправка транзакции"
+        const txHash = await mockSendTransaction(txPayload);
+        logStep("JOIN_STATE:AWAITING_FINALITY", { txHash });
+
+        // мок: "подтверждение"
+        await mockWaitForFinality(txHash);
+
+        // STATE: SUCCESS
+        logStep("JOIN_STATE:SUCCESS", { lobbyId, txHash });
+
+        // в реале нужно обновить данные лобби после join
+        lobby.playersCurrent += 1;
+        if (lobby.playersCurrent >= lobby.playersTotal) {
+          lobby.status = "running"; // контракт бы уже стартанул раунд
+        }
+        renderTable();
+      } catch (err) {
+        logStep("JOIN_STATE:ERROR", { message: String(err) });
+      }
+    }
+
+    // ==== МОКИ "КОНТРАКТА" ====
+
+    function mockFetchLobbyFromContract(lobbyId) {
+      return new Promise(resolve => {
+        setTimeout(() => {
+          const lobby = LOBBIES.find(l => l.lobbyId === lobbyId);
+          resolve(lobby ? { ...lobby } : null);
+        }, 200);
+      });
+    }
+
+    function buildJoinTxPayload(lobbyId, stakeTon) {
+      return {
+        to: "TONRODY_CONTRACT_ADDRESS",
+        method: "joinLobby",
+        params: {
+          lobby_id: lobbyId
+        },
+        valueTon: stakeTon
+      };
+    }
+
+    function mockSendTransaction(txPayload) {
+      return new Promise((resolve, reject) => {
+        setTimeout(() => {
+          // 90% успеха, 10% фейл
+          if (Math.random() < 0.9) {
+            resolve("FAKE_TX_HASH_" + Math.random().toString(16).slice(2));
+          } else {
+            reject(new Error("WALLET_REJECTED_OR_NETWORK_ERROR"));
+          }
+        }, 400);
+      });
+    }
+
+    function mockWaitForFinality(txHash) {
+      return new Promise((resolve) => {
+        setTimeout(() => {
+          resolve(true);
+        }, 600);
+      });
+    }
+  </script>
+</body>
+</html>
