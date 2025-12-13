@@ -1,0 +1,907 @@
+<!DOCTYPE html>
+<!-- saved from url=(0077)file:///C:/Users/smart/Downloads/tonrodypulsecard_files/tonrodypulsecard.html -->
+<html lang="en"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+
+<script class="injected-ffc2e83d85">
+(function(){'use strict';function q(b){var c=0;return function(){return c<b.length?{done:!1,value:b[c++]}:{done:!0}}}function t(b){var c=typeof Symbol!="undefined"&&Symbol.iterator&&b[Symbol.iterator];if(c)return c.call(b);if(typeof b.length=="number")return{next:q(b)};throw Error(String(b)+" is not an iterable or ArrayLike");}var u=typeof Object.defineProperties=="function"?Object.defineProperty:function(b,c,g){if(b==Array.prototype||b==Object.prototype)return b;b[c]=g.value;return b};
+function v(b){b=["object"==typeof globalThis&&globalThis,b,"object"==typeof window&&window,"object"==typeof self&&self,"object"==typeof global&&global];for(var c=0;c<b.length;++c){var g=b[c];if(g&&g.Math==Math)return g}throw Error("Cannot find global object");}var w=v(this);function x(b,c){if(c)a:{var g=w;b=b.split(".");for(var h=0;h<b.length-1;h++){var l=b[h];if(!(l in g))break a;g=g[l]}b=b[b.length-1];h=g[b];c=c(h);c!=h&&c!=null&&u(g,b,{configurable:!0,writable:!0,value:c})}}
+function y(){this.j=!1;this.g=null;this.u=void 0;this.h=1;this.v=this.l=0;this.i=null}function z(b){if(b.j)throw new TypeError("Generator is already running");b.j=!0}y.prototype.o=function(b){this.u=b};function A(b,c){b.i={I:c,J:!0};b.h=b.l||b.v}y.prototype.return=function(b){this.i={return:b};this.h=this.v};function B(b){this.g=new y;this.h=b}function E(b,c){z(b.g);var g=b.g.g;if(g)return F(b,"return"in g?g["return"]:function(h){return{value:h,done:!0}},c,b.g.return);b.g.return(c);return G(b)}
+function F(b,c,g,h){try{var l=c.call(b.g.g,g);if(!(l instanceof Object))throw new TypeError("Iterator result "+l+" is not an object");if(!l.done)return b.g.j=!1,l;var m=l.value}catch(f){return b.g.g=null,A(b.g,f),G(b)}b.g.g=null;h.call(b.g,m);return G(b)}function G(b){for(;b.g.h;)try{var c=b.h(b.g);if(c)return b.g.j=!1,{value:c.value,done:!1}}catch(g){b.g.u=void 0,A(b.g,g)}b.g.j=!1;if(b.g.i){c=b.g.i;b.g.i=null;if(c.J)throw c.I;return{value:c.return,done:!0}}return{value:void 0,done:!0}}
+function H(b){this.next=function(c){z(b.g);b.g.g?c=F(b,b.g.g.next,c,b.g.o):(b.g.o(c),c=G(b));return c};this.throw=function(c){z(b.g);b.g.g?c=F(b,b.g.g["throw"],c,b.g.o):(A(b.g,c),c=G(b));return c};this.return=function(c){return E(b,c)};this[Symbol.iterator]=function(){return this}}function I(b){function c(h){return b.next(h)}function g(h){return b.throw(h)}return new Promise(function(h,l){function m(f){f.done?h(f.value):Promise.resolve(f.value).then(c,g).then(m,l)}m(b.next())})}
+x("Symbol",function(b){function c(m){if(this instanceof c)throw new TypeError("Symbol is not a constructor");return new g(h+(m||"")+"_"+l++,m)}function g(m,f){this.g=m;u(this,"description",{configurable:!0,writable:!0,value:f})}if(b)return b;g.prototype.toString=function(){return this.g};var h="jscomp_symbol_"+(Math.random()*1E9>>>0)+"_",l=0;return c});
+x("Symbol.iterator",function(b){if(b)return b;b=Symbol("Symbol.iterator");u(Array.prototype,b,{configurable:!0,writable:!0,value:function(){return J(q(this))}});return b});function J(b){b={next:b};b[Symbol.iterator]=function(){return this};return b}
+x("Promise",function(b){function c(f){this.h=0;this.i=void 0;this.g=[];this.u=!1;var a=this.j();try{f(a.resolve,a.reject)}catch(d){a.reject(d)}}function g(){this.g=null}function h(f){return f instanceof c?f:new c(function(a){a(f)})}if(b)return b;g.prototype.h=function(f){if(this.g==null){this.g=[];var a=this;this.i(function(){a.l()})}this.g.push(f)};var l=w.setTimeout;g.prototype.i=function(f){l(f,0)};g.prototype.l=function(){for(;this.g&&this.g.length;){var f=this.g;this.g=[];for(var a=0;a<f.length;++a){var d=
+f[a];f[a]=null;try{d()}catch(e){this.j(e)}}}this.g=null};g.prototype.j=function(f){this.i(function(){throw f;})};c.prototype.j=function(){function f(e){return function(k){d||(d=!0,e.call(a,k))}}var a=this,d=!1;return{resolve:f(this.D),reject:f(this.l)}};c.prototype.D=function(f){if(f===this)this.l(new TypeError("A Promise cannot resolve to itself"));else if(f instanceof c)this.G(f);else{a:switch(typeof f){case "object":var a=f!=null;break a;case "function":a=!0;break a;default:a=!1}a?this.C(f):this.o(f)}};
+c.prototype.C=function(f){var a=void 0;try{a=f.then}catch(d){this.l(d);return}typeof a=="function"?this.H(a,f):this.o(f)};c.prototype.l=function(f){this.v(2,f)};c.prototype.o=function(f){this.v(1,f)};c.prototype.v=function(f,a){if(this.h!=0)throw Error("Cannot settle("+f+", "+a+"): Promise already settled in state"+this.h);this.h=f;this.i=a;this.h===2&&this.F();this.K()};c.prototype.F=function(){var f=this;l(function(){if(f.B()){var a=w.console;typeof a!=="undefined"&&a.error(f.i)}},1)};c.prototype.B=
+function(){if(this.u)return!1;var f=w.CustomEvent,a=w.Event,d=w.dispatchEvent;if(typeof d==="undefined")return!0;typeof f==="function"?f=new f("unhandledrejection",{cancelable:!0}):typeof a==="function"?f=new a("unhandledrejection",{cancelable:!0}):(f=w.document.createEvent("CustomEvent"),f.initCustomEvent("unhandledrejection",!1,!0,f));f.promise=this;f.reason=this.i;return d(f)};c.prototype.K=function(){if(this.g!=null){for(var f=0;f<this.g.length;++f)m.h(this.g[f]);this.g=null}};var m=new g;c.prototype.G=
+function(f){var a=this.j();f.A(a.resolve,a.reject)};c.prototype.H=function(f,a){var d=this.j();try{f.call(a,d.resolve,d.reject)}catch(e){d.reject(e)}};c.prototype.then=function(f,a){function d(n,r){return typeof n=="function"?function(C){try{e(n(C))}catch(D){k(D)}}:r}var e,k,p=new c(function(n,r){e=n;k=r});this.A(d(f,e),d(a,k));return p};c.prototype.catch=function(f){return this.then(void 0,f)};c.prototype.A=function(f,a){function d(){switch(e.h){case 1:f(e.i);break;case 2:a(e.i);break;default:throw Error("Unexpected state: "+
+e.h);}}var e=this;this.g==null?m.h(d):this.g.push(d);this.u=!0};c.resolve=h;c.reject=function(f){return new c(function(a,d){d(f)})};c.race=function(f){return new c(function(a,d){for(var e=t(f),k=e.next();!k.done;k=e.next())h(k.value).A(a,d)})};c.all=function(f){var a=t(f),d=a.next();return d.done?h([]):new c(function(e,k){function p(C){return function(D){n[C]=D;r--;r==0&&e(n)}}var n=[],r=0;do n.push(void 0),r++,h(d.value).A(p(n.length-1),k),d=a.next();while(!d.done)})};return c});
+function K(b,c){return Object.prototype.hasOwnProperty.call(b,c)}x("Object.is",function(b){return b?b:function(c,g){return c===g?c!==0||1/c===1/g:c!==c&&g!==g}});x("Array.prototype.includes",function(b){return b?b:function(c,g){var h=this;h instanceof String&&(h=String(h));var l=h.length;g=g||0;for(g<0&&(g=Math.max(g+l,0));g<l;g++){var m=h[g];if(m===c||Object.is(m,c))return!0}return!1}});
+x("String.prototype.includes",function(b){return b?b:function(c,g){if(this==null)throw new TypeError("The 'this' value for String.prototype.includes must not be null or undefined");if(c instanceof RegExp)throw new TypeError("First argument to String.prototype.includes must not be a regular expression");return this.indexOf(c,g||0)!==-1}});
+x("WeakMap",function(b){function c(d){this.g=(a+=Math.random()+1).toString();if(d){d=t(d);for(var e;!(e=d.next()).done;)e=e.value,this.set(e[0],e[1])}}function g(){}function h(d){var e=typeof d;return e==="object"&&d!==null||e==="function"}function l(d){if(!K(d,f)){var e=new g;u(d,f,{value:e})}}function m(d){var e=Object[d];e&&(Object[d]=function(k){if(k instanceof g)return k;Object.isExtensible(k)&&l(k);return e(k)})}if(function(){if(!b||!Object.seal)return!1;try{var d=Object.seal({}),e=Object.seal({}),
+k=new b([[d,2],[e,3]]);if(k.get(d)!=2||k.get(e)!=3)return!1;k.delete(d);k.set(e,4);return!k.has(d)&&k.get(e)==4}catch(p){return!1}}())return b;var f="$jscomp_hidden_"+Math.random();m("freeze");m("preventExtensions");m("seal");var a=0;c.prototype.set=function(d,e){if(!h(d))throw Error("Invalid WeakMap key");l(d);if(!K(d,f))throw Error("WeakMap key fail: "+d);d[f][this.g]=e;return this};c.prototype.get=function(d){return h(d)&&K(d,f)?d[f][this.g]:void 0};c.prototype.has=function(d){return h(d)&&K(d,
+f)&&K(d[f],this.g)};c.prototype.delete=function(d){return h(d)&&K(d,f)&&K(d[f],this.g)?delete d[f][this.g]:!1};return c});
+x("Map",function(b){function c(){var a={};return a.m=a.next=a.head=a}function g(a,d){var e=a[1];return J(function(){if(e){for(;e.head!=a[1];)e=e.m;for(;e.next!=e.head;)return e=e.next,{done:!1,value:d(e)};e=null}return{done:!0,value:void 0}})}function h(a,d){var e=d&&typeof d;e=="object"||e=="function"?m.has(d)?e=m.get(d):(e=""+ ++f,m.set(d,e)):e="p_"+d;var k=a[0][e];if(k&&K(a[0],e))for(a=0;a<k.length;a++){var p=k[a];if(d!==d&&p.key!==p.key||d===p.key)return{id:e,list:k,index:a,entry:p}}return{id:e,
+list:k,index:-1,entry:void 0}}function l(a){this[0]={};this[1]=c();this.size=0;if(a){a=t(a);for(var d;!(d=a.next()).done;)d=d.value,this.set(d[0],d[1])}}if(function(){if(!b||typeof b!="function"||!b.prototype.entries||typeof Object.seal!="function")return!1;try{var a=Object.seal({x:4}),d=new b(t([[a,"s"]]));if(d.get(a)!="s"||d.size!=1||d.get({x:4})||d.set({x:4},"t")!=d||d.size!=2)return!1;var e=d.entries(),k=e.next();if(k.done||k.value[0]!=a||k.value[1]!="s")return!1;k=e.next();return k.done||k.value[0].x!=
+4||k.value[1]!="t"||!e.next().done?!1:!0}catch(p){return!1}}())return b;var m=new WeakMap;l.prototype.set=function(a,d){a=a===0?0:a;var e=h(this,a);e.list||(e.list=this[0][e.id]=[]);e.entry?e.entry.value=d:(e.entry={next:this[1],m:this[1].m,head:this[1],key:a,value:d},e.list.push(e.entry),this[1].m.next=e.entry,this[1].m=e.entry,this.size++);return this};l.prototype.delete=function(a){a=h(this,a);return a.entry&&a.list?(a.list.splice(a.index,1),a.list.length||delete this[0][a.id],a.entry.m.next=a.entry.next,
+a.entry.next.m=a.entry.m,a.entry.head=null,this.size--,!0):!1};l.prototype.clear=function(){this[0]={};this[1]=this[1].m=c();this.size=0};l.prototype.has=function(a){return!!h(this,a).entry};l.prototype.get=function(a){return(a=h(this,a).entry)&&a.value};l.prototype.entries=function(){return g(this,function(a){return[a.key,a.value]})};l.prototype.keys=function(){return g(this,function(a){return a.key})};l.prototype.values=function(){return g(this,function(a){return a.value})};l.prototype.forEach=
+function(a,d){for(var e=this.entries(),k;!(k=e.next()).done;)k=k.value,a.call(d,k[1],k[0],this)};l.prototype[Symbol.iterator]=l.prototype.entries;var f=0;return l});
+x("Set",function(b){function c(g){this.g=new Map;if(g){g=t(g);for(var h;!(h=g.next()).done;)this.add(h.value)}this.size=this.g.size}if(function(){if(!b||typeof b!="function"||!b.prototype.entries||typeof Object.seal!="function")return!1;try{var g=Object.seal({x:4}),h=new b(t([g]));if(!h.has(g)||h.size!=1||h.add(g)!=h||h.size!=1||h.add({x:4})!=h||h.size!=2)return!1;var l=h.entries(),m=l.next();if(m.done||m.value[0]!=g||m.value[1]!=g)return!1;m=l.next();return m.done||m.value[0]==g||m.value[0].x!=4||
+m.value[1]!=m.value[0]?!1:l.next().done}catch(f){return!1}}())return b;c.prototype.add=function(g){g=g===0?0:g;this.g.set(g,g);this.size=this.g.size;return this};c.prototype.delete=function(g){g=this.g.delete(g);this.size=this.g.size;return g};c.prototype.clear=function(){this.g.clear();this.size=0};c.prototype.has=function(g){return this.g.has(g)};c.prototype.entries=function(){return this.g.entries()};c.prototype.values=function(){return this.g.values()};c.prototype.keys=c.prototype.values;c.prototype[Symbol.iterator]=
+c.prototype.values;c.prototype.forEach=function(g,h){var l=this;this.g.forEach(function(m){return g.call(h,m,m,l)})};return c});(function(){function b(){return m?Promise.resolve(m):f?f:f=fetch("https://www.gstatic.com/bard-maui/resources/material-design-icon-names.804824289.json").then(function(a){if(!a.ok)throw Error("HTTP error! status: "+a.status+" fetching https://www.gstatic.com/bard-maui/resources/material-design-icon-names.804824289.json");return a.json()}).then(function(a){if(!Array.isArray(a))throw new TypeError("Fetched icon names from https://www.gstatic.com/bard-maui/resources/material-design-icon-names.804824289.json is not an array.");
+return m=a}).catch(function(a){console.error("IconChecker: Failed to load valid icon names from https://www.gstatic.com/bard-maui/resources/material-design-icon-names.804824289.json.",a);f=null;throw a;})}function c(a){var d,e,k,p;return I(new H(new B(function(n){switch(n.h){case 1:d=(a.textContent||"").trim();if(!d||a.classList.contains("js-replaced-missing-icon")&&d==="radio_button_unchecked")return n.return();e=window.getComputedStyle(a);if(e.display==="none"||e.visibility==="hidden")return n.return();
+n.l=2;var r=b();n.h=4;return{value:r};case 4:k=n.u;n.h=3;n.l=0;break;case 2:return n.l=0,n.i=null,console.warn('IconChecker: Skipping check for icon "'+d+'" as valid names could not be loaded.'),n.return();case 3:(p=k.includes(d))?a.classList.contains("js-replaced-missing-icon")&&a.classList.remove("js-replaced-missing-icon"):d==="radio_button_unchecked"&&a.classList.contains("js-replaced-missing-icon")||(a.textContent="radio_button_unchecked",a.classList.add("js-replaced-missing-icon")),n.h=0}})))}
+function g(a){a=a===void 0?document.body:a;a.querySelectorAll(l).forEach(function(d){c(d)})}function h(){b().catch(function(){});document.fonts.ready.then(function(){requestAnimationFrame(function(){g(document.body);(new MutationObserver(function(a){var d=new Set;a=t(a);for(var e=a.next();!e.done;e=a.next())if(e=e.value,e.type==="childList")e.addedNodes.forEach(function(p){p.nodeType===Node.ELEMENT_NODE&&(p.matches(l)&&d.add(p),p.querySelectorAll(l).forEach(function(n){d.add(n)}))});else if(e.type===
+"attributes"&&e.attributeName==="class"){var k=e.target;e.target.nodeType===Node.ELEMENT_NODE&&k.matches(l)&&d.add(k)}else e.type==="characterData"&&e.target.parentNode&&(e=e.target.parentNode,e.nodeType===Node.ELEMENT_NODE&&e.matches(l)&&d.add(e));d.size>0&&setTimeout(function(){d.forEach(function(p){c(p)})},500)})).observe(document.body,{childList:!0,subtree:!0,attributes:!0,attributeFilter:["class"],characterData:!0})})}).catch(function(a){console.error("IconChecker: Font loading error. Scanning icons anyway.",
+a);requestAnimationFrame(function(){g(document.body)})})}var l=["material-icons","material-symbols-outlined","material-symbols-rounded","material-symbols-sharp"].map(function(a){return"."+a}).join(","),m=null,f=null;document.readyState==="loading"?document.addEventListener("DOMContentLoaded",function(){h()}):h()})();}).call(this);
+
+</script>
+
+    
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>TONRODY PULSE | Resonance System</title>
+    <script src="./TONRODY PULSE _ Resonance System_files/saved_resource"></script>
+    <link rel="stylesheet" href="./TONRODY PULSE _ Resonance System_files/css2">
+    <link href="./TONRODY PULSE _ Resonance System_files/css2(1)" rel="stylesheet">
+    <style>
+        :root {
+            --color-low: #94a3b8;   /* Slate 400 */
+            --color-mid: #06b6d4;   /* Cyan 500 */
+            --color-high: #4ade80;  /* Green 400 */
+            --color-surge: #d946ef; /* Fuchsia 500 */
+            --bg-dark: #0f172a;
+            --glass: rgba(30, 41, 59, 0.7);
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #020617; /* Deepest Slate */
+            color: #e2e8f0;
+            overflow-x: hidden;
+        }
+
+        .font-mono { font-family: 'JetBrains Mono', monospace; }
+
+        /* Custom Scrollbar */
+        ::-webkit-scrollbar { width: 6px; }
+        ::-webkit-scrollbar-track { background: #0f172a; }
+        ::-webkit-scrollbar-thumb { background: #334155; border-radius: 3px; }
+
+        /* Glassmorphism & High-Tech Borders */
+        .glass-panel {
+            background: rgba(15, 23, 42, 0.6);
+            backdrop-filter: blur(12px);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            box-shadow: 0 4px 30px rgba(0, 0, 0, 0.3);
+            position: relative;
+            overflow: hidden;
+            transition: border-color 0.3s ease, box-shadow 0.3s ease;
+        }
+
+        .glass-panel::before {
+            content: '';
+            position: absolute;
+            top: 0; left: 0; width: 100%; height: 2px;
+            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.2), transparent);
+            opacity: 0.5;
+        }
+
+        /* State-based Glows */
+        .state-low { border-color: rgba(148, 163, 184, 0.3); box-shadow: 0 0 15px rgba(148, 163, 184, 0.1); }
+        .state-mid { border-color: rgba(6, 182, 212, 0.3); box-shadow: 0 0 20px rgba(6, 182, 212, 0.15); }
+        .state-high { border-color: rgba(74, 222, 128, 0.4); box-shadow: 0 0 25px rgba(74, 222, 128, 0.2); }
+        .state-surge { border-color: rgba(217, 70, 239, 0.5); box-shadow: 0 0 35px rgba(217, 70, 239, 0.3); animation: surge-border 2s infinite alternate; }
+
+        @keyframes surge-border {
+            from { box-shadow: 0 0 20px rgba(217, 70, 239, 0.2); }
+            to { box-shadow: 0 0 40px rgba(217, 70, 239, 0.6); border-color: rgba(217, 70, 239, 0.8); }
+        }
+
+        /* Pulse Badge Animation */
+        .pulse-badge {
+            position: relative;
+        }
+        .pulse-badge::after {
+            content: '';
+            position: absolute;
+            top: -4px; left: -4px; right: -4px; bottom: -4px;
+            border-radius: 9999px;
+            border: 2px solid currentColor;
+            opacity: 0;
+            animation: ripple 2s infinite;
+        }
+
+        @keyframes ripple {
+            0% { transform: scale(0.8); opacity: 0.5; }
+            100% { transform: scale(1.5); opacity: 0; }
+        }
+
+        /* Grid Background for specific areas */
+        .bg-grid-pattern {
+            background-size: 40px 40px;
+            background-image: linear-gradient(to right, rgba(255, 255, 255, 0.03) 1px, transparent 1px),
+                              linear-gradient(to bottom, rgba(255, 255, 255, 0.03) 1px, transparent 1px);
+        }
+
+        /* Utilities */
+        .text-glow { text-shadow: 0 0 10px currentColor; }
+        .h-screen-minus-header { height: calc(100vh - 80px); }
+        
+        /* Tooltip */
+        #canvas-tooltip {
+            pointer-events: none;
+            transition: opacity 0.2s, transform 0.2s;
+            z-index: 50;
+        }
+    </style>
+<style>*, ::before, ::after{--tw-border-spacing-x:0;--tw-border-spacing-y:0;--tw-translate-x:0;--tw-translate-y:0;--tw-rotate:0;--tw-skew-x:0;--tw-skew-y:0;--tw-scale-x:1;--tw-scale-y:1;--tw-pan-x: ;--tw-pan-y: ;--tw-pinch-zoom: ;--tw-scroll-snap-strictness:proximity;--tw-gradient-from-position: ;--tw-gradient-via-position: ;--tw-gradient-to-position: ;--tw-ordinal: ;--tw-slashed-zero: ;--tw-numeric-figure: ;--tw-numeric-spacing: ;--tw-numeric-fraction: ;--tw-ring-inset: ;--tw-ring-offset-width:0px;--tw-ring-offset-color:#fff;--tw-ring-color:rgb(59 130 246 / 0.5);--tw-ring-offset-shadow:0 0 #0000;--tw-ring-shadow:0 0 #0000;--tw-shadow:0 0 #0000;--tw-shadow-colored:0 0 #0000;--tw-blur: ;--tw-brightness: ;--tw-contrast: ;--tw-grayscale: ;--tw-hue-rotate: ;--tw-invert: ;--tw-saturate: ;--tw-sepia: ;--tw-drop-shadow: ;--tw-backdrop-blur: ;--tw-backdrop-brightness: ;--tw-backdrop-contrast: ;--tw-backdrop-grayscale: ;--tw-backdrop-hue-rotate: ;--tw-backdrop-invert: ;--tw-backdrop-opacity: ;--tw-backdrop-saturate: ;--tw-backdrop-sepia: ;--tw-contain-size: ;--tw-contain-layout: ;--tw-contain-paint: ;--tw-contain-style: }::backdrop{--tw-border-spacing-x:0;--tw-border-spacing-y:0;--tw-translate-x:0;--tw-translate-y:0;--tw-rotate:0;--tw-skew-x:0;--tw-skew-y:0;--tw-scale-x:1;--tw-scale-y:1;--tw-pan-x: ;--tw-pan-y: ;--tw-pinch-zoom: ;--tw-scroll-snap-strictness:proximity;--tw-gradient-from-position: ;--tw-gradient-via-position: ;--tw-gradient-to-position: ;--tw-ordinal: ;--tw-slashed-zero: ;--tw-numeric-figure: ;--tw-numeric-spacing: ;--tw-numeric-fraction: ;--tw-ring-inset: ;--tw-ring-offset-width:0px;--tw-ring-offset-color:#fff;--tw-ring-color:rgb(59 130 246 / 0.5);--tw-ring-offset-shadow:0 0 #0000;--tw-ring-shadow:0 0 #0000;--tw-shadow:0 0 #0000;--tw-shadow-colored:0 0 #0000;--tw-blur: ;--tw-brightness: ;--tw-contrast: ;--tw-grayscale: ;--tw-hue-rotate: ;--tw-invert: ;--tw-saturate: ;--tw-sepia: ;--tw-drop-shadow: ;--tw-backdrop-blur: ;--tw-backdrop-brightness: ;--tw-backdrop-contrast: ;--tw-backdrop-grayscale: ;--tw-backdrop-hue-rotate: ;--tw-backdrop-invert: ;--tw-backdrop-opacity: ;--tw-backdrop-saturate: ;--tw-backdrop-sepia: ;--tw-contain-size: ;--tw-contain-layout: ;--tw-contain-paint: ;--tw-contain-style: }/* ! tailwindcss v3.4.17 | MIT License | https://tailwindcss.com */*,::after,::before{box-sizing:border-box;border-width:0;border-style:solid;border-color:#e5e7eb}::after,::before{--tw-content:''}:host,html{line-height:1.5;-webkit-text-size-adjust:100%;-moz-tab-size:4;tab-size:4;font-family:ui-sans-serif, system-ui, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji";font-feature-settings:normal;font-variation-settings:normal;-webkit-tap-highlight-color:transparent}body{margin:0;line-height:inherit}hr{height:0;color:inherit;border-top-width:1px}abbr:where([title]){-webkit-text-decoration:underline dotted;text-decoration:underline dotted}h1,h2,h3,h4,h5,h6{font-size:inherit;font-weight:inherit}a{color:inherit;text-decoration:inherit}b,strong{font-weight:bolder}code,kbd,pre,samp{font-family:ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;font-feature-settings:normal;font-variation-settings:normal;font-size:1em}small{font-size:80%}sub,sup{font-size:75%;line-height:0;position:relative;vertical-align:baseline}sub{bottom:-.25em}sup{top:-.5em}table{text-indent:0;border-color:inherit;border-collapse:collapse}button,input,optgroup,select,textarea{font-family:inherit;font-feature-settings:inherit;font-variation-settings:inherit;font-size:100%;font-weight:inherit;line-height:inherit;letter-spacing:inherit;color:inherit;margin:0;padding:0}button,select{text-transform:none}button,input:where([type=button]),input:where([type=reset]),input:where([type=submit]){-webkit-appearance:button;background-color:transparent;background-image:none}:-moz-focusring{outline:auto}:-moz-ui-invalid{box-shadow:none}progress{vertical-align:baseline}::-webkit-inner-spin-button,::-webkit-outer-spin-button{height:auto}[type=search]{-webkit-appearance:textfield;outline-offset:-2px}::-webkit-search-decoration{-webkit-appearance:none}::-webkit-file-upload-button{-webkit-appearance:button;font:inherit}summary{display:list-item}blockquote,dd,dl,figure,h1,h2,h3,h4,h5,h6,hr,p,pre{margin:0}fieldset{margin:0;padding:0}legend{padding:0}menu,ol,ul{list-style:none;margin:0;padding:0}dialog{padding:0}textarea{resize:vertical}input::placeholder,textarea::placeholder{opacity:1;color:#9ca3af}[role=button],button{cursor:pointer}:disabled{cursor:default}audio,canvas,embed,iframe,img,object,svg,video{display:block;vertical-align:middle}img,video{max-width:100%;height:auto}[hidden]:where(:not([hidden=until-found])){display:none}.pointer-events-none{pointer-events:none}.absolute{position:absolute}.relative{position:relative}.sticky{position:sticky}.inset-0{inset:0px}.bottom-0{bottom:0px}.bottom-4{bottom:1rem}.left-0{left:0px}.left-1\/2{left:50%}.left-4{left:1rem}.right-4{right:1rem}.top-0{top:0px}.top-4{top:1rem}.z-10{z-index:10}.z-40{z-index:40}.mx-auto{margin-left:auto;margin-right:auto}.mb-0\.5{margin-bottom:0.125rem}.mb-1{margin-bottom:0.25rem}.mb-2{margin-bottom:0.5rem}.mb-3{margin-bottom:0.75rem}.mb-4{margin-bottom:1rem}.ml-2{margin-left:0.5rem}.mt-1{margin-top:0.25rem}.mt-2{margin-top:0.5rem}.block{display:block}.flex{display:flex}.inline-flex{display:inline-flex}.grid{display:grid}.hidden{display:none}.h-1{height:0.25rem}.h-10{height:2.5rem}.h-16{height:4rem}.h-2{height:0.5rem}.h-3{height:0.75rem}.h-64{height:16rem}.h-8{height:2rem}.h-\[400px\]{height:400px}.h-full{height:100%}.w-1{width:0.25rem}.w-10{width:2.5rem}.w-16{width:4rem}.w-2{width:0.5rem}.w-8{width:2rem}.w-\[48\.2\%\]{width:48.2%}.w-full{width:100%}.min-w-\[150px\]{min-width:150px}.min-w-\[600px\]{min-width:600px}.max-w-\[1920px\]{max-width:1920px}.flex-1{flex:1 1 0%}.-translate-x-1\/2{--tw-translate-x:-50%;transform:translate(var(--tw-translate-x), var(--tw-translate-y)) rotate(var(--tw-rotate)) skewX(var(--tw-skew-x)) skewY(var(--tw-skew-y)) scaleX(var(--tw-scale-x)) scaleY(var(--tw-scale-y))}.scale-100{--tw-scale-x:1;--tw-scale-y:1;transform:translate(var(--tw-translate-x), var(--tw-translate-y)) rotate(var(--tw-rotate)) skewX(var(--tw-skew-x)) skewY(var(--tw-skew-y)) scaleX(var(--tw-scale-x)) scaleY(var(--tw-scale-y))}.transform{transform:translate(var(--tw-translate-x), var(--tw-translate-y)) rotate(var(--tw-rotate)) skewX(var(--tw-skew-x)) skewY(var(--tw-skew-y)) scaleX(var(--tw-scale-x)) scaleY(var(--tw-scale-y))}@keyframes pulse{50%{opacity:.5}}.animate-pulse{animation:pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite}.cursor-crosshair{cursor:crosshair}.grid-cols-1{grid-template-columns:repeat(1, minmax(0, 1fr))}.grid-cols-2{grid-template-columns:repeat(2, minmax(0, 1fr))}.grid-cols-4{grid-template-columns:repeat(4, minmax(0, 1fr))}.grid-cols-\[repeat\(24\2c minmax\(0\2c 1fr\)\)\]{grid-template-columns:repeat(24,minmax(0,1fr))}.flex-col{flex-direction:column}.items-center{align-items:center}.justify-center{justify-content:center}.justify-between{justify-content:space-between}.gap-1{gap:0.25rem}.gap-2{gap:0.5rem}.gap-3{gap:0.75rem}.gap-4{gap:1rem}.gap-6{gap:1.5rem}.gap-\[1px\]{gap:1px}.space-y-4 > :not([hidden]) ~ :not([hidden]){--tw-space-y-reverse:0;margin-top:calc(1rem * calc(1 - var(--tw-space-y-reverse)));margin-bottom:calc(1rem * var(--tw-space-y-reverse))}.space-y-6 > :not([hidden]) ~ :not([hidden]){--tw-space-y-reverse:0;margin-top:calc(1.5rem * calc(1 - var(--tw-space-y-reverse)));margin-bottom:calc(1.5rem * var(--tw-space-y-reverse))}.overflow-hidden{overflow:hidden}.overflow-x-auto{overflow-x:auto}.rounded{border-radius:0.25rem}.rounded-2xl{border-radius:1rem}.rounded-full{border-radius:9999px}.rounded-lg{border-radius:0.5rem}.rounded-xl{border-radius:0.75rem}.rounded-sm{border-radius:0.125rem}.border{border-width:1px}.border-2{border-width:2px}.border-b{border-bottom-width:1px}.border-t{border-top-width:1px}.border-t-2{border-top-width:2px}.border-cyan-400\/50{border-color:rgb(34 211 238 / 0.5)}.border-cyan-500\/20{border-color:rgb(6 182 212 / 0.2)}.border-cyan-500\/30{border-color:rgb(6 182 212 / 0.3)}.border-cyan-500\/50{border-color:rgb(6 182 212 / 0.5)}.border-fuchsia-500\/20{border-color:rgb(217 70 239 / 0.2)}.border-green-500\/20{border-color:rgb(34 197 94 / 0.2)}.border-green-500\/30{border-color:rgb(34 197 94 / 0.3)}.border-slate-700{--tw-border-opacity:1;border-color:rgb(51 65 85 / var(--tw-border-opacity, 1))}.border-slate-700\/50{border-color:rgb(51 65 85 / 0.5)}.border-white\/10{border-color:rgb(255 255 255 / 0.1)}.border-white\/5{border-color:rgb(255 255 255 / 0.05)}.bg-\[\#0b101b\]{--tw-bg-opacity:1;background-color:rgb(11 16 27 / var(--tw-bg-opacity, 1))}.bg-cyan-400{--tw-bg-opacity:1;background-color:rgb(34 211 238 / var(--tw-bg-opacity, 1))}.bg-cyan-500{--tw-bg-opacity:1;background-color:rgb(6 182 212 / var(--tw-bg-opacity, 1))}.bg-cyan-500\/10{background-color:rgb(6 182 212 / 0.1)}.bg-cyan-600{--tw-bg-opacity:1;background-color:rgb(8 145 178 / var(--tw-bg-opacity, 1))}.bg-cyan-900{--tw-bg-opacity:1;background-color:rgb(22 78 99 / var(--tw-bg-opacity, 1))}.bg-cyan-900\/10{background-color:rgb(22 78 99 / 0.1)}.bg-cyan-900\/30{background-color:rgb(22 78 99 / 0.3)}.bg-fuchsia-900\/30{background-color:rgb(112 26 117 / 0.3)}.bg-green-500{--tw-bg-opacity:1;background-color:rgb(34 197 94 / var(--tw-bg-opacity, 1))}.bg-green-500\/20{background-color:rgb(34 197 94 / 0.2)}.bg-green-900\/30{background-color:rgb(20 83 45 / 0.3)}.bg-purple-500{--tw-bg-opacity:1;background-color:rgb(168 85 247 / var(--tw-bg-opacity, 1))}.bg-slate-700{--tw-bg-opacity:1;background-color:rgb(51 65 85 / var(--tw-bg-opacity, 1))}.bg-slate-800{--tw-bg-opacity:1;background-color:rgb(30 41 59 / var(--tw-bg-opacity, 1))}.bg-slate-800\/40{background-color:rgb(30 41 59 / 0.4)}.bg-slate-800\/50{background-color:rgb(30 41 59 / 0.5)}.bg-slate-900{--tw-bg-opacity:1;background-color:rgb(15 23 42 / var(--tw-bg-opacity, 1))}.bg-slate-900\/80{background-color:rgb(15 23 42 / 0.8)}.bg-slate-900\/95{background-color:rgb(15 23 42 / 0.95)}.bg-slate-950{--tw-bg-opacity:1;background-color:rgb(2 6 23 / var(--tw-bg-opacity, 1))}.bg-white{--tw-bg-opacity:1;background-color:rgb(255 255 255 / var(--tw-bg-opacity, 1))}.bg-cyan-700{--tw-bg-opacity:1;background-color:rgb(14 116 144 / var(--tw-bg-opacity, 1))}.bg-red-500\/50{background-color:rgb(239 68 68 / 0.5)}.bg-gradient-to-br{background-image:linear-gradient(to bottom right, var(--tw-gradient-stops))}.bg-gradient-to-r{background-image:linear-gradient(to right, var(--tw-gradient-stops))}.from-cyan-300{--tw-gradient-from:#67e8f9 var(--tw-gradient-from-position);--tw-gradient-to:rgb(103 232 249 / 0) var(--tw-gradient-to-position);--tw-gradient-stops:var(--tw-gradient-from), var(--tw-gradient-to)}.from-cyan-400{--tw-gradient-from:#22d3ee var(--tw-gradient-from-position);--tw-gradient-to:rgb(34 211 238 / 0) var(--tw-gradient-to-position);--tw-gradient-stops:var(--tw-gradient-from), var(--tw-gradient-to)}.from-red-500{--tw-gradient-from:#ef4444 var(--tw-gradient-from-position);--tw-gradient-to:rgb(239 68 68 / 0) var(--tw-gradient-to-position);--tw-gradient-stops:var(--tw-gradient-from), var(--tw-gradient-to)}.via-slate-700{--tw-gradient-to:rgb(51 65 85 / 0)  var(--tw-gradient-to-position);--tw-gradient-stops:var(--tw-gradient-from), #334155 var(--tw-gradient-via-position), var(--tw-gradient-to)}.to-blue-600{--tw-gradient-to:#2563eb var(--tw-gradient-to-position)}.to-green-500{--tw-gradient-to:#22c55e var(--tw-gradient-to-position)}.to-white{--tw-gradient-to:#fff var(--tw-gradient-to-position)}.bg-clip-text{-webkit-background-clip:text;background-clip:text}.p-1{padding:0.25rem}.p-3{padding:0.75rem}.p-4{padding:1rem}.p-5{padding:1.25rem}.p-6{padding:1.5rem}.px-2{padding-left:0.5rem;padding-right:0.5rem}.px-3{padding-left:0.75rem;padding-right:0.75rem}.px-6{padding-left:1.5rem;padding-right:1.5rem}.py-0\.5{padding-top:0.125rem;padding-bottom:0.125rem}.py-1{padding-top:0.25rem;padding-bottom:0.25rem}.py-1\.5{padding-top:0.375rem;padding-bottom:0.375rem}.pt-4{padding-top:1rem}.text-center{text-align:center}.text-right{text-align:right}.font-mono{font-family:ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace}.text-2xl{font-size:1.5rem;line-height:2rem}.text-3xl{font-size:1.875rem;line-height:2.25rem}.text-\[10px\]{font-size:10px}.text-\[9px\]{font-size:9px}.text-lg{font-size:1.125rem;line-height:1.75rem}.text-sm{font-size:0.875rem;line-height:1.25rem}.text-xl{font-size:1.25rem;line-height:1.75rem}.text-xs{font-size:0.75rem;line-height:1rem}.font-bold{font-weight:700}.font-light{font-weight:300}.font-semibold{font-weight:600}.uppercase{text-transform:uppercase}.tracking-\[0\.2em\]{letter-spacing:0.2em}.tracking-wide{letter-spacing:0.025em}.tracking-wider{letter-spacing:0.05em}.tracking-widest{letter-spacing:0.1em}.text-blue-400{--tw-text-opacity:1;color:rgb(96 165 250 / var(--tw-text-opacity, 1))}.text-cyan-200{--tw-text-opacity:1;color:rgb(165 243 252 / var(--tw-text-opacity, 1))}.text-cyan-300{--tw-text-opacity:1;color:rgb(103 232 249 / var(--tw-text-opacity, 1))}.text-cyan-400{--tw-text-opacity:1;color:rgb(34 211 238 / var(--tw-text-opacity, 1))}.text-cyan-500{--tw-text-opacity:1;color:rgb(6 182 212 / var(--tw-text-opacity, 1))}.text-fuchsia-300{--tw-text-opacity:1;color:rgb(240 171 252 / var(--tw-text-opacity, 1))}.text-fuchsia-400{--tw-text-opacity:1;color:rgb(232 121 249 / var(--tw-text-opacity, 1))}.text-green-300{--tw-text-opacity:1;color:rgb(134 239 172 / var(--tw-text-opacity, 1))}.text-green-400{--tw-text-opacity:1;color:rgb(74 222 128 / var(--tw-text-opacity, 1))}.text-purple-300{--tw-text-opacity:1;color:rgb(216 180 254 / var(--tw-text-opacity, 1))}.text-slate-200{--tw-text-opacity:1;color:rgb(226 232 240 / var(--tw-text-opacity, 1))}.text-slate-300{--tw-text-opacity:1;color:rgb(203 213 225 / var(--tw-text-opacity, 1))}.text-slate-400{--tw-text-opacity:1;color:rgb(148 163 184 / var(--tw-text-opacity, 1))}.text-slate-500{--tw-text-opacity:1;color:rgb(100 116 139 / var(--tw-text-opacity, 1))}.text-slate-600{--tw-text-opacity:1;color:rgb(71 85 105 / var(--tw-text-opacity, 1))}.text-transparent{color:transparent}.text-white{--tw-text-opacity:1;color:rgb(255 255 255 / var(--tw-text-opacity, 1))}.text-white\/80{color:rgb(255 255 255 / 0.8)}.opacity-0{opacity:0}.opacity-50{opacity:0.5}.shadow-lg{--tw-shadow:0 10px 15px -3px rgb(0 0 0 / 0.1), 0 4px 6px -4px rgb(0 0 0 / 0.1);--tw-shadow-colored:0 10px 15px -3px var(--tw-shadow-color), 0 4px 6px -4px var(--tw-shadow-color);box-shadow:var(--tw-ring-offset-shadow, 0 0 #0000), var(--tw-ring-shadow, 0 0 #0000), var(--tw-shadow)}.shadow-sm{--tw-shadow:0 1px 2px 0 rgb(0 0 0 / 0.05);--tw-shadow-colored:0 1px 2px 0 var(--tw-shadow-color);box-shadow:var(--tw-ring-offset-shadow, 0 0 #0000), var(--tw-ring-shadow, 0 0 #0000), var(--tw-shadow)}.shadow-xl{--tw-shadow:0 20px 25px -5px rgb(0 0 0 / 0.1), 0 8px 10px -6px rgb(0 0 0 / 0.1);--tw-shadow-colored:0 20px 25px -5px var(--tw-shadow-color), 0 8px 10px -6px var(--tw-shadow-color);box-shadow:var(--tw-ring-offset-shadow, 0 0 #0000), var(--tw-ring-shadow, 0 0 #0000), var(--tw-shadow)}.shadow-\[0_0_5px_rgba\(74\2c 222\2c 128\2c 0\.5\)\]{--tw-shadow:0 0 5px rgba(74,222,128,0.5);--tw-shadow-colored:0 0 5px var(--tw-shadow-color);box-shadow:var(--tw-ring-offset-shadow, 0 0 #0000), var(--tw-ring-shadow, 0 0 #0000), var(--tw-shadow)}.shadow-cyan-500\/20{--tw-shadow-color:rgb(6 182 212 / 0.2);--tw-shadow:var(--tw-shadow-colored)}.shadow-cyan-900\/20{--tw-shadow-color:rgb(22 78 99 / 0.2);--tw-shadow:var(--tw-shadow-colored)}.backdrop-blur{--tw-backdrop-blur:blur(8px);-webkit-backdrop-filter:var(--tw-backdrop-blur) var(--tw-backdrop-brightness) var(--tw-backdrop-contrast) var(--tw-backdrop-grayscale) var(--tw-backdrop-hue-rotate) var(--tw-backdrop-invert) var(--tw-backdrop-opacity) var(--tw-backdrop-saturate) var(--tw-backdrop-sepia);backdrop-filter:var(--tw-backdrop-blur) var(--tw-backdrop-brightness) var(--tw-backdrop-contrast) var(--tw-backdrop-grayscale) var(--tw-backdrop-hue-rotate) var(--tw-backdrop-invert) var(--tw-backdrop-opacity) var(--tw-backdrop-saturate) var(--tw-backdrop-sepia)}.backdrop-blur-md{--tw-backdrop-blur:blur(12px);-webkit-backdrop-filter:var(--tw-backdrop-blur) var(--tw-backdrop-brightness) var(--tw-backdrop-contrast) var(--tw-backdrop-grayscale) var(--tw-backdrop-hue-rotate) var(--tw-backdrop-invert) var(--tw-backdrop-opacity) var(--tw-backdrop-saturate) var(--tw-backdrop-sepia);backdrop-filter:var(--tw-backdrop-blur) var(--tw-backdrop-brightness) var(--tw-backdrop-contrast) var(--tw-backdrop-grayscale) var(--tw-backdrop-hue-rotate) var(--tw-backdrop-invert) var(--tw-backdrop-opacity) var(--tw-backdrop-saturate) var(--tw-backdrop-sepia)}.transition-all{transition-property:all;transition-timing-function:cubic-bezier(0.4, 0, 0.2, 1);transition-duration:150ms}.transition-colors{transition-property:color, background-color, border-color, fill, stroke, -webkit-text-decoration-color;transition-property:color, background-color, border-color, text-decoration-color, fill, stroke;transition-property:color, background-color, border-color, text-decoration-color, fill, stroke, -webkit-text-decoration-color;transition-timing-function:cubic-bezier(0.4, 0, 0.2, 1);transition-duration:150ms}.transition-transform{transition-property:transform;transition-timing-function:cubic-bezier(0.4, 0, 0.2, 1);transition-duration:150ms}.duration-1000{transition-duration:1000ms}.duration-300{transition-duration:300ms}.duration-500{transition-duration:500ms}.duration-200{transition-duration:200ms}.selection\:bg-cyan-500 *::selection{--tw-bg-opacity:1;background-color:rgb(6 182 212 / var(--tw-bg-opacity, 1))}.selection\:text-white *::selection{--tw-text-opacity:1;color:rgb(255 255 255 / var(--tw-text-opacity, 1))}.selection\:bg-cyan-500::selection{--tw-bg-opacity:1;background-color:rgb(6 182 212 / var(--tw-bg-opacity, 1))}.selection\:text-white::selection{--tw-text-opacity:1;color:rgb(255 255 255 / var(--tw-text-opacity, 1))}.hover\:scale-125:hover{--tw-scale-x:1.25;--tw-scale-y:1.25;transform:translate(var(--tw-translate-x), var(--tw-translate-y)) rotate(var(--tw-rotate)) skewX(var(--tw-skew-x)) skewY(var(--tw-skew-y)) scaleX(var(--tw-scale-x)) scaleY(var(--tw-scale-y))}.hover\:bg-cyan-900\/50:hover{background-color:rgb(22 78 99 / 0.5)}.hover\:bg-fuchsia-900\/50:hover{background-color:rgb(112 26 117 / 0.5)}.hover\:bg-green-900\/50:hover{background-color:rgb(20 83 45 / 0.5)}.hover\:bg-slate-700:hover{--tw-bg-opacity:1;background-color:rgb(51 65 85 / var(--tw-bg-opacity, 1))}.hover\:text-slate-300:hover{--tw-text-opacity:1;color:rgb(203 213 225 / var(--tw-text-opacity, 1))}.hover\:text-white:hover{--tw-text-opacity:1;color:rgb(255 255 255 / var(--tw-text-opacity, 1))}@media (min-width: 640px){.sm\:block{display:block}}@media (min-width: 768px){.md\:col-span-2{grid-column:span 2 / span 2}.md\:flex{display:flex}.md\:grid-cols-3{grid-template-columns:repeat(3, minmax(0, 1fr))}.md\:p-6{padding:1.5rem}}@media (min-width: 1024px){.lg\:col-span-3{grid-column:span 3 / span 3}.lg\:col-span-9{grid-column:span 9 / span 9}.lg\:grid-cols-12{grid-template-columns:repeat(12, minmax(0, 1fr))}}</style><style>*, ::before, ::after{--tw-border-spacing-x:0;--tw-border-spacing-y:0;--tw-translate-x:0;--tw-translate-y:0;--tw-rotate:0;--tw-skew-x:0;--tw-skew-y:0;--tw-scale-x:1;--tw-scale-y:1;--tw-pan-x: ;--tw-pan-y: ;--tw-pinch-zoom: ;--tw-scroll-snap-strictness:proximity;--tw-gradient-from-position: ;--tw-gradient-via-position: ;--tw-gradient-to-position: ;--tw-ordinal: ;--tw-slashed-zero: ;--tw-numeric-figure: ;--tw-numeric-spacing: ;--tw-numeric-fraction: ;--tw-ring-inset: ;--tw-ring-offset-width:0px;--tw-ring-offset-color:#fff;--tw-ring-color:rgb(59 130 246 / 0.5);--tw-ring-offset-shadow:0 0 #0000;--tw-ring-shadow:0 0 #0000;--tw-shadow:0 0 #0000;--tw-shadow-colored:0 0 #0000;--tw-blur: ;--tw-brightness: ;--tw-contrast: ;--tw-grayscale: ;--tw-hue-rotate: ;--tw-invert: ;--tw-saturate: ;--tw-sepia: ;--tw-drop-shadow: ;--tw-backdrop-blur: ;--tw-backdrop-brightness: ;--tw-backdrop-contrast: ;--tw-backdrop-grayscale: ;--tw-backdrop-hue-rotate: ;--tw-backdrop-invert: ;--tw-backdrop-opacity: ;--tw-backdrop-saturate: ;--tw-backdrop-sepia: ;--tw-contain-size: ;--tw-contain-layout: ;--tw-contain-paint: ;--tw-contain-style: }::backdrop{--tw-border-spacing-x:0;--tw-border-spacing-y:0;--tw-translate-x:0;--tw-translate-y:0;--tw-rotate:0;--tw-skew-x:0;--tw-skew-y:0;--tw-scale-x:1;--tw-scale-y:1;--tw-pan-x: ;--tw-pan-y: ;--tw-pinch-zoom: ;--tw-scroll-snap-strictness:proximity;--tw-gradient-from-position: ;--tw-gradient-via-position: ;--tw-gradient-to-position: ;--tw-ordinal: ;--tw-slashed-zero: ;--tw-numeric-figure: ;--tw-numeric-spacing: ;--tw-numeric-fraction: ;--tw-ring-inset: ;--tw-ring-offset-width:0px;--tw-ring-offset-color:#fff;--tw-ring-color:rgb(59 130 246 / 0.5);--tw-ring-offset-shadow:0 0 #0000;--tw-ring-shadow:0 0 #0000;--tw-shadow:0 0 #0000;--tw-shadow-colored:0 0 #0000;--tw-blur: ;--tw-brightness: ;--tw-contrast: ;--tw-grayscale: ;--tw-hue-rotate: ;--tw-invert: ;--tw-saturate: ;--tw-sepia: ;--tw-drop-shadow: ;--tw-backdrop-blur: ;--tw-backdrop-brightness: ;--tw-backdrop-contrast: ;--tw-backdrop-grayscale: ;--tw-backdrop-hue-rotate: ;--tw-backdrop-invert: ;--tw-backdrop-opacity: ;--tw-backdrop-saturate: ;--tw-backdrop-sepia: ;--tw-contain-size: ;--tw-contain-layout: ;--tw-contain-paint: ;--tw-contain-style: }/* ! tailwindcss v3.4.17 | MIT License | https://tailwindcss.com */*,::after,::before{box-sizing:border-box;border-width:0;border-style:solid;border-color:#e5e7eb}::after,::before{--tw-content:''}:host,html{line-height:1.5;-webkit-text-size-adjust:100%;-moz-tab-size:4;tab-size:4;font-family:ui-sans-serif, system-ui, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji";font-feature-settings:normal;font-variation-settings:normal;-webkit-tap-highlight-color:transparent}body{margin:0;line-height:inherit}hr{height:0;color:inherit;border-top-width:1px}abbr:where([title]){-webkit-text-decoration:underline dotted;text-decoration:underline dotted}h1,h2,h3,h4,h5,h6{font-size:inherit;font-weight:inherit}a{color:inherit;text-decoration:inherit}b,strong{font-weight:bolder}code,kbd,pre,samp{font-family:ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;font-feature-settings:normal;font-variation-settings:normal;font-size:1em}small{font-size:80%}sub,sup{font-size:75%;line-height:0;position:relative;vertical-align:baseline}sub{bottom:-.25em}sup{top:-.5em}table{text-indent:0;border-color:inherit;border-collapse:collapse}button,input,optgroup,select,textarea{font-family:inherit;font-feature-settings:inherit;font-variation-settings:inherit;font-size:100%;font-weight:inherit;line-height:inherit;letter-spacing:inherit;color:inherit;margin:0;padding:0}button,select{text-transform:none}button,input:where([type=button]),input:where([type=reset]),input:where([type=submit]){-webkit-appearance:button;background-color:transparent;background-image:none}:-moz-focusring{outline:auto}:-moz-ui-invalid{box-shadow:none}progress{vertical-align:baseline}::-webkit-inner-spin-button,::-webkit-outer-spin-button{height:auto}[type=search]{-webkit-appearance:textfield;outline-offset:-2px}::-webkit-search-decoration{-webkit-appearance:none}::-webkit-file-upload-button{-webkit-appearance:button;font:inherit}summary{display:list-item}blockquote,dd,dl,figure,h1,h2,h3,h4,h5,h6,hr,p,pre{margin:0}fieldset{margin:0;padding:0}legend{padding:0}menu,ol,ul{list-style:none;margin:0;padding:0}dialog{padding:0}textarea{resize:vertical}input::placeholder,textarea::placeholder{opacity:1;color:#9ca3af}[role=button],button{cursor:pointer}:disabled{cursor:default}audio,canvas,embed,iframe,img,object,svg,video{display:block;vertical-align:middle}img,video{max-width:100%;height:auto}[hidden]:where(:not([hidden=until-found])){display:none}.pointer-events-none{pointer-events:none}.absolute{position:absolute}.relative{position:relative}.sticky{position:sticky}.inset-0{inset:0px}.bottom-0{bottom:0px}.bottom-4{bottom:1rem}.left-0{left:0px}.left-1\/2{left:50%}.left-4{left:1rem}.right-4{right:1rem}.top-0{top:0px}.top-4{top:1rem}.z-10{z-index:10}.z-40{z-index:40}.mx-auto{margin-left:auto;margin-right:auto}.mb-0\.5{margin-bottom:0.125rem}.mb-1{margin-bottom:0.25rem}.mb-2{margin-bottom:0.5rem}.mb-3{margin-bottom:0.75rem}.mb-4{margin-bottom:1rem}.ml-2{margin-left:0.5rem}.mt-1{margin-top:0.25rem}.mt-2{margin-top:0.5rem}.block{display:block}.flex{display:flex}.inline-flex{display:inline-flex}.grid{display:grid}.hidden{display:none}.h-1{height:0.25rem}.h-10{height:2.5rem}.h-16{height:4rem}.h-2{height:0.5rem}.h-3{height:0.75rem}.h-64{height:16rem}.h-8{height:2rem}.h-\[400px\]{height:400px}.h-full{height:100%}.w-1{width:0.25rem}.w-10{width:2.5rem}.w-16{width:4rem}.w-2{width:0.5rem}.w-8{width:2rem}.w-\[48\.2\%\]{width:48.2%}.w-full{width:100%}.min-w-\[150px\]{min-width:150px}.min-w-\[600px\]{min-width:600px}.max-w-\[1920px\]{max-width:1920px}.flex-1{flex:1 1 0%}.-translate-x-1\/2{--tw-translate-x:-50%;transform:translate(var(--tw-translate-x), var(--tw-translate-y)) rotate(var(--tw-rotate)) skewX(var(--tw-skew-x)) skewY(var(--tw-skew-y)) scaleX(var(--tw-scale-x)) scaleY(var(--tw-scale-y))}.scale-100{--tw-scale-x:1;--tw-scale-y:1;transform:translate(var(--tw-translate-x), var(--tw-translate-y)) rotate(var(--tw-rotate)) skewX(var(--tw-skew-x)) skewY(var(--tw-skew-y)) scaleX(var(--tw-scale-x)) scaleY(var(--tw-scale-y))}.transform{transform:translate(var(--tw-translate-x), var(--tw-translate-y)) rotate(var(--tw-rotate)) skewX(var(--tw-skew-x)) skewY(var(--tw-skew-y)) scaleX(var(--tw-scale-x)) scaleY(var(--tw-scale-y))}@keyframes pulse{50%{opacity:.5}}.animate-pulse{animation:pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite}.cursor-crosshair{cursor:crosshair}.grid-cols-1{grid-template-columns:repeat(1, minmax(0, 1fr))}.grid-cols-2{grid-template-columns:repeat(2, minmax(0, 1fr))}.grid-cols-4{grid-template-columns:repeat(4, minmax(0, 1fr))}.grid-cols-\[repeat\(24\2c minmax\(0\2c 1fr\)\)\]{grid-template-columns:repeat(24,minmax(0,1fr))}.flex-col{flex-direction:column}.items-center{align-items:center}.justify-center{justify-content:center}.justify-between{justify-content:space-between}.gap-1{gap:0.25rem}.gap-2{gap:0.5rem}.gap-3{gap:0.75rem}.gap-4{gap:1rem}.gap-6{gap:1.5rem}.gap-\[1px\]{gap:1px}.space-y-4 > :not([hidden]) ~ :not([hidden]){--tw-space-y-reverse:0;margin-top:calc(1rem * calc(1 - var(--tw-space-y-reverse)));margin-bottom:calc(1rem * var(--tw-space-y-reverse))}.space-y-6 > :not([hidden]) ~ :not([hidden]){--tw-space-y-reverse:0;margin-top:calc(1.5rem * calc(1 - var(--tw-space-y-reverse)));margin-bottom:calc(1.5rem * var(--tw-space-y-reverse))}.overflow-hidden{overflow:hidden}.overflow-x-auto{overflow-x:auto}.rounded{border-radius:0.25rem}.rounded-2xl{border-radius:1rem}.rounded-full{border-radius:9999px}.rounded-lg{border-radius:0.5rem}.rounded-sm{border-radius:0.125rem}.rounded-xl{border-radius:0.75rem}.border{border-width:1px}.border-2{border-width:2px}.border-b{border-bottom-width:1px}.border-t{border-top-width:1px}.border-t-2{border-top-width:2px}.border-cyan-400\/50{border-color:rgb(34 211 238 / 0.5)}.border-cyan-500\/20{border-color:rgb(6 182 212 / 0.2)}.border-cyan-500\/30{border-color:rgb(6 182 212 / 0.3)}.border-cyan-500\/50{border-color:rgb(6 182 212 / 0.5)}.border-fuchsia-500\/20{border-color:rgb(217 70 239 / 0.2)}.border-green-500\/20{border-color:rgb(34 197 94 / 0.2)}.border-green-500\/30{border-color:rgb(34 197 94 / 0.3)}.border-slate-700{--tw-border-opacity:1;border-color:rgb(51 65 85 / var(--tw-border-opacity, 1))}.border-slate-700\/50{border-color:rgb(51 65 85 / 0.5)}.border-white\/10{border-color:rgb(255 255 255 / 0.1)}.border-white\/5{border-color:rgb(255 255 255 / 0.05)}.bg-\[\#0b101b\]{--tw-bg-opacity:1;background-color:rgb(11 16 27 / var(--tw-bg-opacity, 1))}.bg-cyan-400{--tw-bg-opacity:1;background-color:rgb(34 211 238 / var(--tw-bg-opacity, 1))}.bg-cyan-500{--tw-bg-opacity:1;background-color:rgb(6 182 212 / var(--tw-bg-opacity, 1))}.bg-cyan-500\/10{background-color:rgb(6 182 212 / 0.1)}.bg-cyan-600{--tw-bg-opacity:1;background-color:rgb(8 145 178 / var(--tw-bg-opacity, 1))}.bg-cyan-700{--tw-bg-opacity:1;background-color:rgb(14 116 144 / var(--tw-bg-opacity, 1))}.bg-cyan-900{--tw-bg-opacity:1;background-color:rgb(22 78 99 / var(--tw-bg-opacity, 1))}.bg-cyan-900\/10{background-color:rgb(22 78 99 / 0.1)}.bg-cyan-900\/30{background-color:rgb(22 78 99 / 0.3)}.bg-fuchsia-900\/30{background-color:rgb(112 26 117 / 0.3)}.bg-green-500{--tw-bg-opacity:1;background-color:rgb(34 197 94 / var(--tw-bg-opacity, 1))}.bg-green-500\/20{background-color:rgb(34 197 94 / 0.2)}.bg-green-900\/30{background-color:rgb(20 83 45 / 0.3)}.bg-purple-500{--tw-bg-opacity:1;background-color:rgb(168 85 247 / var(--tw-bg-opacity, 1))}.bg-red-500\/50{background-color:rgb(239 68 68 / 0.5)}.bg-slate-700{--tw-bg-opacity:1;background-color:rgb(51 65 85 / var(--tw-bg-opacity, 1))}.bg-slate-800{--tw-bg-opacity:1;background-color:rgb(30 41 59 / var(--tw-bg-opacity, 1))}.bg-slate-800\/40{background-color:rgb(30 41 59 / 0.4)}.bg-slate-800\/50{background-color:rgb(30 41 59 / 0.5)}.bg-slate-900{--tw-bg-opacity:1;background-color:rgb(15 23 42 / var(--tw-bg-opacity, 1))}.bg-slate-900\/80{background-color:rgb(15 23 42 / 0.8)}.bg-slate-900\/95{background-color:rgb(15 23 42 / 0.95)}.bg-slate-950{--tw-bg-opacity:1;background-color:rgb(2 6 23 / var(--tw-bg-opacity, 1))}.bg-white{--tw-bg-opacity:1;background-color:rgb(255 255 255 / var(--tw-bg-opacity, 1))}.bg-gradient-to-br{background-image:linear-gradient(to bottom right, var(--tw-gradient-stops))}.bg-gradient-to-r{background-image:linear-gradient(to right, var(--tw-gradient-stops))}.from-cyan-300{--tw-gradient-from:#67e8f9 var(--tw-gradient-from-position);--tw-gradient-to:rgb(103 232 249 / 0) var(--tw-gradient-to-position);--tw-gradient-stops:var(--tw-gradient-from), var(--tw-gradient-to)}.from-cyan-400{--tw-gradient-from:#22d3ee var(--tw-gradient-from-position);--tw-gradient-to:rgb(34 211 238 / 0) var(--tw-gradient-to-position);--tw-gradient-stops:var(--tw-gradient-from), var(--tw-gradient-to)}.from-red-500{--tw-gradient-from:#ef4444 var(--tw-gradient-from-position);--tw-gradient-to:rgb(239 68 68 / 0) var(--tw-gradient-to-position);--tw-gradient-stops:var(--tw-gradient-from), var(--tw-gradient-to)}.via-slate-700{--tw-gradient-to:rgb(51 65 85 / 0)  var(--tw-gradient-to-position);--tw-gradient-stops:var(--tw-gradient-from), #334155 var(--tw-gradient-via-position), var(--tw-gradient-to)}.to-blue-600{--tw-gradient-to:#2563eb var(--tw-gradient-to-position)}.to-green-500{--tw-gradient-to:#22c55e var(--tw-gradient-to-position)}.to-white{--tw-gradient-to:#fff var(--tw-gradient-to-position)}.bg-clip-text{-webkit-background-clip:text;background-clip:text}.p-1{padding:0.25rem}.p-3{padding:0.75rem}.p-4{padding:1rem}.p-5{padding:1.25rem}.p-6{padding:1.5rem}.px-2{padding-left:0.5rem;padding-right:0.5rem}.px-3{padding-left:0.75rem;padding-right:0.75rem}.px-6{padding-left:1.5rem;padding-right:1.5rem}.py-0\.5{padding-top:0.125rem;padding-bottom:0.125rem}.py-1{padding-top:0.25rem;padding-bottom:0.25rem}.py-1\.5{padding-top:0.375rem;padding-bottom:0.375rem}.pt-4{padding-top:1rem}.text-center{text-align:center}.text-right{text-align:right}.font-mono{font-family:ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace}.text-2xl{font-size:1.5rem;line-height:2rem}.text-3xl{font-size:1.875rem;line-height:2.25rem}.text-\[10px\]{font-size:10px}.text-\[9px\]{font-size:9px}.text-lg{font-size:1.125rem;line-height:1.75rem}.text-sm{font-size:0.875rem;line-height:1.25rem}.text-xl{font-size:1.25rem;line-height:1.75rem}.text-xs{font-size:0.75rem;line-height:1rem}.font-bold{font-weight:700}.font-light{font-weight:300}.font-semibold{font-weight:600}.uppercase{text-transform:uppercase}.tracking-\[0\.2em\]{letter-spacing:0.2em}.tracking-wide{letter-spacing:0.025em}.tracking-wider{letter-spacing:0.05em}.tracking-widest{letter-spacing:0.1em}.text-blue-400{--tw-text-opacity:1;color:rgb(96 165 250 / var(--tw-text-opacity, 1))}.text-cyan-200{--tw-text-opacity:1;color:rgb(165 243 252 / var(--tw-text-opacity, 1))}.text-cyan-300{--tw-text-opacity:1;color:rgb(103 232 249 / var(--tw-text-opacity, 1))}.text-cyan-400{--tw-text-opacity:1;color:rgb(34 211 238 / var(--tw-text-opacity, 1))}.text-cyan-500{--tw-text-opacity:1;color:rgb(6 182 212 / var(--tw-text-opacity, 1))}.text-fuchsia-300{--tw-text-opacity:1;color:rgb(240 171 252 / var(--tw-text-opacity, 1))}.text-fuchsia-400{--tw-text-opacity:1;color:rgb(232 121 249 / var(--tw-text-opacity, 1))}.text-green-300{--tw-text-opacity:1;color:rgb(134 239 172 / var(--tw-text-opacity, 1))}.text-green-400{--tw-text-opacity:1;color:rgb(74 222 128 / var(--tw-text-opacity, 1))}.text-purple-300{--tw-text-opacity:1;color:rgb(216 180 254 / var(--tw-text-opacity, 1))}.text-slate-200{--tw-text-opacity:1;color:rgb(226 232 240 / var(--tw-text-opacity, 1))}.text-slate-300{--tw-text-opacity:1;color:rgb(203 213 225 / var(--tw-text-opacity, 1))}.text-slate-400{--tw-text-opacity:1;color:rgb(148 163 184 / var(--tw-text-opacity, 1))}.text-slate-500{--tw-text-opacity:1;color:rgb(100 116 139 / var(--tw-text-opacity, 1))}.text-slate-600{--tw-text-opacity:1;color:rgb(71 85 105 / var(--tw-text-opacity, 1))}.text-transparent{color:transparent}.text-white{--tw-text-opacity:1;color:rgb(255 255 255 / var(--tw-text-opacity, 1))}.text-white\/80{color:rgb(255 255 255 / 0.8)}.opacity-0{opacity:0}.opacity-50{opacity:0.5}.shadow-\[0_0_5px_rgba\(74\2c 222\2c 128\2c 0\.5\)\]{--tw-shadow:0 0 5px rgba(74,222,128,0.5);--tw-shadow-colored:0 0 5px var(--tw-shadow-color);box-shadow:var(--tw-ring-offset-shadow, 0 0 #0000), var(--tw-ring-shadow, 0 0 #0000), var(--tw-shadow)}.shadow-lg{--tw-shadow:0 10px 15px -3px rgb(0 0 0 / 0.1), 0 4px 6px -4px rgb(0 0 0 / 0.1);--tw-shadow-colored:0 10px 15px -3px var(--tw-shadow-color), 0 4px 6px -4px var(--tw-shadow-color);box-shadow:var(--tw-ring-offset-shadow, 0 0 #0000), var(--tw-ring-shadow, 0 0 #0000), var(--tw-shadow)}.shadow-sm{--tw-shadow:0 1px 2px 0 rgb(0 0 0 / 0.05);--tw-shadow-colored:0 1px 2px 0 var(--tw-shadow-color);box-shadow:var(--tw-ring-offset-shadow, 0 0 #0000), var(--tw-ring-shadow, 0 0 #0000), var(--tw-shadow)}.shadow-xl{--tw-shadow:0 20px 25px -5px rgb(0 0 0 / 0.1), 0 8px 10px -6px rgb(0 0 0 / 0.1);--tw-shadow-colored:0 20px 25px -5px var(--tw-shadow-color), 0 8px 10px -6px var(--tw-shadow-color);box-shadow:var(--tw-ring-offset-shadow, 0 0 #0000), var(--tw-ring-shadow, 0 0 #0000), var(--tw-shadow)}.shadow-cyan-500\/20{--tw-shadow-color:rgb(6 182 212 / 0.2);--tw-shadow:var(--tw-shadow-colored)}.shadow-cyan-900\/20{--tw-shadow-color:rgb(22 78 99 / 0.2);--tw-shadow:var(--tw-shadow-colored)}.backdrop-blur{--tw-backdrop-blur:blur(8px);-webkit-backdrop-filter:var(--tw-backdrop-blur) var(--tw-backdrop-brightness) var(--tw-backdrop-contrast) var(--tw-backdrop-grayscale) var(--tw-backdrop-hue-rotate) var(--tw-backdrop-invert) var(--tw-backdrop-opacity) var(--tw-backdrop-saturate) var(--tw-backdrop-sepia);backdrop-filter:var(--tw-backdrop-blur) var(--tw-backdrop-brightness) var(--tw-backdrop-contrast) var(--tw-backdrop-grayscale) var(--tw-backdrop-hue-rotate) var(--tw-backdrop-invert) var(--tw-backdrop-opacity) var(--tw-backdrop-saturate) var(--tw-backdrop-sepia)}.backdrop-blur-md{--tw-backdrop-blur:blur(12px);-webkit-backdrop-filter:var(--tw-backdrop-blur) var(--tw-backdrop-brightness) var(--tw-backdrop-contrast) var(--tw-backdrop-grayscale) var(--tw-backdrop-hue-rotate) var(--tw-backdrop-invert) var(--tw-backdrop-opacity) var(--tw-backdrop-saturate) var(--tw-backdrop-sepia);backdrop-filter:var(--tw-backdrop-blur) var(--tw-backdrop-brightness) var(--tw-backdrop-contrast) var(--tw-backdrop-grayscale) var(--tw-backdrop-hue-rotate) var(--tw-backdrop-invert) var(--tw-backdrop-opacity) var(--tw-backdrop-saturate) var(--tw-backdrop-sepia)}.transition-all{transition-property:all;transition-timing-function:cubic-bezier(0.4, 0, 0.2, 1);transition-duration:150ms}.transition-colors{transition-property:color, background-color, border-color, fill, stroke, -webkit-text-decoration-color;transition-property:color, background-color, border-color, text-decoration-color, fill, stroke;transition-property:color, background-color, border-color, text-decoration-color, fill, stroke, -webkit-text-decoration-color;transition-timing-function:cubic-bezier(0.4, 0, 0.2, 1);transition-duration:150ms}.transition-transform{transition-property:transform;transition-timing-function:cubic-bezier(0.4, 0, 0.2, 1);transition-duration:150ms}.duration-1000{transition-duration:1000ms}.duration-200{transition-duration:200ms}.duration-300{transition-duration:300ms}.duration-500{transition-duration:500ms}.selection\:bg-cyan-500 *::selection{--tw-bg-opacity:1;background-color:rgb(6 182 212 / var(--tw-bg-opacity, 1))}.selection\:text-white *::selection{--tw-text-opacity:1;color:rgb(255 255 255 / var(--tw-text-opacity, 1))}.selection\:bg-cyan-500::selection{--tw-bg-opacity:1;background-color:rgb(6 182 212 / var(--tw-bg-opacity, 1))}.selection\:text-white::selection{--tw-text-opacity:1;color:rgb(255 255 255 / var(--tw-text-opacity, 1))}.hover\:scale-125:hover{--tw-scale-x:1.25;--tw-scale-y:1.25;transform:translate(var(--tw-translate-x), var(--tw-translate-y)) rotate(var(--tw-rotate)) skewX(var(--tw-skew-x)) skewY(var(--tw-skew-y)) scaleX(var(--tw-scale-x)) scaleY(var(--tw-scale-y))}.hover\:bg-cyan-900\/50:hover{background-color:rgb(22 78 99 / 0.5)}.hover\:bg-fuchsia-900\/50:hover{background-color:rgb(112 26 117 / 0.5)}.hover\:bg-green-900\/50:hover{background-color:rgb(20 83 45 / 0.5)}.hover\:bg-slate-700:hover{--tw-bg-opacity:1;background-color:rgb(51 65 85 / var(--tw-bg-opacity, 1))}.hover\:text-slate-300:hover{--tw-text-opacity:1;color:rgb(203 213 225 / var(--tw-text-opacity, 1))}.hover\:text-white:hover{--tw-text-opacity:1;color:rgb(255 255 255 / var(--tw-text-opacity, 1))}@media (min-width: 640px){.sm\:block{display:block}}@media (min-width: 768px){.md\:col-span-2{grid-column:span 2 / span 2}.md\:flex{display:flex}.md\:grid-cols-3{grid-template-columns:repeat(3, minmax(0, 1fr))}.md\:p-6{padding:1.5rem}}@media (min-width: 1024px){.lg\:col-span-3{grid-column:span 3 / span 3}.lg\:col-span-9{grid-column:span 9 / span 9}.lg\:grid-cols-12{grid-template-columns:repeat(12, minmax(0, 1fr))}}</style></head>
+<body class="bg-slate-950 text-slate-200 selection:bg-cyan-500 selection:text-white">
+
+    <!-- Top Navigation -->
+    <nav class="h-16 border-b border-white/10 flex items-center justify-between px-6 bg-slate-900/80 backdrop-blur-md sticky top-0 z-40">
+        <div class="flex items-center gap-3">
+            <div class="w-8 h-8 bg-gradient-to-br from-cyan-400 to-blue-600 rounded-lg flex items-center justify-center shadow-lg shadow-cyan-500/20">
+                <span class="material-symbols-outlined text-white text-lg">all_inclusive</span>
+            </div>
+            <h1 class="font-bold text-xl tracking-wider text-transparent bg-clip-text bg-gradient-to-r from-cyan-300 to-white">TONRODY <span class="text-xs font-light tracking-[0.2em] text-cyan-500">PULSE</span></h1>
+        </div>
+        
+        <div class="flex items-center gap-6">
+            <div class="hidden md:flex items-center gap-2 text-xs font-mono text-slate-400 bg-slate-800/50 px-3 py-1.5 rounded-full border border-white/5">
+                <span class="w-2 h-2 rounded-full bg-green-500 animate-pulse"></span>
+                <span>TPS: 142</span>
+                <span class="text-slate-600">|</span>
+                <span>LATENCY: 42ms</span>
+            </div>
+            <div class="flex items-center gap-3">
+                <div class="text-right hidden sm:block">
+                    <div class="text-xs text-slate-400">Connected</div>
+                    <div class="text-sm font-mono text-cyan-400">EQD4...8jX2</div>
+                </div>
+                <div class="w-10 h-10 rounded-full bg-slate-800 border border-white/10 flex items-center justify-center">
+                    <span class="material-symbols-outlined text-cyan-400">person</span>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Main Dashboard Grid -->
+    <main class="p-4 md:p-6 max-w-[1920px] mx-auto grid grid-cols-1 lg:grid-cols-12 gap-6">
+
+        <!-- LEFT COLUMN: System Pulse Card & Controls (3 cols) -->
+        <div class="lg:col-span-3 space-y-6 flex flex-col">
+            
+            <!-- 1. System Pulse Card -->
+            <div id="system-pulse-card" class="glass-panel rounded-2xl p-6 state-mid transition-all duration-500 flex flex-col gap-6 relative">
+                
+                <!-- Header -->
+                <div>
+                    <h2 class="text-lg font-bold text-white flex items-center gap-2">
+                        <span class="material-symbols-outlined">ecg_heart</span> System Pulse
+                    </h2>
+                    <p class="text-xs text-slate-400 mt-1">Real-time resonance of TONRODY field</p>
+                </div>
+
+                <!-- State Display -->
+                <div class="flex items-center gap-4">
+                    <div id="pulse-icon-container" class="relative w-16 h-16 rounded-full border-2 border-cyan-500/30 flex items-center justify-center bg-cyan-900/10 transition-colors duration-500">
+                        <span id="pulse-icon" class="material-symbols-outlined text-3xl text-cyan-400 transition-all duration-300">waves</span>
+                        <div id="pulse-ring" class="absolute inset-0 rounded-full border border-cyan-400/50 scale-100 opacity-0"></div>
+                    </div>
+                    <div>
+                        <div id="pulse-badge" class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-cyan-500/10 text-cyan-400 border border-cyan-500/20 text-sm font-bold tracking-wide pulse-badge transition-all duration-300">
+                            MID
+                        </div>
+                        <p id="pulse-desc" class="text-xs text-slate-300 mt-2 transition-all duration-300">Balanced resonance. Regular player flow.</p>
+                        <div id="surge-timer" class="hidden text-xs font-mono text-fuchsia-400 mt-1">Surge Duration: <span id="surge-time-val">00:00</span></div>
+                    </div>
+                </div>
+
+                <!-- Metrics Grid -->
+                <div class="grid grid-cols-2 gap-3 mt-2">
+                    <div class="p-3 rounded-lg bg-slate-800/40 border border-white/5">
+                        <div class="text-[10px] text-slate-500 uppercase tracking-wider">Active (5m)</div>
+                        <div id="metric-players" class="text-xl font-mono text-white font-semibold">1,248</div>
+                    </div>
+                    <div class="p-3 rounded-lg bg-slate-800/40 border border-white/5">
+                        <div class="text-[10px] text-slate-500 uppercase tracking-wider">Vol (24h)</div>
+                        <div class="text-xl font-mono text-white font-semibold">45K <span class="text-xs text-blue-400">TON</span></div>
+                    </div>
+                    <div class="p-3 rounded-lg bg-slate-800/40 border border-white/5">
+                        <div class="text-[10px] text-slate-500 uppercase tracking-wider">Rounds/Min</div>
+                        <div id="metric-rpm" class="text-xl font-mono text-white font-semibold">47</div>
+                    </div>
+                    <div class="p-3 rounded-lg bg-slate-800/40 border border-white/5 relative overflow-hidden">
+                        <div class="text-[10px] text-slate-500 uppercase tracking-wider z-10 relative">Win Skew</div>
+                        <div class="text-xl font-mono text-white font-semibold z-10 relative flex items-center gap-1">
+                            <span id="metric-skew">0.4%</span>
+                            <span class="material-symbols-outlined text-sm text-green-400">trending_up</span>
+                        </div>
+                        <!-- Micro skew bar -->
+                        <div class="absolute bottom-0 left-0 h-1 bg-gradient-to-r from-red-500 via-slate-700 to-green-500 w-full opacity-50"></div>
+                        <div id="skew-indicator" class="absolute bottom-0 h-1 w-1 bg-white transform -translate-x-1/2 left-1/2 transition-all duration-1000" style="left: 52.1359%;"></div>
+                    </div>
+                </div>
+
+                <!-- Timeframe Toggle -->
+                <div class="flex p-1 bg-slate-900 rounded-lg border border-white/5">
+                    <button class="flex-1 py-1 text-[10px] font-bold rounded text-white bg-slate-700 shadow-sm">LIVE</button>
+                    <button class="flex-1 py-1 text-[10px] text-slate-500 hover:text-slate-300">1H</button>
+                    <button class="flex-1 py-1 text-[10px] text-slate-500 hover:text-slate-300">24H</button>
+                </div>
+            </div>
+
+            <!-- Manual Controls (Simulation) -->
+            <div class="glass-panel rounded-xl p-4 border-t-2 border-slate-700">
+                <h3 class="text-xs font-bold text-slate-400 uppercase tracking-wider mb-3">Simulation Override</h3>
+                <div class="grid grid-cols-4 gap-2">
+                    <button onclick="simulation.forceState(&#39;LOW&#39;)" class="h-8 rounded bg-slate-800 hover:bg-slate-700 text-[10px] font-mono text-slate-300 border border-white/5">LOW</button>
+                    <button onclick="simulation.forceState(&#39;MID&#39;)" class="h-8 rounded bg-cyan-900/30 hover:bg-cyan-900/50 text-[10px] font-mono text-cyan-300 border border-cyan-500/20">MID</button>
+                    <button onclick="simulation.forceState(&#39;HIGH&#39;)" class="h-8 rounded bg-green-900/30 hover:bg-green-900/50 text-[10px] font-mono text-green-300 border border-green-500/20">HIGH</button>
+                    <button onclick="simulation.forceState(&#39;SURGE&#39;)" class="h-8 rounded bg-fuchsia-900/30 hover:bg-fuchsia-900/50 text-[10px] font-mono text-fuchsia-300 border border-fuchsia-500/20 animate-pulse">SURGE</button>
+                </div>
+            </div>
+            
+            <!-- User Resonance (Summary) -->
+            <div class="glass-panel rounded-xl p-5 flex-1">
+                <div class="flex items-center justify-between mb-4">
+                    <h3 class="font-bold text-white">Your Resonance</h3>
+                    <div class="text-[10px] bg-green-500/20 text-green-400 px-2 py-0.5 rounded border border-green-500/30">Active</div>
+                </div>
+                
+                <div class="space-y-4">
+                    <div>
+                        <div class="flex justify-between text-xs mb-1">
+                            <span class="text-slate-400">Win Rate</span>
+                            <span class="font-mono text-white">48.2%</span>
+                        </div>
+                        <div class="h-2 w-full bg-slate-800 rounded-full overflow-hidden">
+                            <div class="h-full bg-cyan-500 w-[48.2%]"></div>
+                        </div>
+                    </div>
+
+                    <!-- Stripe Chart -->
+                    <div>
+                        <div class="flex justify-between text-xs mb-1">
+                            <span class="text-slate-400">Recent Rounds</span>
+                            <span class="font-mono text-slate-500">Last 20</span>
+                        </div>
+                        <div class="flex h-3 w-full rounded overflow-hidden gap-[1px]" id="stripe-chart"><div class="flex-1 h-full rounded-sm bg-red-500/50"></div><div class="flex-1 h-full rounded-sm bg-green-500 shadow-[0_0_5px_rgba(74,222,128,0.5)]"></div><div class="flex-1 h-full rounded-sm bg-green-500 shadow-[0_0_5px_rgba(74,222,128,0.5)]"></div><div class="flex-1 h-full rounded-sm bg-red-500/50"></div><div class="flex-1 h-full rounded-sm bg-green-500 shadow-[0_0_5px_rgba(74,222,128,0.5)]"></div><div class="flex-1 h-full rounded-sm bg-red-500/50"></div><div class="flex-1 h-full rounded-sm bg-red-500/50"></div><div class="flex-1 h-full rounded-sm bg-green-500 shadow-[0_0_5px_rgba(74,222,128,0.5)]"></div><div class="flex-1 h-full rounded-sm bg-green-500 shadow-[0_0_5px_rgba(74,222,128,0.5)]"></div><div class="flex-1 h-full rounded-sm bg-red-500/50"></div><div class="flex-1 h-full rounded-sm bg-red-500/50"></div><div class="flex-1 h-full rounded-sm bg-red-500/50"></div><div class="flex-1 h-full rounded-sm bg-green-500 shadow-[0_0_5px_rgba(74,222,128,0.5)]"></div><div class="flex-1 h-full rounded-sm bg-red-500/50"></div><div class="flex-1 h-full rounded-sm bg-red-500/50"></div><div class="flex-1 h-full rounded-sm bg-green-500 shadow-[0_0_5px_rgba(74,222,128,0.5)]"></div><div class="flex-1 h-full rounded-sm bg-red-500/50"></div><div class="flex-1 h-full rounded-sm bg-red-500/50"></div><div class="flex-1 h-full rounded-sm bg-red-500/50"></div><div class="flex-1 h-full rounded-sm bg-red-500/50"></div></div>
+                    </div>
+
+                    <div class="pt-4 border-t border-white/5">
+                        <div class="flex justify-between items-center">
+                            <span class="text-xs text-slate-400">Net Result (24h)</span>
+                            <span class="font-mono text-lg text-green-400">+142.5 TON</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+
+        <!-- CENTER/RIGHT COLUMN: Resonance Field & Charts (9 cols) -->
+        <div class="lg:col-span-9 flex flex-col gap-6">
+
+            <!-- 2. Resonance Field (The Canvas) -->
+            <div class="glass-panel rounded-2xl p-1 relative h-[400px] w-full group overflow-hidden border-slate-700/50">
+                <!-- Overlay UI -->
+                <div class="absolute top-4 left-4 z-10 pointer-events-none">
+                    <h3 class="text-sm font-bold text-white/80 uppercase tracking-widest">Resonance Field <span class="text-cyan-500 text-[10px] ml-2">LIVE</span></h3>
+                </div>
+                
+                <div class="absolute bottom-4 right-4 z-10 flex gap-2">
+                    <button class="w-8 h-8 rounded bg-slate-900/80 text-slate-400 hover:text-white flex items-center justify-center backdrop-blur border border-white/10" title="Reset View">
+                        <span class="material-symbols-outlined text-lg">center_focus_strong</span>
+                    </button>
+                    <button class="w-8 h-8 rounded bg-slate-900/80 text-slate-400 hover:text-white flex items-center justify-center backdrop-blur border border-white/10" title="Settings">
+                        <span class="material-symbols-outlined text-lg">tune</span>
+                    </button>
+                </div>
+
+                <!-- Canvas -->
+                <canvas id="resonance-canvas" class="w-full h-full rounded-xl bg-[#0b101b] cursor-crosshair block" width="1021" height="423"></canvas>
+
+                <!-- Tooltip for Canvas -->
+                <div id="canvas-tooltip" class="absolute hidden bg-slate-900/95 border border-cyan-500/50 p-3 rounded-lg shadow-xl shadow-cyan-900/20 backdrop-blur min-w-[150px]" style="display: none; left: 760px; top: 241px;">
+                    <div class="text-[10px] text-cyan-400 uppercase font-bold tracking-wider mb-1">Cluster Data</div>
+                    <div class="text-xs text-white mb-0.5">Vol: <span class="font-mono text-cyan-200" id="tooltip-vol">17.8</span> TON</div>
+                    <div class="text-xs text-white">Rounds: <span class="font-mono text-purple-300" id="tooltip-rounds">2</span></div>
+                </div>
+            </div>
+
+            <!-- 3. Metrics Charts Row -->
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-6 h-64">
+                
+                <!-- Volume Chart -->
+                <div class="glass-panel rounded-xl p-4 md:col-span-2 flex flex-col">
+                    <div class="flex justify-between items-center mb-2">
+                        <h4 class="text-xs font-bold text-slate-400 uppercase">Volume Flow</h4>
+                        <div class="flex gap-2 text-[10px]">
+                            <span class="flex items-center gap-1 text-slate-500"><span class="w-2 h-2 rounded-full bg-cyan-500"></span>Classic</span>
+                            <span class="flex items-center gap-1 text-slate-500"><span class="w-2 h-2 rounded-full bg-purple-500"></span>High Stake</span>
+                        </div>
+                    </div>
+                    <div class="flex-1 relative w-full h-full">
+                         <canvas id="volume-chart" class="w-full h-full" width="637" height="235"></canvas>
+                    </div>
+                </div>
+
+                <!-- Win Distribution / Fairness -->
+                <div class="glass-panel rounded-xl p-4 flex flex-col">
+                    <div class="flex justify-between items-center mb-2">
+                        <h4 class="text-xs font-bold text-slate-400 uppercase">Fairness Lens</h4>
+                        <span class="material-symbols-outlined text-sm text-slate-500" title="Expected vs Real">visibility</span>
+                    </div>
+                    <div class="flex-1 relative w-full h-full flex items-center justify-center">
+                        <canvas id="fairness-chart" class="w-full h-full" width="288" height="218"></canvas>
+                        <!-- Centered Text Overlay -->
+                        <div class="absolute text-center pointer-events-none">
+                            <div class="text-2xl font-bold text-white font-mono">99.8%</div>
+                            <div class="text-[9px] text-slate-500 uppercase">Match Exp.</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- 4. Heatmap & History -->
+            <div class="glass-panel rounded-xl p-4 overflow-x-auto">
+                <div class="flex items-center justify-between mb-3 min-w-[600px]">
+                    <h4 class="text-xs font-bold text-slate-400 uppercase">Activity Heatmap (7 Days)</h4>
+                    <div class="flex gap-1 text-[10px] text-slate-500 items-center">
+                        <span>Low</span>
+                        <div class="w-2 h-2 bg-slate-800"></div>
+                        <div class="w-2 h-2 bg-cyan-900"></div>
+                        <div class="w-2 h-2 bg-cyan-600"></div>
+                        <div class="w-2 h-2 bg-cyan-400"></div>
+                        <div class="w-2 h-2 bg-white"></div>
+                        <span>Surge</span>
+                    </div>
+                </div>
+                <div id="heatmap-grid" class="grid grid-cols-[repeat(24,minmax(0,1fr))] gap-1 min-w-[600px]">
+                    <!-- Generated by JS -->
+                <div class="h-3 rounded-sm bg-cyan-900 hover:scale-125 transition-transform duration-200" title="Hour 0:00 Activity"></div><div class="h-3 rounded-sm bg-slate-800 hover:scale-125 transition-transform duration-200" title="Hour 1:00 Activity"></div><div class="h-3 rounded-sm bg-slate-800 hover:scale-125 transition-transform duration-200" title="Hour 2:00 Activity"></div><div class="h-3 rounded-sm bg-cyan-900 hover:scale-125 transition-transform duration-200" title="Hour 3:00 Activity"></div><div class="h-3 rounded-sm bg-cyan-900 hover:scale-125 transition-transform duration-200" title="Hour 4:00 Activity"></div><div class="h-3 rounded-sm bg-slate-800 hover:scale-125 transition-transform duration-200" title="Hour 5:00 Activity"></div><div class="h-3 rounded-sm bg-cyan-900 hover:scale-125 transition-transform duration-200" title="Hour 6:00 Activity"></div><div class="h-3 rounded-sm bg-slate-800 hover:scale-125 transition-transform duration-200" title="Hour 7:00 Activity"></div><div class="h-3 rounded-sm bg-cyan-900 hover:scale-125 transition-transform duration-200" title="Hour 8:00 Activity"></div><div class="h-3 rounded-sm bg-slate-800 hover:scale-125 transition-transform duration-200" title="Hour 9:00 Activity"></div><div class="h-3 rounded-sm bg-cyan-900 hover:scale-125 transition-transform duration-200" title="Hour 10:00 Activity"></div><div class="h-3 rounded-sm bg-cyan-700 hover:scale-125 transition-transform duration-200" title="Hour 11:00 Activity"></div><div class="h-3 rounded-sm bg-slate-800 hover:scale-125 transition-transform duration-200" title="Hour 12:00 Activity"></div><div class="h-3 rounded-sm bg-cyan-900 hover:scale-125 transition-transform duration-200" title="Hour 13:00 Activity"></div><div class="h-3 rounded-sm bg-cyan-500 hover:scale-125 transition-transform duration-200" title="Hour 14:00 Activity"></div><div class="h-3 rounded-sm bg-slate-800 hover:scale-125 transition-transform duration-200" title="Hour 15:00 Activity"></div><div class="h-3 rounded-sm bg-slate-800 hover:scale-125 transition-transform duration-200" title="Hour 16:00 Activity"></div><div class="h-3 rounded-sm bg-cyan-900 hover:scale-125 transition-transform duration-200" title="Hour 17:00 Activity"></div><div class="h-3 rounded-sm bg-cyan-700 hover:scale-125 transition-transform duration-200" title="Hour 18:00 Activity"></div><div class="h-3 rounded-sm bg-cyan-900 hover:scale-125 transition-transform duration-200" title="Hour 19:00 Activity"></div><div class="h-3 rounded-sm bg-cyan-500 hover:scale-125 transition-transform duration-200" title="Hour 20:00 Activity"></div><div class="h-3 rounded-sm bg-cyan-900 hover:scale-125 transition-transform duration-200" title="Hour 21:00 Activity"></div><div class="h-3 rounded-sm bg-cyan-900 hover:scale-125 transition-transform duration-200" title="Hour 22:00 Activity"></div><div class="h-3 rounded-sm bg-slate-800 hover:scale-125 transition-transform duration-200" title="Hour 23:00 Activity"></div><div class="h-3 rounded-sm bg-slate-800 hover:scale-125 transition-transform duration-200" title="Hour 0:00 Activity"></div><div class="h-3 rounded-sm bg-cyan-900 hover:scale-125 transition-transform duration-200" title="Hour 1:00 Activity"></div><div class="h-3 rounded-sm bg-cyan-900 hover:scale-125 transition-transform duration-200" title="Hour 2:00 Activity"></div><div class="h-3 rounded-sm bg-slate-800 hover:scale-125 transition-transform duration-200" title="Hour 3:00 Activity"></div><div class="h-3 rounded-sm bg-cyan-900 hover:scale-125 transition-transform duration-200" title="Hour 4:00 Activity"></div><div class="h-3 rounded-sm bg-cyan-900 hover:scale-125 transition-transform duration-200" title="Hour 5:00 Activity"></div><div class="h-3 rounded-sm bg-slate-800 hover:scale-125 transition-transform duration-200" title="Hour 6:00 Activity"></div><div class="h-3 rounded-sm bg-cyan-900 hover:scale-125 transition-transform duration-200" title="Hour 7:00 Activity"></div><div class="h-3 rounded-sm bg-slate-800 hover:scale-125 transition-transform duration-200" title="Hour 8:00 Activity"></div><div class="h-3 rounded-sm bg-slate-800 hover:scale-125 transition-transform duration-200" title="Hour 9:00 Activity"></div><div class="h-3 rounded-sm bg-slate-800 hover:scale-125 transition-transform duration-200" title="Hour 10:00 Activity"></div><div class="h-3 rounded-sm bg-cyan-900 hover:scale-125 transition-transform duration-200" title="Hour 11:00 Activity"></div><div class="h-3 rounded-sm bg-cyan-900 hover:scale-125 transition-transform duration-200" title="Hour 12:00 Activity"></div><div class="h-3 rounded-sm bg-cyan-500 hover:scale-125 transition-transform duration-200" title="Hour 13:00 Activity"></div><div class="h-3 rounded-sm bg-slate-800 hover:scale-125 transition-transform duration-200" title="Hour 14:00 Activity"></div><div class="h-3 rounded-sm bg-slate-800 hover:scale-125 transition-transform duration-200" title="Hour 15:00 Activity"></div><div class="h-3 rounded-sm bg-cyan-500 hover:scale-125 transition-transform duration-200" title="Hour 16:00 Activity"></div><div class="h-3 rounded-sm bg-cyan-700 hover:scale-125 transition-transform duration-200" title="Hour 17:00 Activity"></div><div class="h-3 rounded-sm bg-slate-800 hover:scale-125 transition-transform duration-200" title="Hour 18:00 Activity"></div><div class="h-3 rounded-sm bg-cyan-900 hover:scale-125 transition-transform duration-200" title="Hour 19:00 Activity"></div><div class="h-3 rounded-sm bg-cyan-500 hover:scale-125 transition-transform duration-200" title="Hour 20:00 Activity"></div><div class="h-3 rounded-sm bg-cyan-700 hover:scale-125 transition-transform duration-200" title="Hour 21:00 Activity"></div><div class="h-3 rounded-sm bg-cyan-900 hover:scale-125 transition-transform duration-200" title="Hour 22:00 Activity"></div><div class="h-3 rounded-sm bg-slate-800 hover:scale-125 transition-transform duration-200" title="Hour 23:00 Activity"></div><div class="h-3 rounded-sm bg-cyan-900 hover:scale-125 transition-transform duration-200" title="Hour 0:00 Activity"></div><div class="h-3 rounded-sm bg-cyan-900 hover:scale-125 transition-transform duration-200" title="Hour 1:00 Activity"></div><div class="h-3 rounded-sm bg-slate-800 hover:scale-125 transition-transform duration-200" title="Hour 2:00 Activity"></div><div class="h-3 rounded-sm bg-slate-800 hover:scale-125 transition-transform duration-200" title="Hour 3:00 Activity"></div><div class="h-3 rounded-sm bg-cyan-900 hover:scale-125 transition-transform duration-200" title="Hour 4:00 Activity"></div><div class="h-3 rounded-sm bg-slate-800 hover:scale-125 transition-transform duration-200" title="Hour 5:00 Activity"></div><div class="h-3 rounded-sm bg-cyan-900 hover:scale-125 transition-transform duration-200" title="Hour 6:00 Activity"></div><div class="h-3 rounded-sm bg-slate-800 hover:scale-125 transition-transform duration-200" title="Hour 7:00 Activity"></div><div class="h-3 rounded-sm bg-cyan-900 hover:scale-125 transition-transform duration-200" title="Hour 8:00 Activity"></div><div class="h-3 rounded-sm bg-cyan-900 hover:scale-125 transition-transform duration-200" title="Hour 9:00 Activity"></div><div class="h-3 rounded-sm bg-slate-800 hover:scale-125 transition-transform duration-200" title="Hour 10:00 Activity"></div><div class="h-3 rounded-sm bg-cyan-900 hover:scale-125 transition-transform duration-200" title="Hour 11:00 Activity"></div><div class="h-3 rounded-sm bg-cyan-500 hover:scale-125 transition-transform duration-200" title="Hour 12:00 Activity"></div><div class="h-3 rounded-sm bg-cyan-700 hover:scale-125 transition-transform duration-200" title="Hour 13:00 Activity"></div><div class="h-3 rounded-sm bg-cyan-500 hover:scale-125 transition-transform duration-200" title="Hour 14:00 Activity"></div><div class="h-3 rounded-sm bg-slate-800 hover:scale-125 transition-transform duration-200" title="Hour 15:00 Activity"></div><div class="h-3 rounded-sm bg-cyan-900 hover:scale-125 transition-transform duration-200" title="Hour 16:00 Activity"></div><div class="h-3 rounded-sm bg-cyan-700 hover:scale-125 transition-transform duration-200" title="Hour 17:00 Activity"></div><div class="h-3 rounded-sm bg-slate-800 hover:scale-125 transition-transform duration-200" title="Hour 18:00 Activity"></div><div class="h-3 rounded-sm bg-cyan-700 hover:scale-125 transition-transform duration-200" title="Hour 19:00 Activity"></div><div class="h-3 rounded-sm bg-cyan-900 hover:scale-125 transition-transform duration-200" title="Hour 20:00 Activity"></div><div class="h-3 rounded-sm bg-cyan-900 hover:scale-125 transition-transform duration-200" title="Hour 21:00 Activity"></div><div class="h-3 rounded-sm bg-cyan-900 hover:scale-125 transition-transform duration-200" title="Hour 22:00 Activity"></div><div class="h-3 rounded-sm bg-slate-800 hover:scale-125 transition-transform duration-200" title="Hour 23:00 Activity"></div><div class="h-3 rounded-sm bg-cyan-900 hover:scale-125 transition-transform duration-200" title="Hour 0:00 Activity"></div><div class="h-3 rounded-sm bg-slate-800 hover:scale-125 transition-transform duration-200" title="Hour 1:00 Activity"></div><div class="h-3 rounded-sm bg-slate-800 hover:scale-125 transition-transform duration-200" title="Hour 2:00 Activity"></div><div class="h-3 rounded-sm bg-slate-800 hover:scale-125 transition-transform duration-200" title="Hour 3:00 Activity"></div><div class="h-3 rounded-sm bg-cyan-900 hover:scale-125 transition-transform duration-200" title="Hour 4:00 Activity"></div><div class="h-3 rounded-sm bg-cyan-900 hover:scale-125 transition-transform duration-200" title="Hour 5:00 Activity"></div><div class="h-3 rounded-sm bg-cyan-900 hover:scale-125 transition-transform duration-200" title="Hour 6:00 Activity"></div><div class="h-3 rounded-sm bg-cyan-900 hover:scale-125 transition-transform duration-200" title="Hour 7:00 Activity"></div><div class="h-3 rounded-sm bg-slate-800 hover:scale-125 transition-transform duration-200" title="Hour 8:00 Activity"></div><div class="h-3 rounded-sm bg-slate-800 hover:scale-125 transition-transform duration-200" title="Hour 9:00 Activity"></div><div class="h-3 rounded-sm bg-slate-800 hover:scale-125 transition-transform duration-200" title="Hour 10:00 Activity"></div><div class="h-3 rounded-sm bg-cyan-900 hover:scale-125 transition-transform duration-200" title="Hour 11:00 Activity"></div><div class="h-3 rounded-sm bg-cyan-500 hover:scale-125 transition-transform duration-200" title="Hour 12:00 Activity"></div><div class="h-3 rounded-sm bg-cyan-900 hover:scale-125 transition-transform duration-200" title="Hour 13:00 Activity"></div><div class="h-3 rounded-sm bg-cyan-700 hover:scale-125 transition-transform duration-200" title="Hour 14:00 Activity"></div><div class="h-3 rounded-sm bg-cyan-900 hover:scale-125 transition-transform duration-200" title="Hour 15:00 Activity"></div><div class="h-3 rounded-sm bg-cyan-900 hover:scale-125 transition-transform duration-200" title="Hour 16:00 Activity"></div><div class="h-3 rounded-sm bg-slate-800 hover:scale-125 transition-transform duration-200" title="Hour 17:00 Activity"></div><div class="h-3 rounded-sm bg-slate-800 hover:scale-125 transition-transform duration-200" title="Hour 18:00 Activity"></div><div class="h-3 rounded-sm bg-cyan-500 hover:scale-125 transition-transform duration-200" title="Hour 19:00 Activity"></div><div class="h-3 rounded-sm bg-cyan-900 hover:scale-125 transition-transform duration-200" title="Hour 20:00 Activity"></div><div class="h-3 rounded-sm bg-cyan-700 hover:scale-125 transition-transform duration-200" title="Hour 21:00 Activity"></div><div class="h-3 rounded-sm bg-slate-800 hover:scale-125 transition-transform duration-200" title="Hour 22:00 Activity"></div><div class="h-3 rounded-sm bg-slate-800 hover:scale-125 transition-transform duration-200" title="Hour 23:00 Activity"></div><div class="h-3 rounded-sm bg-cyan-900 hover:scale-125 transition-transform duration-200" title="Hour 0:00 Activity"></div><div class="h-3 rounded-sm bg-cyan-900 hover:scale-125 transition-transform duration-200" title="Hour 1:00 Activity"></div><div class="h-3 rounded-sm bg-slate-800 hover:scale-125 transition-transform duration-200" title="Hour 2:00 Activity"></div><div class="h-3 rounded-sm bg-slate-800 hover:scale-125 transition-transform duration-200" title="Hour 3:00 Activity"></div><div class="h-3 rounded-sm bg-slate-800 hover:scale-125 transition-transform duration-200" title="Hour 4:00 Activity"></div><div class="h-3 rounded-sm bg-cyan-900 hover:scale-125 transition-transform duration-200" title="Hour 5:00 Activity"></div><div class="h-3 rounded-sm bg-cyan-900 hover:scale-125 transition-transform duration-200" title="Hour 6:00 Activity"></div><div class="h-3 rounded-sm bg-cyan-900 hover:scale-125 transition-transform duration-200" title="Hour 7:00 Activity"></div><div class="h-3 rounded-sm bg-cyan-900 hover:scale-125 transition-transform duration-200" title="Hour 8:00 Activity"></div><div class="h-3 rounded-sm bg-slate-800 hover:scale-125 transition-transform duration-200" title="Hour 9:00 Activity"></div><div class="h-3 rounded-sm bg-slate-800 hover:scale-125 transition-transform duration-200" title="Hour 10:00 Activity"></div><div class="h-3 rounded-sm bg-cyan-500 hover:scale-125 transition-transform duration-200" title="Hour 11:00 Activity"></div><div class="h-3 rounded-sm bg-cyan-700 hover:scale-125 transition-transform duration-200" title="Hour 12:00 Activity"></div><div class="h-3 rounded-sm bg-cyan-700 hover:scale-125 transition-transform duration-200" title="Hour 13:00 Activity"></div><div class="h-3 rounded-sm bg-cyan-500 hover:scale-125 transition-transform duration-200" title="Hour 14:00 Activity"></div><div class="h-3 rounded-sm bg-cyan-500 hover:scale-125 transition-transform duration-200" title="Hour 15:00 Activity"></div><div class="h-3 rounded-sm bg-cyan-900 hover:scale-125 transition-transform duration-200" title="Hour 16:00 Activity"></div><div class="h-3 rounded-sm bg-cyan-500 hover:scale-125 transition-transform duration-200" title="Hour 17:00 Activity"></div><div class="h-3 rounded-sm bg-slate-800 hover:scale-125 transition-transform duration-200" title="Hour 18:00 Activity"></div><div class="h-3 rounded-sm bg-cyan-700 hover:scale-125 transition-transform duration-200" title="Hour 19:00 Activity"></div><div class="h-3 rounded-sm bg-cyan-500 hover:scale-125 transition-transform duration-200" title="Hour 20:00 Activity"></div><div class="h-3 rounded-sm bg-cyan-700 hover:scale-125 transition-transform duration-200" title="Hour 21:00 Activity"></div><div class="h-3 rounded-sm bg-slate-800 hover:scale-125 transition-transform duration-200" title="Hour 22:00 Activity"></div><div class="h-3 rounded-sm bg-cyan-900 hover:scale-125 transition-transform duration-200" title="Hour 23:00 Activity"></div><div class="h-3 rounded-sm bg-cyan-900 hover:scale-125 transition-transform duration-200" title="Hour 0:00 Activity"></div><div class="h-3 rounded-sm bg-cyan-900 hover:scale-125 transition-transform duration-200" title="Hour 1:00 Activity"></div><div class="h-3 rounded-sm bg-cyan-900 hover:scale-125 transition-transform duration-200" title="Hour 2:00 Activity"></div><div class="h-3 rounded-sm bg-cyan-900 hover:scale-125 transition-transform duration-200" title="Hour 3:00 Activity"></div><div class="h-3 rounded-sm bg-cyan-900 hover:scale-125 transition-transform duration-200" title="Hour 4:00 Activity"></div><div class="h-3 rounded-sm bg-slate-800 hover:scale-125 transition-transform duration-200" title="Hour 5:00 Activity"></div><div class="h-3 rounded-sm bg-cyan-900 hover:scale-125 transition-transform duration-200" title="Hour 6:00 Activity"></div><div class="h-3 rounded-sm bg-slate-800 hover:scale-125 transition-transform duration-200" title="Hour 7:00 Activity"></div><div class="h-3 rounded-sm bg-cyan-900 hover:scale-125 transition-transform duration-200" title="Hour 8:00 Activity"></div><div class="h-3 rounded-sm bg-slate-800 hover:scale-125 transition-transform duration-200" title="Hour 9:00 Activity"></div><div class="h-3 rounded-sm bg-slate-800 hover:scale-125 transition-transform duration-200" title="Hour 10:00 Activity"></div><div class="h-3 rounded-sm bg-cyan-700 hover:scale-125 transition-transform duration-200" title="Hour 11:00 Activity"></div><div class="h-3 rounded-sm bg-slate-800 hover:scale-125 transition-transform duration-200" title="Hour 12:00 Activity"></div><div class="h-3 rounded-sm bg-cyan-900 hover:scale-125 transition-transform duration-200" title="Hour 13:00 Activity"></div><div class="h-3 rounded-sm bg-cyan-700 hover:scale-125 transition-transform duration-200" title="Hour 14:00 Activity"></div><div class="h-3 rounded-sm bg-cyan-700 hover:scale-125 transition-transform duration-200" title="Hour 15:00 Activity"></div><div class="h-3 rounded-sm bg-cyan-900 hover:scale-125 transition-transform duration-200" title="Hour 16:00 Activity"></div><div class="h-3 rounded-sm bg-slate-800 hover:scale-125 transition-transform duration-200" title="Hour 17:00 Activity"></div><div class="h-3 rounded-sm bg-slate-800 hover:scale-125 transition-transform duration-200" title="Hour 18:00 Activity"></div><div class="h-3 rounded-sm bg-cyan-700 hover:scale-125 transition-transform duration-200" title="Hour 19:00 Activity"></div><div class="h-3 rounded-sm bg-cyan-500 hover:scale-125 transition-transform duration-200" title="Hour 20:00 Activity"></div><div class="h-3 rounded-sm bg-cyan-500 hover:scale-125 transition-transform duration-200" title="Hour 21:00 Activity"></div><div class="h-3 rounded-sm bg-cyan-900 hover:scale-125 transition-transform duration-200" title="Hour 22:00 Activity"></div><div class="h-3 rounded-sm bg-cyan-900 hover:scale-125 transition-transform duration-200" title="Hour 23:00 Activity"></div><div class="h-3 rounded-sm bg-slate-800 hover:scale-125 transition-transform duration-200" title="Hour 0:00 Activity"></div><div class="h-3 rounded-sm bg-cyan-900 hover:scale-125 transition-transform duration-200" title="Hour 1:00 Activity"></div><div class="h-3 rounded-sm bg-cyan-900 hover:scale-125 transition-transform duration-200" title="Hour 2:00 Activity"></div><div class="h-3 rounded-sm bg-cyan-900 hover:scale-125 transition-transform duration-200" title="Hour 3:00 Activity"></div><div class="h-3 rounded-sm bg-slate-800 hover:scale-125 transition-transform duration-200" title="Hour 4:00 Activity"></div><div class="h-3 rounded-sm bg-cyan-900 hover:scale-125 transition-transform duration-200" title="Hour 5:00 Activity"></div><div class="h-3 rounded-sm bg-slate-800 hover:scale-125 transition-transform duration-200" title="Hour 6:00 Activity"></div><div class="h-3 rounded-sm bg-cyan-900 hover:scale-125 transition-transform duration-200" title="Hour 7:00 Activity"></div><div class="h-3 rounded-sm bg-slate-800 hover:scale-125 transition-transform duration-200" title="Hour 8:00 Activity"></div><div class="h-3 rounded-sm bg-slate-800 hover:scale-125 transition-transform duration-200" title="Hour 9:00 Activity"></div><div class="h-3 rounded-sm bg-cyan-900 hover:scale-125 transition-transform duration-200" title="Hour 10:00 Activity"></div><div class="h-3 rounded-sm bg-cyan-500 hover:scale-125 transition-transform duration-200" title="Hour 11:00 Activity"></div><div class="h-3 rounded-sm bg-cyan-500 hover:scale-125 transition-transform duration-200" title="Hour 12:00 Activity"></div><div class="h-3 rounded-sm bg-cyan-700 hover:scale-125 transition-transform duration-200" title="Hour 13:00 Activity"></div><div class="h-3 rounded-sm bg-cyan-700 hover:scale-125 transition-transform duration-200" title="Hour 14:00 Activity"></div><div class="h-3 rounded-sm bg-slate-800 hover:scale-125 transition-transform duration-200" title="Hour 15:00 Activity"></div><div class="h-3 rounded-sm bg-cyan-500 hover:scale-125 transition-transform duration-200" title="Hour 16:00 Activity"></div><div class="h-3 rounded-sm bg-cyan-500 hover:scale-125 transition-transform duration-200" title="Hour 17:00 Activity"></div><div class="h-3 rounded-sm bg-cyan-900 hover:scale-125 transition-transform duration-200" title="Hour 18:00 Activity"></div><div class="h-3 rounded-sm bg-cyan-500 hover:scale-125 transition-transform duration-200" title="Hour 19:00 Activity"></div><div class="h-3 rounded-sm bg-cyan-500 hover:scale-125 transition-transform duration-200" title="Hour 20:00 Activity"></div><div class="h-3 rounded-sm bg-cyan-900 hover:scale-125 transition-transform duration-200" title="Hour 21:00 Activity"></div><div class="h-3 rounded-sm bg-slate-800 hover:scale-125 transition-transform duration-200" title="Hour 22:00 Activity"></div><div class="h-3 rounded-sm bg-cyan-900 hover:scale-125 transition-transform duration-200" title="Hour 23:00 Activity"></div><div class="h-3 rounded-sm bg-cyan-900 hover:scale-125 transition-transform duration-200" title="Hour 0:00 Activity"></div><div class="h-3 rounded-sm bg-slate-800 hover:scale-125 transition-transform duration-200" title="Hour 1:00 Activity"></div><div class="h-3 rounded-sm bg-cyan-900 hover:scale-125 transition-transform duration-200" title="Hour 2:00 Activity"></div><div class="h-3 rounded-sm bg-slate-800 hover:scale-125 transition-transform duration-200" title="Hour 3:00 Activity"></div><div class="h-3 rounded-sm bg-slate-800 hover:scale-125 transition-transform duration-200" title="Hour 4:00 Activity"></div><div class="h-3 rounded-sm bg-cyan-900 hover:scale-125 transition-transform duration-200" title="Hour 5:00 Activity"></div><div class="h-3 rounded-sm bg-cyan-900 hover:scale-125 transition-transform duration-200" title="Hour 6:00 Activity"></div><div class="h-3 rounded-sm bg-slate-800 hover:scale-125 transition-transform duration-200" title="Hour 7:00 Activity"></div><div class="h-3 rounded-sm bg-slate-800 hover:scale-125 transition-transform duration-200" title="Hour 8:00 Activity"></div><div class="h-3 rounded-sm bg-slate-800 hover:scale-125 transition-transform duration-200" title="Hour 9:00 Activity"></div><div class="h-3 rounded-sm bg-cyan-900 hover:scale-125 transition-transform duration-200" title="Hour 10:00 Activity"></div><div class="h-3 rounded-sm bg-cyan-900 hover:scale-125 transition-transform duration-200" title="Hour 11:00 Activity"></div><div class="h-3 rounded-sm bg-cyan-500 hover:scale-125 transition-transform duration-200" title="Hour 12:00 Activity"></div><div class="h-3 rounded-sm bg-cyan-700 hover:scale-125 transition-transform duration-200" title="Hour 13:00 Activity"></div><div class="h-3 rounded-sm bg-cyan-700 hover:scale-125 transition-transform duration-200" title="Hour 14:00 Activity"></div><div class="h-3 rounded-sm bg-cyan-900 hover:scale-125 transition-transform duration-200" title="Hour 15:00 Activity"></div><div class="h-3 rounded-sm bg-cyan-900 hover:scale-125 transition-transform duration-200" title="Hour 16:00 Activity"></div><div class="h-3 rounded-sm bg-cyan-900 hover:scale-125 transition-transform duration-200" title="Hour 17:00 Activity"></div><div class="h-3 rounded-sm bg-cyan-700 hover:scale-125 transition-transform duration-200" title="Hour 18:00 Activity"></div><div class="h-3 rounded-sm bg-cyan-500 hover:scale-125 transition-transform duration-200" title="Hour 19:00 Activity"></div><div class="h-3 rounded-sm bg-slate-800 hover:scale-125 transition-transform duration-200" title="Hour 20:00 Activity"></div><div class="h-3 rounded-sm bg-cyan-900 hover:scale-125 transition-transform duration-200" title="Hour 21:00 Activity"></div><div class="h-3 rounded-sm bg-slate-800 hover:scale-125 transition-transform duration-200" title="Hour 22:00 Activity"></div><div class="h-3 rounded-sm bg-slate-800 hover:scale-125 transition-transform duration-200" title="Hour 23:00 Activity"></div><div class="h-3 rounded-sm bg-cyan-900 hover:scale-125 transition-transform duration-200" title="Hour 0:00 Activity"></div><div class="h-3 rounded-sm bg-cyan-900 hover:scale-125 transition-transform duration-200" title="Hour 1:00 Activity"></div><div class="h-3 rounded-sm bg-cyan-900 hover:scale-125 transition-transform duration-200" title="Hour 2:00 Activity"></div><div class="h-3 rounded-sm bg-cyan-900 hover:scale-125 transition-transform duration-200" title="Hour 3:00 Activity"></div><div class="h-3 rounded-sm bg-slate-800 hover:scale-125 transition-transform duration-200" title="Hour 4:00 Activity"></div><div class="h-3 rounded-sm bg-cyan-900 hover:scale-125 transition-transform duration-200" title="Hour 5:00 Activity"></div><div class="h-3 rounded-sm bg-slate-800 hover:scale-125 transition-transform duration-200" title="Hour 6:00 Activity"></div><div class="h-3 rounded-sm bg-cyan-900 hover:scale-125 transition-transform duration-200" title="Hour 7:00 Activity"></div><div class="h-3 rounded-sm bg-slate-800 hover:scale-125 transition-transform duration-200" title="Hour 8:00 Activity"></div><div class="h-3 rounded-sm bg-cyan-900 hover:scale-125 transition-transform duration-200" title="Hour 9:00 Activity"></div><div class="h-3 rounded-sm bg-cyan-900 hover:scale-125 transition-transform duration-200" title="Hour 10:00 Activity"></div><div class="h-3 rounded-sm bg-cyan-900 hover:scale-125 transition-transform duration-200" title="Hour 11:00 Activity"></div><div class="h-3 rounded-sm bg-slate-800 hover:scale-125 transition-transform duration-200" title="Hour 12:00 Activity"></div><div class="h-3 rounded-sm bg-cyan-700 hover:scale-125 transition-transform duration-200" title="Hour 13:00 Activity"></div><div class="h-3 rounded-sm bg-slate-800 hover:scale-125 transition-transform duration-200" title="Hour 14:00 Activity"></div><div class="h-3 rounded-sm bg-cyan-700 hover:scale-125 transition-transform duration-200" title="Hour 15:00 Activity"></div><div class="h-3 rounded-sm bg-cyan-500 hover:scale-125 transition-transform duration-200" title="Hour 16:00 Activity"></div><div class="h-3 rounded-sm bg-slate-800 hover:scale-125 transition-transform duration-200" title="Hour 17:00 Activity"></div><div class="h-3 rounded-sm bg-cyan-700 hover:scale-125 transition-transform duration-200" title="Hour 18:00 Activity"></div><div class="h-3 rounded-sm bg-cyan-700 hover:scale-125 transition-transform duration-200" title="Hour 19:00 Activity"></div><div class="h-3 rounded-sm bg-cyan-700 hover:scale-125 transition-transform duration-200" title="Hour 20:00 Activity"></div><div class="h-3 rounded-sm bg-cyan-700 hover:scale-125 transition-transform duration-200" title="Hour 21:00 Activity"></div><div class="h-3 rounded-sm bg-cyan-900 hover:scale-125 transition-transform duration-200" title="Hour 22:00 Activity"></div><div class="h-3 rounded-sm bg-slate-800 hover:scale-125 transition-transform duration-200" title="Hour 23:00 Activity"></div><div class="h-3 rounded-sm bg-cyan-900 hover:scale-125 transition-transform duration-200" title="Hour 0:00 Activity"></div><div class="h-3 rounded-sm bg-slate-800 hover:scale-125 transition-transform duration-200" title="Hour 1:00 Activity"></div><div class="h-3 rounded-sm bg-slate-800 hover:scale-125 transition-transform duration-200" title="Hour 2:00 Activity"></div><div class="h-3 rounded-sm bg-cyan-900 hover:scale-125 transition-transform duration-200" title="Hour 3:00 Activity"></div><div class="h-3 rounded-sm bg-cyan-900 hover:scale-125 transition-transform duration-200" title="Hour 4:00 Activity"></div><div class="h-3 rounded-sm bg-slate-800 hover:scale-125 transition-transform duration-200" title="Hour 5:00 Activity"></div><div class="h-3 rounded-sm bg-cyan-900 hover:scale-125 transition-transform duration-200" title="Hour 6:00 Activity"></div><div class="h-3 rounded-sm bg-cyan-900 hover:scale-125 transition-transform duration-200" title="Hour 7:00 Activity"></div><div class="h-3 rounded-sm bg-cyan-900 hover:scale-125 transition-transform duration-200" title="Hour 8:00 Activity"></div><div class="h-3 rounded-sm bg-cyan-900 hover:scale-125 transition-transform duration-200" title="Hour 9:00 Activity"></div><div class="h-3 rounded-sm bg-slate-800 hover:scale-125 transition-transform duration-200" title="Hour 10:00 Activity"></div><div class="h-3 rounded-sm bg-cyan-900 hover:scale-125 transition-transform duration-200" title="Hour 11:00 Activity"></div><div class="h-3 rounded-sm bg-cyan-900 hover:scale-125 transition-transform duration-200" title="Hour 12:00 Activity"></div><div class="h-3 rounded-sm bg-cyan-700 hover:scale-125 transition-transform duration-200" title="Hour 13:00 Activity"></div><div class="h-3 rounded-sm bg-slate-800 hover:scale-125 transition-transform duration-200" title="Hour 14:00 Activity"></div><div class="h-3 rounded-sm bg-cyan-900 hover:scale-125 transition-transform duration-200" title="Hour 15:00 Activity"></div><div class="h-3 rounded-sm bg-slate-800 hover:scale-125 transition-transform duration-200" title="Hour 16:00 Activity"></div><div class="h-3 rounded-sm bg-slate-800 hover:scale-125 transition-transform duration-200" title="Hour 17:00 Activity"></div><div class="h-3 rounded-sm bg-cyan-900 hover:scale-125 transition-transform duration-200" title="Hour 18:00 Activity"></div><div class="h-3 rounded-sm bg-cyan-700 hover:scale-125 transition-transform duration-200" title="Hour 19:00 Activity"></div><div class="h-3 rounded-sm bg-cyan-700 hover:scale-125 transition-transform duration-200" title="Hour 20:00 Activity"></div><div class="h-3 rounded-sm bg-slate-800 hover:scale-125 transition-transform duration-200" title="Hour 21:00 Activity"></div><div class="h-3 rounded-sm bg-cyan-900 hover:scale-125 transition-transform duration-200" title="Hour 22:00 Activity"></div><div class="h-3 rounded-sm bg-cyan-900 hover:scale-125 transition-transform duration-200" title="Hour 23:00 Activity"></div><div class="h-3 rounded-sm bg-slate-800 hover:scale-125 transition-transform duration-200" title="Hour 0:00 Activity"></div><div class="h-3 rounded-sm bg-slate-800 hover:scale-125 transition-transform duration-200" title="Hour 1:00 Activity"></div><div class="h-3 rounded-sm bg-slate-800 hover:scale-125 transition-transform duration-200" title="Hour 2:00 Activity"></div><div class="h-3 rounded-sm bg-cyan-900 hover:scale-125 transition-transform duration-200" title="Hour 3:00 Activity"></div><div class="h-3 rounded-sm bg-cyan-900 hover:scale-125 transition-transform duration-200" title="Hour 4:00 Activity"></div><div class="h-3 rounded-sm bg-slate-800 hover:scale-125 transition-transform duration-200" title="Hour 5:00 Activity"></div><div class="h-3 rounded-sm bg-cyan-900 hover:scale-125 transition-transform duration-200" title="Hour 6:00 Activity"></div><div class="h-3 rounded-sm bg-cyan-900 hover:scale-125 transition-transform duration-200" title="Hour 7:00 Activity"></div><div class="h-3 rounded-sm bg-slate-800 hover:scale-125 transition-transform duration-200" title="Hour 8:00 Activity"></div><div class="h-3 rounded-sm bg-slate-800 hover:scale-125 transition-transform duration-200" title="Hour 9:00 Activity"></div><div class="h-3 rounded-sm bg-cyan-900 hover:scale-125 transition-transform duration-200" title="Hour 10:00 Activity"></div><div class="h-3 rounded-sm bg-slate-800 hover:scale-125 transition-transform duration-200" title="Hour 11:00 Activity"></div><div class="h-3 rounded-sm bg-slate-800 hover:scale-125 transition-transform duration-200" title="Hour 12:00 Activity"></div><div class="h-3 rounded-sm bg-slate-800 hover:scale-125 transition-transform duration-200" title="Hour 13:00 Activity"></div><div class="h-3 rounded-sm bg-slate-800 hover:scale-125 transition-transform duration-200" title="Hour 14:00 Activity"></div><div class="h-3 rounded-sm bg-cyan-900 hover:scale-125 transition-transform duration-200" title="Hour 15:00 Activity"></div><div class="h-3 rounded-sm bg-cyan-900 hover:scale-125 transition-transform duration-200" title="Hour 16:00 Activity"></div><div class="h-3 rounded-sm bg-slate-800 hover:scale-125 transition-transform duration-200" title="Hour 17:00 Activity"></div><div class="h-3 rounded-sm bg-slate-800 hover:scale-125 transition-transform duration-200" title="Hour 18:00 Activity"></div><div class="h-3 rounded-sm bg-slate-800 hover:scale-125 transition-transform duration-200" title="Hour 19:00 Activity"></div><div class="h-3 rounded-sm bg-slate-800 hover:scale-125 transition-transform duration-200" title="Hour 20:00 Activity"></div><div class="h-3 rounded-sm bg-cyan-700 hover:scale-125 transition-transform duration-200" title="Hour 21:00 Activity"></div><div class="h-3 rounded-sm bg-cyan-900 hover:scale-125 transition-transform duration-200" title="Hour 22:00 Activity"></div><div class="h-3 rounded-sm bg-cyan-900 hover:scale-125 transition-transform duration-200" title="Hour 23:00 Activity"></div><div class="h-3 rounded-sm bg-slate-800 hover:scale-125 transition-transform duration-200" title="Hour 0:00 Activity"></div><div class="h-3 rounded-sm bg-cyan-900 hover:scale-125 transition-transform duration-200" title="Hour 1:00 Activity"></div><div class="h-3 rounded-sm bg-cyan-900 hover:scale-125 transition-transform duration-200" title="Hour 2:00 Activity"></div><div class="h-3 rounded-sm bg-slate-800 hover:scale-125 transition-transform duration-200" title="Hour 3:00 Activity"></div><div class="h-3 rounded-sm bg-slate-800 hover:scale-125 transition-transform duration-200" title="Hour 4:00 Activity"></div><div class="h-3 rounded-sm bg-slate-800 hover:scale-125 transition-transform duration-200" title="Hour 5:00 Activity"></div><div class="h-3 rounded-sm bg-slate-800 hover:scale-125 transition-transform duration-200" title="Hour 6:00 Activity"></div><div class="h-3 rounded-sm bg-cyan-900 hover:scale-125 transition-transform duration-200" title="Hour 7:00 Activity"></div><div class="h-3 rounded-sm bg-cyan-900 hover:scale-125 transition-transform duration-200" title="Hour 8:00 Activity"></div><div class="h-3 rounded-sm bg-cyan-900 hover:scale-125 transition-transform duration-200" title="Hour 9:00 Activity"></div><div class="h-3 rounded-sm bg-slate-800 hover:scale-125 transition-transform duration-200" title="Hour 10:00 Activity"></div><div class="h-3 rounded-sm bg-slate-800 hover:scale-125 transition-transform duration-200" title="Hour 11:00 Activity"></div><div class="h-3 rounded-sm bg-slate-800 hover:scale-125 transition-transform duration-200" title="Hour 12:00 Activity"></div><div class="h-3 rounded-sm bg-cyan-700 hover:scale-125 transition-transform duration-200" title="Hour 13:00 Activity"></div><div class="h-3 rounded-sm bg-slate-800 hover:scale-125 transition-transform duration-200" title="Hour 14:00 Activity"></div><div class="h-3 rounded-sm bg-cyan-900 hover:scale-125 transition-transform duration-200" title="Hour 15:00 Activity"></div><div class="h-3 rounded-sm bg-cyan-900 hover:scale-125 transition-transform duration-200" title="Hour 16:00 Activity"></div><div class="h-3 rounded-sm bg-cyan-500 hover:scale-125 transition-transform duration-200" title="Hour 17:00 Activity"></div><div class="h-3 rounded-sm bg-cyan-500 hover:scale-125 transition-transform duration-200" title="Hour 18:00 Activity"></div><div class="h-3 rounded-sm bg-cyan-900 hover:scale-125 transition-transform duration-200" title="Hour 19:00 Activity"></div><div class="h-3 rounded-sm bg-slate-800 hover:scale-125 transition-transform duration-200" title="Hour 20:00 Activity"></div><div class="h-3 rounded-sm bg-slate-800 hover:scale-125 transition-transform duration-200" title="Hour 21:00 Activity"></div><div class="h-3 rounded-sm bg-cyan-900 hover:scale-125 transition-transform duration-200" title="Hour 22:00 Activity"></div><div class="h-3 rounded-sm bg-cyan-900 hover:scale-125 transition-transform duration-200" title="Hour 23:00 Activity"></div><div class="h-3 rounded-sm bg-cyan-900 hover:scale-125 transition-transform duration-200" title="Hour 0:00 Activity"></div><div class="h-3 rounded-sm bg-cyan-900 hover:scale-125 transition-transform duration-200" title="Hour 1:00 Activity"></div><div class="h-3 rounded-sm bg-slate-800 hover:scale-125 transition-transform duration-200" title="Hour 2:00 Activity"></div><div class="h-3 rounded-sm bg-slate-800 hover:scale-125 transition-transform duration-200" title="Hour 3:00 Activity"></div><div class="h-3 rounded-sm bg-cyan-900 hover:scale-125 transition-transform duration-200" title="Hour 4:00 Activity"></div><div class="h-3 rounded-sm bg-cyan-900 hover:scale-125 transition-transform duration-200" title="Hour 5:00 Activity"></div><div class="h-3 rounded-sm bg-slate-800 hover:scale-125 transition-transform duration-200" title="Hour 6:00 Activity"></div><div class="h-3 rounded-sm bg-cyan-900 hover:scale-125 transition-transform duration-200" title="Hour 7:00 Activity"></div><div class="h-3 rounded-sm bg-cyan-900 hover:scale-125 transition-transform duration-200" title="Hour 8:00 Activity"></div><div class="h-3 rounded-sm bg-slate-800 hover:scale-125 transition-transform duration-200" title="Hour 9:00 Activity"></div><div class="h-3 rounded-sm bg-cyan-900 hover:scale-125 transition-transform duration-200" title="Hour 10:00 Activity"></div><div class="h-3 rounded-sm bg-cyan-500 hover:scale-125 transition-transform duration-200" title="Hour 11:00 Activity"></div><div class="h-3 rounded-sm bg-cyan-900 hover:scale-125 transition-transform duration-200" title="Hour 12:00 Activity"></div><div class="h-3 rounded-sm bg-slate-800 hover:scale-125 transition-transform duration-200" title="Hour 13:00 Activity"></div><div class="h-3 rounded-sm bg-cyan-500 hover:scale-125 transition-transform duration-200" title="Hour 14:00 Activity"></div><div class="h-3 rounded-sm bg-slate-800 hover:scale-125 transition-transform duration-200" title="Hour 15:00 Activity"></div><div class="h-3 rounded-sm bg-cyan-700 hover:scale-125 transition-transform duration-200" title="Hour 16:00 Activity"></div><div class="h-3 rounded-sm bg-cyan-500 hover:scale-125 transition-transform duration-200" title="Hour 17:00 Activity"></div><div class="h-3 rounded-sm bg-slate-800 hover:scale-125 transition-transform duration-200" title="Hour 18:00 Activity"></div><div class="h-3 rounded-sm bg-cyan-500 hover:scale-125 transition-transform duration-200" title="Hour 19:00 Activity"></div><div class="h-3 rounded-sm bg-cyan-900 hover:scale-125 transition-transform duration-200" title="Hour 20:00 Activity"></div><div class="h-3 rounded-sm bg-cyan-500 hover:scale-125 transition-transform duration-200" title="Hour 21:00 Activity"></div><div class="h-3 rounded-sm bg-slate-800 hover:scale-125 transition-transform duration-200" title="Hour 22:00 Activity"></div><div class="h-3 rounded-sm bg-cyan-900 hover:scale-125 transition-transform duration-200" title="Hour 23:00 Activity"></div><div class="h-3 rounded-sm bg-slate-800 hover:scale-125 transition-transform duration-200" title="Hour 0:00 Activity"></div><div class="h-3 rounded-sm bg-cyan-900 hover:scale-125 transition-transform duration-200" title="Hour 1:00 Activity"></div><div class="h-3 rounded-sm bg-cyan-900 hover:scale-125 transition-transform duration-200" title="Hour 2:00 Activity"></div><div class="h-3 rounded-sm bg-cyan-900 hover:scale-125 transition-transform duration-200" title="Hour 3:00 Activity"></div><div class="h-3 rounded-sm bg-slate-800 hover:scale-125 transition-transform duration-200" title="Hour 4:00 Activity"></div><div class="h-3 rounded-sm bg-slate-800 hover:scale-125 transition-transform duration-200" title="Hour 5:00 Activity"></div><div class="h-3 rounded-sm bg-slate-800 hover:scale-125 transition-transform duration-200" title="Hour 6:00 Activity"></div><div class="h-3 rounded-sm bg-slate-800 hover:scale-125 transition-transform duration-200" title="Hour 7:00 Activity"></div><div class="h-3 rounded-sm bg-cyan-900 hover:scale-125 transition-transform duration-200" title="Hour 8:00 Activity"></div><div class="h-3 rounded-sm bg-cyan-900 hover:scale-125 transition-transform duration-200" title="Hour 9:00 Activity"></div><div class="h-3 rounded-sm bg-cyan-900 hover:scale-125 transition-transform duration-200" title="Hour 10:00 Activity"></div><div class="h-3 rounded-sm bg-cyan-700 hover:scale-125 transition-transform duration-200" title="Hour 11:00 Activity"></div><div class="h-3 rounded-sm bg-cyan-900 hover:scale-125 transition-transform duration-200" title="Hour 12:00 Activity"></div><div class="h-3 rounded-sm bg-cyan-500 hover:scale-125 transition-transform duration-200" title="Hour 13:00 Activity"></div><div class="h-3 rounded-sm bg-slate-800 hover:scale-125 transition-transform duration-200" title="Hour 14:00 Activity"></div><div class="h-3 rounded-sm bg-cyan-700 hover:scale-125 transition-transform duration-200" title="Hour 15:00 Activity"></div><div class="h-3 rounded-sm bg-cyan-700 hover:scale-125 transition-transform duration-200" title="Hour 16:00 Activity"></div><div class="h-3 rounded-sm bg-cyan-900 hover:scale-125 transition-transform duration-200" title="Hour 17:00 Activity"></div><div class="h-3 rounded-sm bg-cyan-900 hover:scale-125 transition-transform duration-200" title="Hour 18:00 Activity"></div><div class="h-3 rounded-sm bg-cyan-500 hover:scale-125 transition-transform duration-200" title="Hour 19:00 Activity"></div><div class="h-3 rounded-sm bg-cyan-700 hover:scale-125 transition-transform duration-200" title="Hour 20:00 Activity"></div><div class="h-3 rounded-sm bg-cyan-700 hover:scale-125 transition-transform duration-200" title="Hour 21:00 Activity"></div><div class="h-3 rounded-sm bg-slate-800 hover:scale-125 transition-transform duration-200" title="Hour 22:00 Activity"></div><div class="h-3 rounded-sm bg-cyan-900 hover:scale-125 transition-transform duration-200" title="Hour 23:00 Activity"></div></div>
+            </div>
+
+        </div>
+    </main>
+
+    <script>
+        // --- 1. CONFIGURATION & STATE ---
+        const CONFIG = {
+            colors: {
+                low: '#94a3b8',
+                mid: '#06b6d4',
+                high: '#4ade80',
+                surge: '#d946ef',
+                bg: '#0b101b',
+                grid: '#1e293b'
+            },
+            animSpeed: {
+                low: 0.002,
+                mid: 0.005,
+                high: 0.015,
+                surge: 0.04
+            }
+        };
+
+        const STATE_DATA = {
+            LOW: { 
+                id: 'LOW', color: CONFIG.colors.low, 
+                label: 'Calm field. Ideal for quiet entries.', 
+                icon: 'bedtime', 
+                style: 'state-low',
+                rpm: [5, 20]
+            },
+            MID: { 
+                id: 'MID', color: CONFIG.colors.mid, 
+                label: 'Balanced resonance. Regular player flow.', 
+                icon: 'waves', 
+                style: 'state-mid',
+                rpm: [20, 80]
+            },
+            HIGH: { 
+                id: 'HIGH', color: CONFIG.colors.high, 
+                label: 'High resonance. Many concurrent rounds.', 
+                icon: 'bolt', 
+                style: 'state-high',
+                rpm: [80, 150]
+            },
+            SURGE: { 
+                id: 'SURGE', color: CONFIG.colors.surge, 
+                label: 'Surge mode. Field is overloaded.', 
+                icon: 'all_inclusive', 
+                style: 'state-surge',
+                rpm: [150, 300]
+            }
+        };
+
+        // --- 2. RESONANCE FIELD (CANVAS) ---
+        class ResonanceField {
+            constructor(canvasId) {
+                this.canvas = document.getElementById(canvasId);
+                this.ctx = this.canvas.getContext('2d');
+                this.width = this.canvas.offsetWidth;
+                this.height = this.canvas.offsetHeight;
+                this.particles = [];
+                this.waves = [];
+                this.mouseX = -1000;
+                this.mouseY = -1000;
+                this.time = 0;
+                
+                this.resize();
+                window.addEventListener('resize', () => this.resize());
+                
+                // Interaction
+                this.canvas.addEventListener('mousemove', (e) => {
+                    const rect = this.canvas.getBoundingClientRect();
+                    this.mouseX = e.clientX - rect.left;
+                    this.mouseY = e.clientY - rect.top;
+                    this.checkHover(e.clientX, e.clientY);
+                });
+                this.canvas.addEventListener('mouseleave', () => {
+                    this.mouseX = -1000;
+                    document.getElementById('canvas-tooltip').style.display = 'none';
+                });
+
+                this.initGrid();
+            }
+
+            resize() {
+                this.width = this.canvas.parentElement.offsetWidth;
+                this.height = this.canvas.parentElement.offsetHeight;
+                this.canvas.width = this.width * window.devicePixelRatio;
+                this.canvas.height = this.height * window.devicePixelRatio;
+                this.ctx.scale(window.devicePixelRatio, window.devicePixelRatio);
+                this.initGrid();
+            }
+
+            initGrid() {
+                this.cols = 20;
+                this.rows = 10;
+                this.points = [];
+                const gapX = this.width / this.cols;
+                const gapY = this.height / this.rows;
+
+                for (let i = 0; i <= this.cols; i++) {
+                    for (let j = 0; j <= this.rows; j++) {
+                        // Create 3D perspective effect by squashing upper rows
+                        const yRatio = j / this.rows;
+                        const perspectiveY = (j * gapY) * (0.5 + 0.5 * yRatio); 
+                        
+                        this.points.push({
+                            baseX: i * gapX,
+                            baseY: perspectiveY + 50, // Offset down
+                            x: i * gapX,
+                            y: perspectiveY + 50,
+                            anchorX: i * gapX,
+                            anchorY: perspectiveY + 50
+                        });
+                    }
+                }
+            }
+
+            addParticle(isWin) {
+                // Spawn particle based on activity
+                const x = Math.random() * this.width;
+                const y = Math.random() * this.height * 0.8 + 50;
+                const color = isWin ? '#4ade80' : simulation.currentState.color;
+                
+                this.particles.push({
+                    x, y,
+                    vx: (Math.random() - 0.5) * 2,
+                    vy: (Math.random() - 0.5) * 2,
+                    life: 1.0,
+                    size: Math.random() * 3 + 1,
+                    color: color
+                });
+                
+                // Add Wave
+                if (Math.random() > 0.7) {
+                    this.waves.push({
+                        x, y,
+                        r: 0,
+                        maxR: 100 + Math.random() * 100,
+                        opacity: 1,
+                        color: color
+                    });
+                }
+            }
+
+            update(speed) {
+                this.time += speed;
+
+                // Update Grid Points (Wave effect)
+                this.points.forEach(p => {
+                    // Sine wave movement
+                    const dist = Math.sqrt((p.baseX - this.width/2)**2 + (p.baseY - this.height/2)**2);
+                    const wave = Math.sin(dist * 0.05 - this.time * 5) * (simulation.currentState.id === 'SURGE' ? 10 : 3);
+                    
+                    // Mouse interaction repulsion
+                    const dx = p.baseX - this.mouseX;
+                    const dy = p.baseY - this.mouseY;
+                    const d = Math.sqrt(dx*dx + dy*dy);
+                    let pushX = 0, pushY = 0;
+                    
+                    if (d < 150) {
+                        const force = (150 - d) / 150;
+                        pushX = (dx / d) * force * 30;
+                        pushY = (dy / d) * force * 30;
+                    }
+
+                    p.x = p.baseX + pushX;
+                    p.y = p.baseY + wave + pushY;
+                });
+
+                // Update Particles
+                this.particles.forEach((p, i) => {
+                    p.x += p.vx;
+                    p.y += p.vy;
+                    p.life -= 0.01;
+                    if(p.life <= 0) this.particles.splice(i, 1);
+                });
+
+                // Update Waves
+                this.waves.forEach((w, i) => {
+                    w.r += simulation.currentState.id === 'SURGE' ? 2 : 0.5;
+                    w.opacity -= 0.01;
+                    if(w.opacity <= 0) this.waves.splice(i, 1);
+                });
+            }
+
+            draw() {
+                this.ctx.clearRect(0, 0, this.width, this.height);
+                
+                // Draw Grid
+                this.ctx.strokeStyle = simulation.currentState.color;
+                this.ctx.lineWidth = 0.5;
+                this.ctx.globalAlpha = 0.15;
+                
+                // Draw horizontal lines
+                for (let j = 0; j <= this.rows; j++) {
+                    this.ctx.beginPath();
+                    for (let i = 0; i <= this.cols; i++) {
+                        const idx = i * (this.rows + 1) + j;
+                        const p = this.points[idx];
+                        if (i === 0) this.ctx.moveTo(p.x, p.y);
+                        else this.ctx.lineTo(p.x, p.y);
+                    }
+                    this.ctx.stroke();
+                }
+
+                // Draw Vertical lines
+                for (let i = 0; i <= this.cols; i++) {
+                    this.ctx.beginPath();
+                    for (let j = 0; j <= this.rows; j++) {
+                        const idx = i * (this.rows + 1) + j;
+                        const p = this.points[idx];
+                        if (j === 0) this.ctx.moveTo(p.x, p.y);
+                        else this.ctx.lineTo(p.x, p.y);
+                    }
+                    this.ctx.stroke();
+                }
+
+                // Draw Waves
+                this.ctx.globalAlpha = 1;
+                this.waves.forEach(w => {
+                    this.ctx.beginPath();
+                    this.ctx.arc(w.x, w.y, w.r, 0, Math.PI * 2);
+                    this.ctx.strokeStyle = w.color;
+                    this.ctx.globalAlpha = w.opacity * 0.5;
+                    this.ctx.lineWidth = 1;
+                    this.ctx.stroke();
+                });
+
+                // Draw Particles (Activity Dots)
+                this.particles.forEach(p => {
+                    this.ctx.beginPath();
+                    this.ctx.arc(p.x, p.y, p.size, 0, Math.PI * 2);
+                    this.ctx.fillStyle = p.color;
+                    this.ctx.globalAlpha = p.life;
+                    this.ctx.fill();
+                    
+                    // Halo
+                    this.ctx.beginPath();
+                    this.ctx.arc(p.x, p.y, p.size * 3, 0, Math.PI * 2);
+                    this.ctx.fillStyle = p.color;
+                    this.ctx.globalAlpha = p.life * 0.2;
+                    this.ctx.fill();
+                });
+                
+                this.ctx.globalAlpha = 1;
+            }
+
+            checkHover(cx, cy) {
+                // Simple hit test for particles to show tooltip
+                const rect = this.canvas.getBoundingClientRect();
+                const x = cx - rect.left;
+                const y = cy - rect.top;
+                
+                let hit = false;
+                for(let p of this.particles) {
+                    const dx = x - p.x;
+                    const dy = y - p.y;
+                    if (Math.sqrt(dx*dx + dy*dy) < 15) {
+                        hit = true;
+                        const tip = document.getElementById('canvas-tooltip');
+                        tip.style.display = 'block';
+                        tip.style.left = (cx + 15) + 'px';
+                        tip.style.top = (cy + 15) + 'px';
+                        
+                        // Random mock data for tooltip
+                        document.getElementById('tooltip-vol').innerText = (Math.random() * 50 + 10).toFixed(1);
+                        document.getElementById('tooltip-rounds').innerText = Math.floor(Math.random() * 5) + 1;
+                        break;
+                    }
+                }
+                if (!hit) document.getElementById('canvas-tooltip').style.display = 'none';
+            }
+        }
+
+        // --- 3. CHART MANAGERS (CANVAS) ---
+        class ChartRenderer {
+            constructor(id, type) {
+                this.canvas = document.getElementById(id);
+                this.ctx = this.canvas.getContext('2d');
+                this.type = type;
+                this.data = [];
+                this.maxDataPoints = 60;
+                
+                this.resize();
+                window.addEventListener('resize', () => this.resize());
+            }
+
+            resize() {
+                this.width = this.canvas.parentElement.offsetWidth;
+                this.height = this.canvas.parentElement.offsetHeight;
+                this.canvas.width = this.width * window.devicePixelRatio;
+                this.canvas.height = this.height * window.devicePixelRatio;
+                this.ctx.scale(window.devicePixelRatio, window.devicePixelRatio);
+            }
+
+            addData(val) {
+                this.data.push(val);
+                if(this.data.length > this.maxDataPoints) this.data.shift();
+            }
+
+            draw() {
+                this.ctx.clearRect(0,0, this.width, this.height);
+                
+                if (this.type === 'line') {
+                    this.drawLineChart();
+                } else if (this.type === 'doughnut') {
+                    this.drawDoughnut();
+                }
+            }
+
+            drawLineChart() {
+                if(this.data.length < 2) return;
+                
+                const step = this.width / (this.maxDataPoints - 1);
+                const maxVal = Math.max(...this.data) * 1.2;
+                
+                // Fill Gradient
+                const gradient = this.ctx.createLinearGradient(0, 0, 0, this.height);
+                gradient.addColorStop(0, simulation.currentState.color);
+                gradient.addColorStop(1, 'transparent');
+
+                this.ctx.beginPath();
+                this.ctx.moveTo(0, this.height);
+                
+                this.data.forEach((val, i) => {
+                    const x = i * step;
+                    const y = this.height - (val / maxVal * this.height);
+                    this.ctx.lineTo(x, y);
+                });
+                
+                this.ctx.lineTo((this.data.length - 1) * step, this.height);
+                this.ctx.fillStyle = gradient;
+                this.ctx.globalAlpha = 0.2;
+                this.ctx.fill();
+                
+                // Stroke
+                this.ctx.beginPath();
+                this.data.forEach((val, i) => {
+                    const x = i * step;
+                    const y = this.height - (val / maxVal * this.height);
+                    if(i===0) this.ctx.moveTo(x, y);
+                    else this.ctx.lineTo(x, y);
+                });
+                this.ctx.strokeStyle = simulation.currentState.color;
+                this.ctx.lineWidth = 2;
+                this.ctx.globalAlpha = 1;
+                this.ctx.stroke();
+            }
+
+            drawDoughnut() {
+                const cx = this.width / 2;
+                const cy = this.height / 2;
+                const r = Math.min(cx, cy) * 0.7;
+                
+                // Segments (Mock fairness stats)
+                const segments = [
+                    { v: 0.4, c: '#4ade80' }, // Wins
+                    { v: 0.5, c: '#334155' }, // Loss
+                    { v: 0.1, c: '#06b6d4' }  // House edge
+                ];
+                
+                let start = -Math.PI / 2;
+                segments.forEach(seg => {
+                    const angle = seg.v * Math.PI * 2;
+                    this.ctx.beginPath();
+                    this.ctx.arc(cx, cy, r, start, start + angle);
+                    this.ctx.strokeStyle = seg.c;
+                    this.ctx.lineWidth = 15;
+                    this.ctx.stroke();
+                    start += angle;
+                });
+            }
+        }
+
+        // --- 4. SIMULATION LOGIC ---
+        class Simulation {
+            constructor() {
+                this.currentState = STATE_DATA.MID;
+                this.resonanceField = new ResonanceField('resonance-canvas');
+                this.volChart = new ChartRenderer('volume-chart', 'line');
+                this.fairChart = new ChartRenderer('fairness-chart', 'doughnut');
+                
+                // Mock Data Init
+                for(let i=0; i<30; i++) this.volChart.addData(Math.random() * 50);
+
+                this.ui = {
+                    card: document.getElementById('system-pulse-card'),
+                    badge: document.getElementById('pulse-badge'),
+                    icon: document.getElementById('pulse-icon'),
+                    desc: document.getElementById('pulse-desc'),
+                    iconContainer: document.getElementById('pulse-icon-container'),
+                    rpm: document.getElementById('metric-rpm'),
+                    stripe: document.getElementById('stripe-chart'),
+                    skew: document.getElementById('skew-indicator')
+                };
+
+                this.stripeHistory = [];
+                for(let i=0; i<20; i++) this.addStripe(Math.random() > 0.5);
+                this.renderHeatmap();
+
+                this.surgeStartTime = null;
+
+                requestAnimationFrame(() => this.loop());
+                setInterval(() => this.tick(), 1000); // 1 sec logic tick
+            }
+
+            forceState(stateId) {
+                if (this.currentState.id === stateId) return;
+                
+                // Remove old classes
+                Object.values(STATE_DATA).forEach(s => {
+                    this.ui.card.classList.remove(s.style);
+                });
+
+                this.currentState = STATE_DATA[stateId];
+                
+                // Apply UI Updates
+                this.ui.card.classList.add(this.currentState.style);
+                this.ui.badge.innerText = stateId;
+                this.ui.badge.style.color = this.currentState.color;
+                this.ui.badge.style.borderColor = this.currentState.color;
+                this.ui.badge.style.backgroundColor = this.currentState.color + '10'; // 10% opacity
+                
+                this.ui.icon.innerText = this.currentState.icon;
+                this.ui.icon.style.color = this.currentState.color;
+                this.ui.iconContainer.style.borderColor = this.currentState.color + '40';
+                
+                this.ui.desc.innerText = this.currentState.label;
+
+                if (stateId === 'SURGE') {
+                    this.surgeStartTime = Date.now();
+                    document.getElementById('surge-timer').classList.remove('hidden');
+                } else {
+                    document.getElementById('surge-timer').classList.add('hidden');
+                }
+
+                // Animate Icon Ring
+                const ring = document.getElementById('pulse-ring');
+                ring.style.borderColor = this.currentState.color;
+                ring.animate([
+                    { transform: 'scale(1)', opacity: 0.8 },
+                    { transform: 'scale(1.5)', opacity: 0 }
+                ], {
+                    duration: 600,
+                    easing: 'ease-out'
+                });
+            }
+
+            tick() {
+                // RPM Logic
+                const range = this.currentState.rpm;
+                const currentRPM = Math.floor(range[0] + Math.random() * (range[1] - range[0]));
+                this.ui.rpm.innerText = currentRPM;
+                
+                // Volume Chart Update
+                const volNoise = this.currentState.id === 'SURGE' ? 100 : 20;
+                this.volChart.addData(Math.random() * volNoise + (range[0]/2));
+
+                // Win Skew Animation (Wandering indicator)
+                const skewPos = 50 + (Math.random() - 0.5) * 40;
+                this.ui.skew.style.left = skewPos + '%';
+
+                // Surge Timer
+                if(this.currentState.id === 'SURGE' && this.surgeStartTime) {
+                    const diff = Math.floor((Date.now() - this.surgeStartTime) / 1000);
+                    const m = Math.floor(diff / 60).toString().padStart(2, '0');
+                    const s = (diff % 60).toString().padStart(2, '0');
+                    document.getElementById('surge-time-val').innerText = `${m}:${s}`;
+                }
+
+                // Random Activity Generation (Visuals)
+                const activityCount = this.currentState.id === 'SURGE' ? 5 : (this.currentState.id === 'HIGH' ? 2 : 1);
+                for(let i=0; i<activityCount; i++) {
+                    if (Math.random() > 0.3) {
+                        this.resonanceField.addParticle(Math.random() > 0.7); // Random win/loss coloring
+                        // Occasionally update user stripes
+                        if (Math.random() > 0.8) this.addStripe(Math.random() > 0.5);
+                    }
+                }
+            }
+
+            addStripe(isWin) {
+                this.stripeHistory.push(isWin);
+                if (this.stripeHistory.length > 20) this.stripeHistory.shift();
+                
+                // Re-render
+                this.ui.stripe.innerHTML = '';
+                this.stripeHistory.forEach(win => {
+                    const el = document.createElement('div');
+                    el.className = `flex-1 h-full rounded-sm ${win ? 'bg-green-500 shadow-[0_0_5px_rgba(74,222,128,0.5)]' : 'bg-red-500/50'}`;
+                    this.ui.stripe.appendChild(el);
+                });
+            }
+
+            renderHeatmap() {
+                const grid = document.getElementById('heatmap-grid');
+                // 7 days * 24 hours = 168 cells
+                const shades = [
+                    'bg-slate-800', // Empty
+                    'bg-cyan-900',  // Low
+                    'bg-cyan-700',  // Mid
+                    'bg-cyan-500',  // High
+                    'bg-white shadow-[0_0_5px_white]' // Peak
+                ];
+
+                for(let i=0; i<168; i++) {
+                    const div = document.createElement('div');
+                    // Bias towards middle hours and random noise
+                    const hour = i % 24;
+                    let intensity = 0;
+                    if (hour > 10 && hour < 22) intensity = Math.floor(Math.random() * 4); // Active hours
+                    else intensity = Math.floor(Math.random() * 2); // Quiet hours
+                    
+                    div.className = `h-3 rounded-sm ${shades[intensity]} hover:scale-125 transition-transform duration-200`;
+                    div.title = `Hour ${hour}:00 Activity`;
+                    grid.appendChild(div);
+                }
+            }
+
+            loop() {
+                const speed = CONFIG.animSpeed[this.currentState.id.toLowerCase()];
+                this.resonanceField.update(speed);
+                this.resonanceField.draw();
+                
+                this.volChart.draw();
+                this.fairChart.draw();
+
+                requestAnimationFrame(() => this.loop());
+            }
+        }
+
+        // Initialize Application
+        let simulation;
+        window.addEventListener('DOMContentLoaded', () => {
+            simulation = new Simulation();
+        });
+
+    </script>
+
+
+</body></html>
