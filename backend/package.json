@@ -1,5 +1,5 @@
 {
-  "name": "tonrody-backend",
+  "name": "backend",
   "version": "0.1.0",
   "private": true,
   "scripts": {
@@ -16,7 +16,7 @@
     "dotenv": "^16.4.5",
     "express": "^4.19.2",
     "pino": "^9.5.0",
-    "tonweb": "^0.0.69",
+    "tonweb": "^0.0.66",
     "ws": "^8.17.1",
     "zod": "^3.23.8"
   },
