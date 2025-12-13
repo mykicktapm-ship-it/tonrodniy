@@ -13,13 +13,13 @@ import {
 } from '../db/supabase';
 import {
   buildSeatTimerTickPayload,
-  emitPaymentConfirmed,
   emitRoundFinalized,
   emitSeatUpdate,
   emitTimerTick,
   type SeatTimerSnapshot
 } from '../ws';
-import { sendFinalizeRound, verifyStakeTx } from '../services/tonClient';
+import { sendFinalizeRound } from '../services/tonClient';
+import { AuthUser, requireServiceToken, requireUserToken } from '../middleware/auth';
 
 const RESERVATION_WINDOW_MS = 2 * 60 * 1000;
 const PAYMENT_WINDOW_MS = 5 * 60 * 1000;
@@ -112,7 +112,7 @@ lobbiesRouter.get('/', async (_req, res) => {
   }
 });
 
-lobbiesRouter.post('/', async (req, res) => {
+lobbiesRouter.post('/', requireServiceToken, async (req, res) => {
   const { lobbyCode, lobbyClass, stakeTon, seatsTotal, roundWallet, createdBy } =
     req.body as {
       lobbyCode?: string;
@@ -188,10 +188,15 @@ lobbiesRouter.get('/:id', async (req, res) => {
   }
 });
 
-lobbiesRouter.post('/:id/join', async (req, res) => {
+lobbiesRouter.post('/:id/join', requireUserToken, async (req, res) => {
   const { userId } = req.body as { userId?: string };
   if (!userId) {
     return res.status(400).json({ error: 'userId is required' });
+  }
+
+  const authUser = res.locals.authUser as AuthUser | undefined;
+  if (!authUser || authUser.id !== userId) {
+    return res.status(403).json({ error: 'userId must match authenticated token' });
   }
 
   try {
@@ -233,7 +238,7 @@ lobbiesRouter.post('/:id/join', async (req, res) => {
 
     const seatTxMap = await txLogStore.latestSeatPayments([reservedSeat.id]);
     const seatPayload = serializeSeat(reservedSeat, seatTxMap);
-    emitSeatUpdate({ lobbyId, seat: seatPayload });
+    emitSeatUpdate({ lobbyId, seat: seatPayload as unknown as Record<string, unknown> });
     emitTimerTick(buildSeatTimerTickPayload(lobbyId, seatPayload));
     res.json({ seat: seatPayload, message: 'Seat reserved. Complete payment before expiration.' });
   } catch (error) {
@@ -241,10 +246,15 @@ lobbiesRouter.post('/:id/join', async (req, res) => {
   }
 });
 
-lobbiesRouter.post('/:id/pay', async (req, res) => {
+lobbiesRouter.post('/:id/pay', requireUserToken, async (req, res) => {
   const { seatId, txHash, userId } = req.body as { seatId?: string; txHash?: string; userId?: string };
   if (!seatId || !txHash || !userId) {
     return res.status(400).json({ error: 'seatId, userId, and txHash are required' });
+  }
+
+  const authUser = res.locals.authUser as AuthUser | undefined;
+  if (!authUser || authUser.id !== userId) {
+    return res.status(403).json({ error: 'userId must match authenticated token' });
   }
 
   try {
@@ -284,7 +294,7 @@ lobbiesRouter.post('/:id/pay', async (req, res) => {
 
     const normalizedHash = normalizeTxHashValue(txHash);
 
-    const txLog = await txLogStore.insert({
+    await txLogStore.insert({
       userId: pendingSeat.user_id ?? undefined,
       lobbyId: lobby.lobby.id,
       seatId: pendingSeat.id,
@@ -299,57 +309,21 @@ lobbiesRouter.post('/:id/pay', async (req, res) => {
         roundId: lobby.currentRound?.id ?? null
       }
     });
-
-    let verification = await verifyStakeTx({
-      txHash: normalizedHash,
-      lobbyId: lobby.lobby.id,
-      seatId: pendingSeat.id,
-      expectedAmountTon: stakeTon,
-      expectedSender: user.wallet,
-      expectedSeatIndex: pendingSeat.seat_index,
-      expectedContractAddress: lobby.lobby.round_wallet
-    });
-
-    let latestSeat = pendingSeat;
-    if (verification.status === 'confirmed') {
-      latestSeat = await seatStore.markPaid(pendingSeat.id, stakeTon, new Date().toISOString());
-      await txLogStore.updateStatus(txLog.id, 'confirmed');
-      const seatTxMap = await txLogStore.latestSeatPayments([latestSeat.id]);
-      const seatPayload = serializeSeat(latestSeat, seatTxMap);
-      emitSeatUpdate({ lobbyId: req.params.id, seat: seatPayload });
-      emitPaymentConfirmed({ lobbyId: req.params.id, seat: seatPayload, txHash: normalizedHash });
-      emitTimerTick(buildSeatTimerTickPayload(req.params.id, seatPayload));
-      return res.json({ seat: seatPayload, status: 'confirmed', verification });
-    }
-
-    if (verification.status === 'failed') {
-      await seatStore.markFailed(pendingSeat.id, new Date().toISOString());
-      await seatStore.releaseSeat(pendingSeat.id, new Date().toISOString());
-      await txLogStore.updateStatus(txLog.id, 'failed', {
-        ...(txLog.metadata ?? {}),
-        verification
-      });
-      const refreshedSeat = await seatStore.findById(pendingSeat.id);
-      const seatTxMap = await txLogStore.latestSeatPayments([pendingSeat.id]);
-      const seatPayload = serializeSeat(refreshedSeat ?? pendingSeat, seatTxMap);
-      emitSeatUpdate({ lobbyId: req.params.id, seat: seatPayload });
-      emitTimerTick(buildSeatTimerTickPayload(req.params.id, seatPayload));
-      return res.status(400).json({ error: 'Transaction rejected on-chain', seat: seatPayload, verification });
-    }
-
     const seatTxMap = await txLogStore.latestSeatPayments([pendingSeat.id]);
     const seatPayload = serializeSeat(pendingSeat, seatTxMap);
-    emitSeatUpdate({ lobbyId: req.params.id, seat: seatPayload });
-    emitTimerTick(buildSeatTimerTickPayload(req.params.id, seatPayload));
-    res.json({ seat: seatPayload, status: 'pending_payment', verification });
+    emitSeatUpdate({ lobbyId: req.params.id, seat: seatPayload as unknown as Record<string, unknown> });
+    res.json({ seat: seatPayload, status: 'pending_payment' });
   } catch (error) {
     res.status(400).json({ error: (error as Error).message });
   }
 });
 
-lobbiesRouter.post('/:id/finalize', async (req, res) => {
+lobbiesRouter.post('/:id/finalize', requireServiceToken, async (req, res) => {
   try {
     const lobby = await ensureLobbyExists(req.params.id);
+    if (lobby.lobby.status === 'finalized') {
+      return res.status(409).json({ error: 'Lobby already finalized' });
+    }
     const round = lobby.currentRound;
     if (!round) {
       return res.status(400).json({ error: 'Round not found for lobby' });

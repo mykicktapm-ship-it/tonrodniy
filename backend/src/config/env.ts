@@ -9,9 +9,12 @@ const envSchema = z
     PORT: z.string().default('4000'),
     SUPABASE_URL: z.string().url('SUPABASE_URL must be a valid URL'),
     SUPABASE_SERVICE_ROLE_KEY: z.string().min(1, 'SUPABASE_SERVICE_ROLE_KEY is required'),
+    SERVICE_API_TOKEN: z.string().min(1, 'SERVICE_API_TOKEN is required'),
     JWT_SECRET: z.string().min(1, 'JWT_SECRET is required'),
     TELEGRAM_BOT_TOKEN: z.string().min(1, 'TELEGRAM_BOT_TOKEN is required'),
     TON_WEBHOOK_SECRET: z.string().min(1, 'TON_WEBHOOK_SECRET is required'),
+    TON_WEBHOOK_HMAC_SECRET: z.string().optional(),
+    TON_WEBHOOK_ALLOWED_IPS: z.string().optional(),
     TON_NETWORK: z.string().min(1, 'TON_NETWORK is required'),
     TON_RPC_URL: z.string().url('TON_RPC_URL must be a valid URL'),
     TON_API_KEY: z.string().min(1, 'TON_API_KEY is required'),
@@ -41,6 +44,9 @@ const envSchema = z
       PORT: port,
       corsOriginList: values.CORS_ORIGINS
         ? values.CORS_ORIGINS.split(',').map((origin) => origin.trim()).filter(Boolean)
+        : [],
+      tonWebhookAllowlist: values.TON_WEBHOOK_ALLOWED_IPS
+        ? values.TON_WEBHOOK_ALLOWED_IPS.split(',').map((ip) => ip.trim()).filter(Boolean)
         : []
     };
   });
@@ -58,9 +64,12 @@ export const env = {
   corsOrigins: parsed.data.corsOriginList,
   supabaseUrl: parsed.data.SUPABASE_URL,
   supabaseServiceRoleKey: parsed.data.SUPABASE_SERVICE_ROLE_KEY,
+  serviceApiToken: parsed.data.SERVICE_API_TOKEN,
   jwtSecret: parsed.data.JWT_SECRET,
   telegramBotToken: parsed.data.TELEGRAM_BOT_TOKEN,
   tonWebhookSecret: parsed.data.TON_WEBHOOK_SECRET,
+  tonWebhookHmacSecret: parsed.data.TON_WEBHOOK_HMAC_SECRET ?? parsed.data.TON_WEBHOOK_SECRET,
+  tonWebhookAllowlist: parsed.data.tonWebhookAllowlist,
   // TON RPC wiring lands in F5, but these values are already used for configuration/logging in F4.
   ton: {
     network: parsed.data.TON_NETWORK,
