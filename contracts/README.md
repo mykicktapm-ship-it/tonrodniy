@@ -1,17 +1,17 @@
 # Tonrody Contracts
 
-This package contains the on-chain artifacts required by TONRODY. The main contract, `Tonrody.tact`, is the canonical keeper of lobby state, deposits, hash-based finalization and deterministic payouts.
+This package contains the on-chain artifacts required by TONRODY. The main contract, `Tonrody.tact`, is the canonical keeper of lobby state, deposits, hash-based finalization and deterministic payouts backed by on-chain entropy.
 
 ## Contract overview
 
-- **State**: stores `TonrodyConfig` (min deposit, lobby size, fee basis points, treasury address) together with the current lobby identifier, participant map, pool balance, seed commitment/reveal, computed `roundHash`, winner index and serialized transaction log.
+- **State**: stores `TonrodyConfig` (min deposit, lobby size, fee basis points, treasury address) together with the current lobby identifier, participant map, pool balance, seed commitment/reveal, computed `roundHash`, winner index, serialized transaction log, per-seat transaction hashes and finalization entropy fields (timestamp/value/message hash).
 - **Lifecycle messages**:
   - `CreateLobby(lobbyId, seedCommit, createdAt)` – resets the state and commits the fairness seed for an upcoming lobby.
-  - `PayStake(lobbyId, seatIndex, memo)` – requires an attached stake `>= minDeposit`, records the participant, emits `DepositReceived` and appends a tx-log cell for audits.
-  - `FinalizeRound(lobbyId, seedReveal)` – checks the reveal against the commit, builds the deterministic `roundHash`, picks the winner and emits `WinnerSelected`.
-  - `WithdrawPool()` – callable only by the winner after finalization. Fees defined by `feeBps` are streamed to the treasury before sending the payout; `PayoutSent` plus the tx-log prove delivery.
+  - `PayStake(lobbyId, seatIndex, memo)` – requires an attached stake `>= minDeposit`, records the participant (one seat per wallet), emits `DepositReceived` and appends a tx-log cell for audits while storing the inbound transaction hash.
+  - `FinalizeRound(lobbyId, seedReveal)` – checks the reveal against the commit, mixes on-chain entropy (`timestamp`, `value`, inbound `tx_hash`, all stake `tx_hashes`) into the deterministic `roundHash`, picks the winner, emits `WinnerSelected`, then atomically transfers the net pool to the winner and emits `PayoutSent`.
+  - `WithdrawPool()` – retained for backwards compatibility but always reverts because payouts now occur inside `FinalizeRound`.
 - **Events** mirror the backend/webhook expectations (`DepositReceived`, `LobbyFilled`, `WinnerSelected`, `PayoutSent`). Every event is also represented in the serialized tx log stack which the backend can inspect through the `getTxLog` getter.
-- **Getters**: `getConfig`, `getLobbyState`, `getParticipant(index)` and `getTxLog` expose everything the backend (or community auditors) need to reproduce the fairness proof.
+- **Getters**: `getConfig`, `getLobbyState`, `getParticipant(index)`, `getTxLog` and `getEntropyProof` expose everything the backend (or community auditors) need to reproduce the fairness proof.
 
 ## Live testnet deployment
 
@@ -56,7 +56,7 @@ The same structure is emitted by `getConfig` so backend workers can assert that 
 
 - `toncli run <path-to-boc> getConfig --testnet` or an RPC call to `runGetMethod` ensures the live contract returns the config table shown above. Automations should compare `minDeposit`, `lobbySize`, `feeBps` and `treasury` with Supabase before moving a lobby to `ready`.
 - `getLobbyState` and `getTxLog` can be read through Toncenter/TonAPI to power `/ton/round-state/:id` and prove payouts. Both getters expose the lobby id, participant slots, pool total, commit/reveal pair and serialized audit trail.
-- For manual smoke tests, trigger `PayStake`, `FinalizeRound` and `WithdrawPool` against the contract address above and confirm explorers emit `DepositReceived`, `WinnerSelected` and `PayoutSent` events under the same hashes mirrored by the backend webhooks.
+- For manual smoke tests, trigger `PayStake` and `FinalizeRound` against the contract address above and confirm explorers emit `DepositReceived`, `WinnerSelected` and `PayoutSent` events under the same hashes mirrored by the backend webhooks (payout occurs inside `FinalizeRound`; `WithdrawPool` only exists for backward compatibility).
 
 Keeping these details in sync across this README and `ton.config.json` lets backend listeners, Supabase cron jobs and the frontend Ton Connect integration validate they are pointing at the same live testnet contract.
 
@@ -64,7 +64,7 @@ Keeping these details in sync across this README and `ton.config.json` lets back
 
 - Backend services subscribe to the address defined in `ton.config.json.networks.testnet.address` via Toncenter or your own lite-server. Each emitted event mirrors the JSON schema described in `plans.md §5` and can be stored in `tx_logs` / `audit_logs` tables.
 - The serialized tx log (`getTxLog`) stores a reverse-linked list of deposits, finalization and payout entries. Webhooks can read this cell, decode it with `ton-core` and correlate with Supabase `tx_logs` for parity checks.
-- The fairness hash flow mirrors the backend logic (`round_hash = sha256(lobby + seats + pool + seedReveal + participant proof)`); once the backend reveals the same seed in Supabase, the contract’s getter ensures everyone can recompute the winner.
+- The fairness hash flow mirrors the backend logic (`round_hash = sha256(lobby_id + timestamp + value + concat(tx_hashes) + seedReveal)`); once the backend reveals the same seed in Supabase, the contract’s getter ensures everyone can recompute the winner using the on-chain transaction hashes and finalization metadata.
 
 ## Local test scenarios
 
